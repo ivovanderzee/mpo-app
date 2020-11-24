@@ -5,6 +5,9 @@ let productsOnPage = [
 let mpoCounter = 0;
 let compareCounter = 0;
 
+//Hiding the scrollbar
+HideScrollbar();
+
 //List of all the products
 let listing = document.querySelector('.listing.useVisitedState');
 
@@ -66,6 +69,10 @@ let html = `
 <button class="inactive button-tab compare-tab"><span>Vergelijk<span>(0)</span</span></button>
 </div>
 <div class="contentWrapper">
+<div style="margin-top: 25px; margin-bottom: 35px; class="topInfo">
+<span style="margin-left: 15px;  font-weight: bolder; font-size: 18px;">Mijn Producten(${mpoCounter})</span>
+<a style="float: right; margin-right: 15px; margin-top: -2px;" class="ctaButton">Nieuwe lijst maken</a>
+</div>
 <div class="content"></div>
 </div
 </div>
@@ -84,12 +91,13 @@ popover.style.boxShadow = '8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rg
 let body = document.querySelector('body');
 body.appendChild(popover);
 
-let contentView = popover.querySelector('.content');
-contentView.style.width = '375px';
-contentView.style.height = '715px';
-contentView.style.backgroundColor = '#f2f2f2';
-contentView.style.borderRadius = '2px';
-contentView.style.overflowX = 'scroll';
+let contentWrapper = popover.querySelector('.contentWrapper');
+contentWrapper.style.width = '375px';
+contentWrapper.style.height = '700px';
+contentWrapper.style.backgroundColor = '#f2f2f2';
+contentWrapper.style.borderRadius = '2px';
+contentWrapper.style.overflowX = 'scroll';
+let content = contentWrapper.querySelector('.content');
 
 //grab tab buttons
 let tabbar = popover.querySelector('.tabbar');
@@ -164,7 +172,7 @@ function addToMPO(productID, label){
            `;
 
            item.innerHTML = itemHTML;
-           contentView.appendChild(item);
+           content.appendChild(item);
            mpoCounter++;
            updateCounter();
            let deletebtn = item.querySelector('.closeButton');
@@ -220,5 +228,22 @@ iconCompare.addEventListener('click', () => {
         //error
     }
 });
+
+
+//Hiding the scrollbar
+let style = `/* On Chrome */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+/* For Firefox and IE */
+.hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}`
+function HideScrollbar() {
+    var style = document.createElement("style");
+    style.innerHTML = `body::-webkit-scrollbar {display: none;}`;
+    document.head.appendChild(style);
+  }
 
 
