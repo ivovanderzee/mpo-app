@@ -1,6 +1,6 @@
 //JSON data that gets all the products when the page loads
-let productsOnPage = [
-  ];
+let productsOnPage = [];
+let productsMPO = [];
 
 let mpoCounter = 0;
 let compareCounter = 0;
@@ -66,17 +66,17 @@ console.log(productsOnPage);
 let html = `
 <div class="wrapper">
 <div class="tabbar">
-<button class="active button-tab mpo-tab"><span>Mijn Producten<span class="counter">(${mpoCounter})</span></span></button>
+<button class="active button-tab mpo-tab"><span>Mijn Producten(<span class="counter">${mpoCounter}</span>)</span></button>
 <button class="inactive button-tab compare-tab"><span>Vergelijk<span>(0)</span</span></button>
 </div>
 <div class="contentWrapper">
 <div style="margin-top: 25px; margin-bottom: 35px; class="topInfo">
-<span style="margin-left: 15px;  font-weight: bolder; font-size: 18px;">Mijn Producten(${mpoCounter})</span>
+<span style="margin-left: 15px;  font-weight: bolder; font-size: 18px;">Mijn Producten(<span class="counter">${mpoCounter}</span>)</span>
 <a style="float: right; margin-right: 15px; margin-top: -2px;" class="ctaButton">Nieuwe lijst maken</a>
 </div>
 <div style="height: auto; margin-bottom: 50px;" class="content"></div>
 <div style="text-align: center" class="bottomInfo">
-<p style="margin-bottom: 5px;">${listCounter} lijsten, met in totaal ${mpoCounter} producten</p>
+<p style="margin-bottom: 5px; font-size: 12px;"><a href="#"><span>${listCounter}</span> lijsten, met in totaal <span class="counter">${mpoCounter}</span> producten</a></p>
 <p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
 <a class="ctaButton">Bekijk Pricewatch</a>
 </div>
@@ -178,9 +178,17 @@ function addToMPO(productID, label){
            </div>
            `;
 
+           productsMPO.push({
+            id: productID,
+            title: productTitle,
+            specline: productSpecs,
+            price: productPrice,
+            imageUrl: productImage,
+            priceAlert: false,  
+        });
+
            item.innerHTML = itemHTML;
            content.appendChild(item);
-           mpoCounter++;
            updateCounter();
            let deletebtn = item.querySelector('.closeButton');
            deletebtn.addEventListener('click', () => {
@@ -211,17 +219,7 @@ label.classList.remove('selected');
 
 //Function for updating the counter
 function updateCounter(){
-
-    let counter = tabbar.querySelector('.counter');
-    let parent = counter.parentElement;
-
-    parent.removeChild(counter);
-    let newCounter = document.createElement('span');
-    newCounter.className = 'counter';
-    newCounter.innerText = `(${mpoCounter})`;
-
-    parent.appendChild(newCounter);
-
+    mpoCounter = productsMPO.length();
 }
 
 //Search compare icon content and add a eventlistener to it
