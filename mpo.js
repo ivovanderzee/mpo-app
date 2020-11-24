@@ -4,6 +4,7 @@ let productsOnPage = [
 
 let mpoCounter = 0;
 let compareCounter = 0;
+let listCounter = 0;
 
 //Hiding the scrollbar
 HideScrollbar();
@@ -74,6 +75,11 @@ let html = `
 <a style="float: right; margin-right: 15px; margin-top: -2px;" class="ctaButton">Nieuwe lijst maken</a>
 </div>
 <div class="content"></div>
+<div style="margin-top: 50px;" class="bottomInfo">
+<span style="margin-bottom: 5px;">${listCounter}, met in totaal ${mpoCounter}</span>
+<span style="margin-bottom: 15px;">Meer producten toevoegen?</span>
+<a class="ctaButton">Bekijk Pricewatch</a>
+</div>
 </div
 </div>
 `
