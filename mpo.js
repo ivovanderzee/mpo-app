@@ -74,10 +74,10 @@ let html = `
 <span style="margin-left: 15px;  font-weight: bolder; font-size: 18px;">Mijn Producten(${mpoCounter})</span>
 <a style="float: right; margin-right: 15px; margin-top: -2px;" class="ctaButton">Nieuwe lijst maken</a>
 </div>
-<div class="content"></div>
-<div style="margin-top: 50px;" class="bottomInfo">
-<span style="margin-bottom: 5px;">${listCounter}, met in totaal ${mpoCounter}</span>
-<span style="margin-bottom: 15px;">Meer producten toevoegen?</span>
+<div style="height: auto; margin-bottom: 50px;" class="content"></div>
+<div style="text-align: center" class="bottomInfo">
+<p style="margin-bottom: 5px;">${listCounter} lijsten, met in totaal ${mpoCounter} producten</p>
+<p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
 <a class="ctaButton">Bekijk Pricewatch</a>
 </div>
 </div
@@ -102,7 +102,8 @@ contentWrapper.style.width = '375px';
 contentWrapper.style.height = '700px';
 contentWrapper.style.backgroundColor = '#f2f2f2';
 contentWrapper.style.borderRadius = '2px';
-contentWrapper.style.overflowX = 'scroll';
+contentWrapper.style.overflowX = 'hidden';
+contentWrapper.style.overflowY = 'hidden';
 let content = contentWrapper.querySelector('.content');
 
 //grab tab buttons
@@ -196,12 +197,12 @@ function deleteFromMPO(productID, label){
 console.log(label)
 label.classList.remove('selected');
     label.classList.add('unselected');
-    let products = contentView.querySelectorAll('.productItem');
+    let products = content.querySelectorAll('.productItem');
     for(i = 0; i < products.length; i++){
         if(products[i].getAttribute("id") == productID){
             mpoCounter--; 
             updateCounter();
-            contentView.removeChild(products[i]);
+            content.removeChild(products[i]);
         }else{
             //nothing
         }
