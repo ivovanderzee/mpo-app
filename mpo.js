@@ -106,12 +106,6 @@ for(i = 0; i < tabButtons.length; i++){
     tabButtons[i].style.backgroundColor = 'white';
     tabButtons[i].style.color = '#1668ac';
     tabButtons[i].style.fontSize = '16px';
-
-    tabButtons[i].addEventListener('click', () => {
-        if(className == 'active'){
-
-        }
-    })
 }
 
 //Function for adding products to the content listview
@@ -135,19 +129,27 @@ function addToMPO(productID, label){
            let specs = productAdd[0].specline;
            let price = productAdd[0].price;
 
+           
+
            //HTML for the list item and add the properties
            let itemHTML = `
            <div style='height: 80px; margin: 0 auto; width: 355px; left: 0; right: 0; background-color: #E5E5E5; border-radius: 2px;' class='itemWrapper'>
            <span class="closeButton product" style="float: right; margin: 2px;"></span>
-           <span class='alert' style="border-radius: 2px; width: 35px; height: 35px; margin-top: 43px; margin-right: -20px; float: right; background-color: #D9D9D9;"></span>
+           <div class='alert' style="text-align: center; border-radius: 2px; width: 35px; height: 35px; margin-top: 43px; margin-right: -20px; float: right; background-color: #D9D9D9;">
+           <svg style="margin-top: 11px" width="18" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+           <rect y="3.63312" width="13.3333" height="1.45326" fill="#1668AC"/>
+           <rect width="13.3333" height="1.45326" fill="#1668AC"/>
+           <rect y="7.2663" width="8" height="1.45326" fill="#1668AC"/>
+           <rect y="10.8994" width="8" height="1.45326" fill="#1668AC"/>
+           <path d="M14.2757 9.65405H17.0511V10.8503H14.2757V13.9949H13.0042V10.8503H10.2288V9.65405H13.0042V6.74878H14.2757V9.65405Z" fill="#1668AC"/>
+           </svg></div>
            <span class='alert' style="border-radius: 2px; width: 35px; height: 35px; margin-top: 43px; margin-right: 5px; float: right; background-color: #D9D9D9;"></span>
-           <div style='height: 80px; width: 80px; background-color: white; float: left; border-top-left-radius: 2px; border-bottom-left-radius: 2px' class="imageProduct" >
-           <img style="background-size: contain; width: 100%;" src='${image}'>
+           <div style='height: 80px; width: 80px; background-color: white; background-image: url("${image}"); background-size: contain; background-repeat: no-repeat; background-position: center; float: left; border-top-left-radius: 2px; border-bottom-left-radius: 2px' class="imageProduct" >
            </div>
            <div class='itemInfo'>
            <ul style="list-style-type: none; margin-left: 50px; padding-top: 10px;">
-           <li style="max-width: 200px; max-height: 16px; overflow-x: hidden; font-weight: bolder; font-size: 14px; word-wrap: break-word;"><span class='titleProduct'><a>${title}</a></span></li>
-           <li style="max-width: 150px;  font-size: 12px; word-wrap: break-word; overflow-x: hidden; margin-top: 5px; max-height: 16px;"> <span class='speclineProduct'><a style="color: #666666;">${specs}</a></span></li>
+           <li style="max-width: 200px; max-height: 16px; overflow: hidden; font-weight: bolder; font-size: 14px; word-wrap: break-word;"><span class='titleProduct'><a>${title}</a></span></li>
+           <li style="max-width: 150px;  font-size: 12px; word-wrap: break-word; overflow: hidden; margin-top: 5px; max-height: 16px;"> <span class='speclineProduct'><a style="color: #666666;">${specs}</a></span></li>
            <li style="margin-top: 10px; margin-bottom: 10px; font-size: 13px;"><span class='priceProduct'><a>${price}</a></span></li>
            </ul>
            </div>
