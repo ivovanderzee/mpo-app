@@ -1,39 +1,37 @@
 //JSON data that gets all the products when the page loads
 let productsOnPage = [];
 let productsMPO = [];
+let productsCompare = [];
 
+//All the counters that are counting products
 let mpoCounter = 0;
 let compareCounter = 0;
 let listCounter = 0;
 
-//Hiding the scrollbar
-HideScrollbar();
+//Grab all the list items on a pricewatch page
+let listsItems = document.querySelector('.listing.useVisitedState').querySelectorAll('.largethumb');
 
-//List of all the products
-let listing = document.querySelector('.listing.useVisitedState');
+//Add the checkbox the to all the products in the list on a pricewatch page
+for(i=0; i < listsItems.length; i++){
+let id = listsItems[i].querySelector('input').getAttribute('value');
+let title = listsItems[i].querySelector('.itemname').querySelector('.ellipsis').querySelector('a').innerText;
+let specline = listsItems[i].querySelector('.itemname').querySelector('.specline.ellipsis').querySelector('a').innerText;
+let price = listsItems[i].querySelector('.price').querySelector('a').innerText;
+let imageUrl = listsItems[i].querySelector('.pwimage').querySelector('a').querySelector('img').getAttribute('src');
 
-//Push all the products in an array
-let products = listing.querySelectorAll('.largethumb');
+//Set the HTML for the checkbox
+let checkBoxhtml = `<input type="checkbox" name="products[] value="${id}"">
+<span>Mijn Producten</span>`;
 
-
-//Add the checkbox the to all the products in the list
-for(i=0; i < products.length; i++){
-let id = products[i].querySelector('input').getAttribute('value');
-let title = products[i].querySelector('.itemname').querySelector('.ellipsis').querySelector('a').innerText;
-let specline = products[i].querySelector('.itemname').querySelector('.specline.ellipsis').querySelector('a').innerText;
-let price = products[i].querySelector('.price').querySelector('a').innerText;
-let imageUrl = products[i].querySelector('.pwimage').querySelector('a').querySelector('img').getAttribute('src');
-
-    let checkBoxhtml = `
-    <input type="checkbox" name="products[] value="${id}"">
-    <span>Mijn Producten</span>`;
-
-    let label = document.createElement('label');
-    label.className = 'ctaButton checkbox unselected';
-    label.innerHTML = checkBoxhtml;
-    let itemName = products[i].querySelector('.itemname');
-    itemName.appendChild(label);
+//Create a new label and set the innerHTML to the checkbox HTML
+let label = document.createElement('label');
+label.removeEventListener('click', () => {});
+label.className = 'mpo checkbox unselected';
+label.innerHTML = checkBoxhtml;
+let itemName = listsItems[i].querySelector('.itemname');
+itemName.appendChild(label);
     
+//Push the data to a JSON file
     productsOnPage.push({
         id: id,
         title: title,
@@ -43,9 +41,9 @@ let imageUrl = products[i].querySelector('.pwimage').querySelector('a').querySel
         priceAlert: false,  
     });
     
-    //Add an eventlistener to the label button
+    //Add an eventlistener to the label button for adding and deleting products to the quickaction menu
     label.addEventListener('click', () => {
-        if(label.className === 'ctaButton checkbox unselected'){
+        if(label.className === 'mpo checkbox unselected'){
             addToMPO(id, label);
         }else{
             deleteFromMPO(id, label); 
@@ -53,36 +51,28 @@ let imageUrl = products[i].querySelector('.pwimage').querySelector('a').querySel
     })
 }
 
-
-
-let icon = document.querySelector('.icon.compare');
-console.log(icon);
-icon.addEventListener('click', () =>{
-    //popover.style.display = 'block';
-})
-
-console.log(productsOnPage);
-
+//HTML for the new popover element
 let html = `
 <div class="wrapper">
-<div class="tabbar">
-<button class="active button-tab mpo-tab"><span>Mijn Producten(<span class="counter">${mpoCounter}</span>)</span></button>
-<button class="inactive button-tab compare-tab"><span>Vergelijk<span>(0)</span</span></button>
+<div style="width: 375px; height: 50px; margin-bottom: 3px;" class="tabbar">
+<button style="float: left; border-top-left-radius: 2px;" class="active button-tab mpo-tab"><span>Mijn Producten(<span class="counter1">${mpoCounter}</span>)</span></button>
+<button style="float: right; border-top-right-radius: 2px" class="inactive button-tab compare-tab"><span>Vergelijk<span>(0)</span</span></button>
 </div>
 <div class="contentWrapper">
 <div style="margin-top: 25px; margin-bottom: 35px; class="topInfo">
-<span style="margin-left: 15px;  font-weight: bolder; font-size: 18px;">Mijn Producten(<span class="counter">${mpoCounter}</span>)</span>
+<span style="margin-left: 15px;  font-weight: bolder; font-size: 18px;">Mijn Producten(<span class="counter2">${mpoCounter}</span>)</span>
 <a style="float: right; margin-right: 15px; margin-top: -2px;" class="ctaButton">Nieuwe lijst maken</a>
 </div>
 <div style="height: auto; margin-bottom: 50px;" class="content"></div>
 <div style="text-align: center" class="bottomInfo">
-<p style="margin-bottom: 5px; font-size: 12px;"><a href="#"><span>${listCounter}</span> lijsten, met in totaal <span class="counter">${mpoCounter}</span> producten</a></p>
+<p style="margin-bottom: 5px; font-size: 12px;"><a href="#"><span>${listCounter}</span> lijsten, met in totaal <span class="counter3">${mpoCounter}</span> producten</a></p>
 <p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
 <a class="ctaButton">Bekijk Pricewatch</a>
 </div>
 </div
 </div>
 `
+//Create a new popover and set the styling and innerHTML
 let popover = document.createElement('div');
 popover.innerHTML = html;
 popover.style.zIndex = '200';
@@ -93,10 +83,11 @@ popover.style.left = '550px';
 popover.className = 'popupContent';
 popover.style.boxShadow = '8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rgba(0,0,0,0.1)';
 
-
+//Append the new popover to the body
 let body = document.querySelector('body');
 body.appendChild(popover);
 
+//Style the wrapper for the content
 let contentWrapper = popover.querySelector('.contentWrapper');
 contentWrapper.style.width = '375px';
 contentWrapper.style.height = '700px';
@@ -106,24 +97,8 @@ contentWrapper.style.overflowX = 'hidden';
 contentWrapper.style.overflowY = 'hidden';
 let content = contentWrapper.querySelector('.content');
 
-//grab tab buttons
-let tabbar = popover.querySelector('.tabbar');
-tabbar.style.width = '375px';
-tabbar.style.height = '50px';
-//tabbar.style.backgroundColor = 'white';
-tabbar.style.marginBottom = '3px';
-
-let tabButtons = tabbar.querySelectorAll('.button-tab');
-let compareTab = tabbar.querySelector('.compare-tab');
-let mpoTab = tabbar.querySelector('.mpo-tab');
-
-mpoTab.style.float = 'left';
-mpoTab.style.borderTopLeftRadius = '2px';
-
-compareTab.style.float = 'right';
-compareTab.style.borderTopRightRadius = '2px';
-
-
+//Style the tab buttons in the tabbar and add an event listener
+let tabButtons = document.querySelector('.tabbar').querySelectorAll('button');
 for(i = 0; i < tabButtons.length; i++){
     tabButtons[i].style.lineHeight = '50px';
     tabButtons[i].style.width = '49.8%';
@@ -139,78 +114,80 @@ for(i = 0; i < tabButtons.length; i++){
     })
 }
 
-//Create item element for each product and add it to the contentview
-
-
+//Function for adding products to the content listview
 function addToMPO(productID, label){
+    //Create new item element
     let item = document.createElement('div');
+
+    //Set the attribute id to the productID and style the element
     item.setAttribute('id', productID);
     item.className = 'productItem';
     item.style.marginBottom = "40px";
     label.classList.remove('unselected');
     label.classList.add('selected');
-    console.log('added');
-    for(i = 0; i < productsOnPage.length; i++){
-       
-        if(productsOnPage[i].id == productID){
-           let productTitle = productsOnPage[i].title;
-           let productImage = productsOnPage[i].imageUrl;
-           let productSpecs = productsOnPage[i].specline;
-           let productPrice = productsOnPage[i].price;
+ 
+    //Filter the product that needs to be added
+    let productAdd = productsOnPage.filter(item => item.id === productID)
 
-           //HTML for the list item
+           //Define the properties that needs to be defined
+           let title = productAdd[0].title;
+           let image = productAdd[0].imageUrl;
+           let specs = productAdd[0].specline;
+           let price = productAdd[0].price;
+
+           //HTML for the list item and add the properties
            let itemHTML = `
            <div style='height: 80px; margin: 0 auto; width: 355px; left: 0; right: 0; background-color: #E5E5E5; border-radius: 2px;' class='itemWrapper'>
            <span class="closeButton product" style="float: right; margin: 2px;"></span>
            <span class='alert' style="border-radius: 2px; width: 35px; height: 35px; margin-top: 43px; margin-right: -20px; float: right; background-color: #D9D9D9;"></span>
            <span class='alert' style="border-radius: 2px; width: 35px; height: 35px; margin-top: 43px; margin-right: 5px; float: right; background-color: #D9D9D9;"></span>
            <div style='height: 80px; width: 80px; background-color: white; float: left; border-top-left-radius: 2px; border-bottom-left-radius: 2px' class="imageProduct" >
-           <img style="background-size: contain; width: 100%;" src='${productImage}'>
+           <img style="background-size: contain; width: 100%;" src='${image}'>
            </div>
            <div class='itemInfo'>
            <ul style="list-style-type: none; margin-left: 50px; padding-top: 10px;">
-           <li style="max-width: 200px; max-height: 16px; overflow-x: hidden; font-weight: bolder; font-size: 14px; word-wrap: break-word;"><span class='titleProduct'><a>${productTitle}</a></span></li>
-           <li style="max-width: 150px;  font-size: 12px; word-wrap: break-word; overflow-x: hidden; margin-top: 5px; max-height: 16px;"> <span class='speclineProduct'><a style="color: #666666;">${productSpecs}</a></span></li>
-           <li style="margin-top: 10px; margin-bottom: 10px; font-size: 13px;"><span class='priceProduct'><a>${productPrice}</a></span></li>
+           <li style="max-width: 200px; max-height: 16px; overflow-x: hidden; font-weight: bolder; font-size: 14px; word-wrap: break-word;"><span class='titleProduct'><a>${title}</a></span></li>
+           <li style="max-width: 150px;  font-size: 12px; word-wrap: break-word; overflow-x: hidden; margin-top: 5px; max-height: 16px;"> <span class='speclineProduct'><a style="color: #666666;">${specs}</a></span></li>
+           <li style="margin-top: 10px; margin-bottom: 10px; font-size: 13px;"><span class='priceProduct'><a>${price}</a></span></li>
            </ul>
            </div>
            <label style="float: right;" class="compare ctaButton unselected checkbox"><input type="checkbox" name="products[]" value="${productID}"><span>vergelijk</span></label>
            </div>
            `;
 
+           //Push the product to the productsMPO array
            productsMPO.push({
             id: productID,
-            title: productTitle,
-            specline: productSpecs,
-            price: productPrice,
-            imageUrl: productImage,
+            title: title,
+            specline: specs,
+            price: price,
+            imageUrl: image,
             priceAlert: false,  
         });
-
+        
+        //Set the innerHTML for the item to the itemHTML and append it to the contentview
            item.innerHTML = itemHTML;
            content.appendChild(item);
+           mpoCounter++;
            updateCounter();
            let deletebtn = item.querySelector('.closeButton');
            deletebtn.addEventListener('click', () => {
            deleteFromMPO(productID, label);
            })
-        }else{
-            //nothing
-        }
-    }
     }
 
-
+//Function that removes the product with the right ID from the content listview div
 function deleteFromMPO(productID, label){
-console.log(label)
 label.classList.remove('selected');
     label.classList.add('unselected');
-    let products = content.querySelectorAll('.productItem');
-    for(i = 0; i < products.length; i++){
-        if(products[i].getAttribute("id") == productID){
-            mpoCounter--; 
+    let addedProducts = content.querySelectorAll('.productItem');
+
+    //Search for the product with the right ID
+    for(i = 0; i < addedProducts.length; i++){
+        if(addedProducts[i].getAttribute("id") == productID){
+            mpoCounter--;
             updateCounter();
-            content.removeChild(products[i]);
+            content.removeChild(addedProducts[i]);
         }else{
             //nothing
         }
@@ -219,7 +196,14 @@ label.classList.remove('selected');
 
 //Function for updating the counter
 function updateCounter(){
-    mpoCounter = productsMPO.length();
+    let counter1 = popover.querySelector('.counter1');
+    let counter2 = popover.querySelector('.counter2');
+    let counter3 = popover.querySelector('.counter3');
+
+    //Set the innertext to the updated count int
+    counter1.innerText = mpoCounter;
+    counter2.innerText = mpoCounter;
+    counter3.innerText = mpoCounter;
 }
 
 //Search compare icon content and add a eventlistener to it
@@ -233,22 +217,3 @@ iconCompare.addEventListener('click', () => {
         //error
     }
 });
-
-
-//Hiding the scrollbar
-let style = `/* On Chrome */
-.hide-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-/* For Firefox and IE */
-.hide-scrollbar {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}`
-function HideScrollbar() {
-    var style = document.createElement("style");
-    style.innerHTML = `body::-webkit-scrollbar {display: none;}`;
-    document.head.appendChild(style);
-  }
-
-
