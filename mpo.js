@@ -81,6 +81,7 @@ popover.style.cursor = 'move';
 popover.style.top = '50px';
 popover.style.left = '550px';
 popover.className = 'pop-over';
+popover.style.display = 'none';
 popover.style.boxShadow = '8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rgba(0,0,0,0.1)';
 
 //Append the new popover to the body
@@ -128,8 +129,6 @@ function addToMPO(productID, label){
            let image = productAdd[0].imageUrl;
            let specs = productAdd[0].specline;
            let price = productAdd[0].price;
-
-           
 
            //HTML for the list item and add the properties
            let itemHTML = `
@@ -228,15 +227,24 @@ function updateCounter(){
 }
 
 //Search compare icon content and add a eventlistener to it
-let iconCompare = document.querySelector('.icon.compare');
-iconCompare.addEventListener('click', () => {
-    try{
-    let popup = document.querySelector('.popup');
-    let popupContent = popup.querySelector('.popupContent');
-    popup.removeChild(popupContent)
-    }catch{
-        //error
-    }
+let iconHeader = document.querySelector('.icon.compare');
+console.log(iconHeader);
+iconHeader.addEventListener('click', () => {
+try{
+    let popupCompare = document.querySelector('.popup');
+    iconHeader.className = 'icon compare';
+    let parent = popupCompare.parentElement;
+    parent.removeChild(popupCompare);
+}catch{
+    //error
+}
+        if(popover.style.display == 'none'){
+        popover.style.display = 'block';
+        iconHeader.classList.add('selected');
+        }else{
+        popover.style.display = 'none';
+        iconHeader.classList.remove('selected');
+}
 });
 
 //Adding css to the javascript code
@@ -278,8 +286,6 @@ style.innerHTML = `
 `
 head.appendChild(style);
 
-
-
 // Make the DIV element draggable:
 dragElement(document.querySelector(".pop-over"));
 
@@ -320,3 +326,4 @@ function dragElement(elmnt) {
     document.onmousemove = null;
   }
 }
+
