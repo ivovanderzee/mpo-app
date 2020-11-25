@@ -156,10 +156,10 @@ function addToMPO(productID, label){
            let itemHTML = `
            <div style='height: 80px; margin: 0 auto; width: 355px; left: 0; right: 0; background-color: #E5E5E5; border-radius: 2px;' class='itemWrapper'>
            <span class="closeButton product" style="float: right; margin: 2px;"></span>
-           <div class='alert' style="text-align: center; border-radius: 2px; width: 35px; height: 35px; margin-top: 43px; margin-right: -20px; float: right; background-color: #D9D9D9;">
+           <div class='setAlert' style="text-align: center; border-radius: 2px; width: 35px; height: 35px; margin-top: 43px; margin-right: -20px; float: right; background-color: #D9D9D9;">
            ${alertIcon}
            </div>
-           <div class='alert' style="text-align: center; border-radius: 2px; width: 35px; height: 35px; margin-top: 43px; margin-right: 5px; float: right; background-color: #D9D9D9;">
+           <div class='addList' style="text-align: center; border-radius: 2px; width: 35px; height: 35px; margin-top: 43px; margin-right: 5px; float: right; background-color: #D9D9D9;">
            ${listIcon}
            </div>
            <div style='height: 80px; width: 80px; background-color: white; background-image: url("${image}"); background-size: contain; background-repeat: no-repeat; background-position: center; float: left; border-top-left-radius: 2px; border-bottom-left-radius: 2px' class="imageProduct" >
@@ -190,9 +190,16 @@ function addToMPO(productID, label){
            content.appendChild(item);
            mpoCounter++;
            updateCounter();
+
+           //Add eventlistener to the delete button
            let deletebtn = item.querySelector('.closeButton');
            deletebtn.addEventListener('click', () => {
            deleteFromMPO(productID, label);
+           })
+
+           let priceAlert = item.querySelector('.setAlert');
+           priceAlert.addEventListener('click', () =>{
+               setPriceAlert(productID, priceAlert);
            })
     }
 
@@ -212,6 +219,14 @@ label.classList.remove('selected');
             //nothing
         }
     }
+}
+
+
+function setPriceAlert(productID, alert){
+    let product = productsMPO.filter(item => item.id === productID)
+    product[0].priceAlert = true;
+    console.log(product[0]);
+    alert.classList.add('active');
 }
 
 //Function for updating the counter
