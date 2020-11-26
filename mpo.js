@@ -64,6 +64,13 @@ let html = `
 <a style="float: right; margin-right: 15px; margin-top: -2px;" class="ctaButton">Nieuwe lijst maken</a>
 </div>
 <div style="height: auto; margin-bottom: 50px;" class="content"></div>
+
+<div style="margin-left: 10px;" class="priceAlerts">
+<span style="font-weight: bolder; font-size: 14px;">Mijn Price Alerts</span>
+<div class="priceAlertContent">
+</div
+</div>
+
 <div style="text-align: center" class="bottomInfo">
 <p style="margin-bottom: 5px; font-size: 12px;"><a href="#"><span>${listCounter}</span> lijsten, met in totaal <span class="counter3">${mpoCounter}</span> producten</a></p>
 <p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
@@ -81,7 +88,7 @@ popover.style.cursor = 'move';
 popover.style.top = '50px';
 popover.style.left = '550px';
 popover.className = 'pop-over';
-popover.style.display = 'none';
+popover.style.display = 'block';
 popover.style.boxShadow = '8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rgba(0,0,0,0.1)';
 
 //Append the new popover to the body
@@ -206,12 +213,42 @@ function setPriceAlert(productID, alert){
     let product = productsMPO.filter(item => item.id === productID)
     product[0].priceAlert = true;
     alert.classList.add('active');
+    calcPriceAlerts();
 }
 
 function deletePriceAlert(productID, alert){
     let product = productsMPO.filter(item => item.id === productID)
     product[0].priceAlert = false;
     alert.classList.remove('active');
+    calcPriceAlerts();
+}
+
+function calcPriceAlerts(){
+    let priceAlerts = productsMPO.filter(item => item.priceAlert == true);
+
+    let priceAlertContent = popover.querySelector('.priceAlertContent');
+    priceAlertContent.innerHTML = '';
+
+    for(i = 0; i < priceAlerts.length; i++){
+        let priceAlerthtml = `
+        <div style='height: 80px; margin: 0 auto; width: 355px; left: 0; right: 0; background-color: #E5E5E5; border-radius: 2px;' class='itemWrapper'>
+        <span class="closeButton product" style="float: right; margin: 2px;"></span>
+        <div style='height: 80px; width: 80px; background-color: white; background-image: url("${priceAlerts[i].imageUrl}"); background-size: contain; background-repeat: no-repeat; background-position: center; float: left; border-top-left-radius: 2px; border-bottom-left-radius: 2px' class="imageProduct" >
+        </div>
+        <div class='itemInfo'>
+        <ul style="list-style-type: none; margin-left: 50px; padding-top: 10px;">
+        <li style="max-width: 200px; max-height: 16px; overflow: hidden; font-weight: bolder; font-size: 14px; word-wrap: break-word;"><span class='titleProduct'><a>${priceAlerts[i].title}</a></span></li>
+        <li style="max-width: 150px;  font-size: 12px; word-wrap: break-word; overflow: hidden; margin-top: 5px; max-height: 16px;"> <span class='speclineProduct'><a style="color: #666666;">${priceAlerts[i].specline}</a></span></li>
+        <li style="margin-top: 10px; margin-bottom: 10px; font-size: 13px;"><span class='priceProduct'><a>${priceAlerts[i].price}</a></span></li>
+        </ul>
+        </div>
+        </div>
+        `;
+        let priceAlertItem = document.createElement('div');
+        priceAlertItem.innerHTML = priceAlerthtml;
+        priceAlertContent.appendChild(priceAlertItem);
+    }
+    
 }
 
 //Function for updating the counter
