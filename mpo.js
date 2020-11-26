@@ -12,6 +12,7 @@ let listCounter = 0;
 //Grab all the list items on a pricewatch page
 let listsItems = document.querySelector('.listing.useVisitedState').querySelectorAll('.largethumb');
 
+
 //Add the checkbox the to all the products in the list on a pricewatch page
 for(i=0; i < listsItems.length; i++){
 let id = listsItems[i].querySelector('input').getAttribute('value');
@@ -64,15 +65,17 @@ let html = `
 <span style="margin-left: 15px;  font-weight: bolder; font-size: 18px;">Mijn Producten(<span class="counter2">${mpoCounter}</span>)</span>
 <a style="float: right; margin-right: 15px; margin-top: -2px;" class="ctaButton">Nieuwe lijst maken</a>
 </div>
-<div style="height: auto; margin-bottom: 50px;" class="content"></div>
+<div style="height: auto;" class="content"></div>
 
-<div style="margin-left: 10px;" class="priceAlerts">
-<span style="font-weight: bolder; font-size: 14px;">Mijn Price Alerts</span>
+
+<div style="margin-top: 40px;" class="priceAlertsBlock">
+<span style="font-weight: bolder; margin-left: 10px; font-size: 14px;">Mijn Prijsalerts</span>
 <div class="priceAlertContent">
-</div
+<span class="alertAnnounce">Je hebt nog geen Prijsalerts ingesteld</span>
+</div>
 </div>
 
-<div style="text-align: center" class="bottomInfo">
+<div style="text-align: center; margin-top: 50px; margin-bottom: 50px;" class="bottomInfo">
 <p style="margin-bottom: 5px; font-size: 12px;"><a href="#"><span>${listCounter}</span> lijsten, met in totaal <span class="counter3">${mpoCounter}</span> producten</a></p>
 <p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
 <a class="ctaButton">Bekijk Pricewatch</a>
@@ -92,6 +95,7 @@ popover.className = 'pop-over';
 popover.style.display = 'block';
 popover.style.boxShadow = '8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rgba(0,0,0,0.1)';
 
+
 //Append the new popover to the body
 let body = document.querySelector('body');
 body.appendChild(popover);
@@ -103,7 +107,7 @@ contentWrapper.style.height = '700px';
 contentWrapper.style.backgroundColor = '#f2f2f2';
 contentWrapper.style.borderRadius = '2px';
 contentWrapper.style.overflowX = 'hidden';
-contentWrapper.style.overflowY = 'hidden';
+contentWrapper.style.overflowY = 'scroll';
 let content = contentWrapper.querySelector('.content');
 
 //Style the tab buttons in the tabbar and add an event listener
@@ -193,6 +197,8 @@ function addToMPO(productID, label){
            })
     }
 
+
+
 //Function that removes the product with the right ID from the content listview div
 function deleteFromMPO(productID, label){
 label.classList.remove('selected');
@@ -237,6 +243,14 @@ try{
 function calcPriceAlerts(){
 
     let priceAlertContent = popover.querySelector('.priceAlertContent');
+    let block = popover.querySelector('.priceAlertsBlock');
+
+    if(allPriceAlerts.length < 1){
+        block.style.display = 'none';
+    }else{
+
+        console.log('succes');
+    block.style.display = 'block';
     priceAlertContent.innerHTML = '';
 
     for(i = 0; i < allPriceAlerts.length; i++){
@@ -258,6 +272,8 @@ function calcPriceAlerts(){
         priceAlertItem.innerHTML = priceAlerthtml;
         priceAlertContent.appendChild(priceAlertItem);
     }
+    }
+
 }
 
 //Function for updating the counter
@@ -338,6 +354,14 @@ function dragElement(elmnt) {
 let head = document.querySelector('head');
 let style = document.createElement('style');
 style.innerHTML = `
+
+.priceAlertsBlock{
+    display: none;
+}
+
+.contentWrapper::-webkit-scrollbar {
+    display: none;
+  }
 
 .option {
     background-color: #D9D9D9;
