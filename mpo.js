@@ -9,48 +9,50 @@ let mpoCounter = 0;
 let compareCounter = 0;
 let listCounter = 0;
 
+addCheckbox();
+
+function addCheckbox(){
 //Grab all the list items on a pricewatch page
 let listsItems = document.querySelector('.listing.useVisitedState').querySelectorAll('.largethumb');
 
-
 //Add the checkbox the to all the products in the list on a pricewatch page
 for(i=0; i < listsItems.length; i++){
-let id = listsItems[i].querySelector('input').getAttribute('value');
-let title = listsItems[i].querySelector('.itemname').querySelector('.ellipsis').querySelector('a').innerText;
-let specline = listsItems[i].querySelector('.itemname').querySelector('.specline.ellipsis').querySelector('a').innerText;
-let price = listsItems[i].querySelector('.price').querySelector('a').innerText;
-let imageUrl = listsItems[i].querySelector('.pwimage').querySelector('a').querySelector('img').getAttribute('src');
-
-//Set the HTML for the checkbox
-let checkBoxhtml = `<input type="checkbox" name="products[] value="${id}"">
-<span>Mijn Producten</span>`;
-
-//Create a new label and set the innerHTML to the checkbox HTML
-let label = document.createElement('label');
-label.removeEventListener('click', () => {});
-label.className = 'mpo checkbox unselected';
-label.innerHTML = checkBoxhtml;
-let itemName = listsItems[i].querySelector('.itemname');
-itemName.appendChild(label);
+    let id = listsItems[i].querySelector('input').getAttribute('value');
+    let title = listsItems[i].querySelector('.itemname').querySelector('.ellipsis').querySelector('a').innerText;
+    let specline = listsItems[i].querySelector('.itemname').querySelector('.specline.ellipsis').querySelector('a').innerText;
+    let price = listsItems[i].querySelector('.price').querySelector('a').innerText;
+    let imageUrl = listsItems[i].querySelector('.pwimage').querySelector('a').querySelector('img').getAttribute('src');
     
-//Push the data to a JSON file
-    productsOnPage.push({
-        id: id,
-        title: title,
-        specline: specline,
-        price: price,
-        imageUrl: imageUrl,
-        priceAlert: false,  
-    });
+    //Set the HTML for the checkbox
+    let checkBoxhtml = `<input type="checkbox" name="products[] value="${id}"">
+    <span>Mijn Producten</span>`;
     
-    //Add an eventlistener to the label button for adding and deleting products to the quickaction menu
-    label.addEventListener('click', () => {
-        if(label.className === 'mpo checkbox unselected'){
-            addToMPO(id, label);
-        }else{
-            deleteFromMPO(id, label); 
-        }
-    })
+    //Create a new label and set the innerHTML to the checkbox HTML
+    let label = document.createElement('label');
+    label.className = 'mpo checkbox unselected';
+    label.innerHTML = checkBoxhtml;
+    let itemName = listsItems[i].querySelector('.itemname');
+    itemName.appendChild(label);
+        
+    //Push the data to a JSON file
+        productsOnPage.push({
+            id: id,
+            title: title,
+            specline: specline,
+            price: price,
+            imageUrl: imageUrl,
+            priceAlert: false,
+            alertPrice: 0,  
+        });
+        //Add an eventlistener to the label button for adding and deleting products to the quickaction menu
+        label.addEventListener('click', () => {
+            if(label.className === 'mpo checkbox unselected'){
+                addToMPO(id, label);
+            }else{
+                deleteFromMPO(id, label); 
+            }
+        })
+    }
 }
 
 //HTML for the new popover element
@@ -83,17 +85,7 @@ let html = `
 </div
 </div>
 `
-let popupNotificationHTML = `<div class="popup-notificationWrapper">
 
-<div class="textArea">
-<p class="pop-upTitle">Weet je het zeker?</p>
-<p class="announcementText" style="margin-bottom: 0px;">Je gaat ‘naam van lijst’ verwijderen. Hierin heb je ‘aantal producten’ opgeslagen</p>
-</div>
-
-<a style="line-height: 50px; text-align: center; font-size: 14px; font-weight: bolder; width: 100%; height: 50px; margin-top: 5px;" class="ctaButton">Verwijder lijst</a>
-</div`;
-let popupNotification = document.createElement('div');
-popupNotification.innerHTML = popupNotificationHTML;
 
 
 //Create a new popover and set the styling and innerHTML
@@ -101,14 +93,14 @@ let popover = document.createElement('div');
 popover.innerHTML = html;
 popover.style.zIndex = '200';
 popover.style.position = 'fixed';
-popover.style.cursor = 'move';
 popover.style.top = '50px';
+popover.style.cursor = 'move'
 popover.style.left = '550px';
 popover.className = 'pop-over';
 popover.style.display = 'block';
 popover.style.boxShadow = '8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rgba(0,0,0,0.1)';
 
-popover.appendChild(popupNotification);
+
 
 
 //Append the new popover to the body
@@ -185,7 +177,8 @@ function addToMPO(productID, label){
             specline: specs,
             price: price,
             imageUrl: image,
-            priceAlert: false,  
+            priceAlert: false,
+            alertPrice: 0,  
         });
         
         //Set the innerHTML for the item to the itemHTML and append it to the contentview
@@ -232,13 +225,27 @@ label.classList.remove('selected');
     }
 }
 
+
 function setPriceAlert(productID, alert){
-    let product = productsMPO.filter(item => item.id === productID)
-    product[0].priceAlert = true;
-    allPriceAlerts.push(product[0]);
-    alert.classList.add('active');
-    calcPriceAlerts();
+   
+    let product = productsMPO.filter(item => item.id === productID);
+    let notification = createNotification('test', productID);
+
+    let submitButton = notification.querySelector('.ctaButton');
+    submitButton.addEventListener('click', () =>{
+        product[0].priceAlert = true;
+        let value = notification.querySelector('input').value;
+        product[0].alertPrice = value;
+
+        allPriceAlerts.push(product[0]);
+        alert.classList.add('active');
+        calcPriceAlerts();
+        notification.style.display = 'none';
+    })
+   
+  
 }
+
 
 function deletePriceAlert(productID, alert){
 try{
@@ -272,7 +279,7 @@ function calcPriceAlerts(){
         let priceAlerthtml = `
         <div style='height: 80px; margin: 0 auto; width: 355px; left: 0; right: 0; background-color: #E5E5E5; border-radius: 2px;' class='itemWrapper'>
         <span class="closeButton product" style="float: right; margin: 2px;"></span>
-        <span style="float: right; margin-right: -20px; margin-top: 52px;" class="inputEuro"><input class="text" type="text" size="8" name="" id="" value="100,00"></span>
+        <span style="float: right; margin-right: -20px; margin-top: 52px;" class="inputEuro"><input class="text" type="text" size="8" name="" id="" value="${allPriceAlerts[i].alertPrice}"></span>
         
         <div style='height: 80px; width: 80px; background-color: white; background-image: url("${allPriceAlerts[i].imageUrl}"); background-size: contain; background-repeat: no-repeat; background-position: center; float: left; border-top-left-radius: 2px; border-bottom-left-radius: 2px' class="imageProduct" >
         </div>
@@ -288,10 +295,32 @@ function calcPriceAlerts(){
         let priceAlertItem = document.createElement('div');
         priceAlertItem.innerHTML = priceAlerthtml;
         priceAlertContent.appendChild(priceAlertItem);
+        
     }
     }
 
 }
+
+
+function createNotification(category, productID){
+    let product = productsOnPage.filter(item => item.id === productID)
+    let popupNotificationHTML = `<div class="popup-notificationWrapper">
+    
+    <div class="textArea">
+    <p class="pop-upTitle">Prijsalert instellen</p>
+    <p class="announcementText" style="margin-bottom: 0px;">Je gaat een prijsalert instellen voor ${product[0].title}</p>
+    <span style="margin-top: 15px;" class="inputEuro"><input class="text" type="text" size="8" name="product" id="fsdfgb" value=""></span>
+    </div>
+    
+    <a style="line-height: 50px; text-align: center; font-size: 14px; font-weight: bolder; width: 100%; height: 50px; margin-top: 5px;" class="ctaButton">Prijsalert instellen</a>
+    </div`;
+    let popupNotification = document.createElement('div');
+    popupNotification.innerHTML = popupNotificationHTML;
+    popover.appendChild(popupNotification);
+    return popupNotification;
+}
+
+
 
 //Function for updating the counter
 function updateCounter(){
@@ -327,7 +356,7 @@ try{
 });
 
 // Make the DIV element draggable:
-dragElement(document.querySelector(".pop-over"));
+dragElement(document.querySelector(".pop-over").querySelector('.wrapper'));
 
 function dragElement(elmnt) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
