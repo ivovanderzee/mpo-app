@@ -104,13 +104,11 @@ function addToMPO(productID, label){
     //Set the attribute id to the productID and style the element
     item.setAttribute('id', productID);
     item.className = 'productItem';
-    item.style.marginBottom = "40px";
    
- 
     //Filter the product that needs to be added
     let productAdd = productsOnPage.filter(item => item.id === productID)
 
-           //Define the properties that needs to be defined
+           //Define the properties of the item
            let title = productAdd[0].title;
            let image = productAdd[0].imageUrl;
            let specs = productAdd[0].specline;
@@ -118,15 +116,11 @@ function addToMPO(productID, label){
 
            //HTML for the list item and add the properties
            let itemHTML = `
-           <div style='height: 80px; margin: 0 auto; width: 355px; left: 0; right: 0; background-color: #E5E5E5; border-radius: 2px;' class='itemWrapper'>
-           <span class="closeButton product" style="float: right; margin: 2px;"></span>
-           <div class='option setAlert' style="margin-top: 43px; margin-right: -20px; float: right;">
-
-           </div>
-           <div class='option addList' style="margin-top: 43px; margin-right: 5px; float: right;">
-           </div>
-           <div style='height: 80px; width: 80px; background-color: white; background-image: url("${image}"); background-size: contain; background-repeat: no-repeat; background-position: center; float: left; border-top-left-radius: 2px; border-bottom-left-radius: 2px' class="imageProduct" >
-           </div>
+           <div class='itemWrapper'>
+           <span class="closeButton product"></span>
+           <div class='option setAlert' style="margin-top: 43px; margin-right: -20px; float: right;"></div>
+           <div class='option addList' style="margin-top: 43px; margin-right: 5px; float: right;"></div>
+           <div class="imageProduct" style='background-image: url("${image}");'></div>
            <div class='itemInfo'>
            <ul style="list-style-type: none; margin-left: 50px; padding-top: 10px;">
            <li style="max-width: 200px; max-height: 16px; overflow: hidden; font-weight: bolder; font-size: 14px; word-wrap: break-word;"><span class='titleProduct'><a>${title}</a></span></li>
@@ -199,7 +193,6 @@ function setPriceAlert(productID, alert){
         product[0].priceAlert = true;
         let value = notification.querySelector('input').value;
         product[0].alertPrice = value;
-
         allPriceAlerts.push(product[0]);
         alert.classList.add('active');
         calcPriceAlerts();
@@ -237,7 +230,7 @@ function calcPriceAlerts(){
 
     for(i = 0; i < allPriceAlerts.length; i++){
         let priceAlerthtml = `
-        <div style='height: 80px; margin: 0 auto; width: 355px; left: 0; right: 0; background-color: #E5E5E5; border-radius: 2px;' class='itemWrapper'>
+        <div class='itemWrapper'>
         <span class="closeButton product" style="float: right; margin: 2px;"></span>
         <span style="float: right; margin-right: -20px; margin-top: 52px;" class="inputEuro"><input class="text" type="text" size="8" name="" id="" value="${allPriceAlerts[i].alertPrice}"></span>
         
@@ -262,13 +255,11 @@ function calcPriceAlerts(){
 function createNotification(category, productID){
     let product = productsOnPage.filter(item => item.id === productID)
     let popupNotificationHTML = `<div class="popup-notificationWrapper">
-    
     <div class="textArea">
     <p class="pop-upTitle">Prijsalert instellen</p>
-    <p class="announcementText" style="margin-bottom: 0px;">Je gaat een prijsalert instellen voor ${product[0].title}</p>
+    <p class="announcementText" style="margin-bottom: 0px;">Je gaat een prijsalert instellen voor <span style="font-weight: bolder;">${product[0].title}</span></p>
     <span style="margin-top: 15px;" class="inputEuro"><input class="text" type="text" size="8" name="product" id="fsdfgb" value=""></span>
     </div>
-    
     <a style="line-height: 50px; text-align: center; font-size: 14px; font-weight: bolder; width: 100%; height: 50px; margin-top: 5px;" class="ctaButton">Prijsalert instellen</a>
     </div`;
     let popupNotification = document.createElement('div');
@@ -393,6 +384,37 @@ style.innerHTML = `
 
 .contentWrapper.content{
     height: auto;
+}
+
+.itemWrapper{
+    height: 80px;
+    margin: 0 auto;
+    width: 355px;
+    left: 0;
+    right: 0;
+    background-color: #E5E5E5;
+    border-radius: 2px;
+}
+
+.closeButton{
+    float: right; 
+    margin: 2px;
+}
+
+.productItem{
+    margin-bottom: 40px;
+}
+
+.imageProduct{
+    height: 80px;
+    width: 80px;
+    background-color: white;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    float: left;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
 }
 
 .topInfo{
