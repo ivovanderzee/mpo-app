@@ -3,6 +3,7 @@ let productsOnPage = [];
 let productsMPO = [];
 let productsCompare = [];
 let allPriceAlerts = [];
+let lists = [];
 
 //All the counters that are counting products
 let mpoCounter = 0;
@@ -54,6 +55,11 @@ for(i=0; i < listsItems.length; i++){
     }
 }
 
+
+
+
+
+
 //HTML for the new popover element
 let html = `
 <div class="wrapper">
@@ -64,7 +70,7 @@ let html = `
 <div class="contentWrapper">
 <div class="topInfo">
 <span class="topTitle">Mijn Producten(<span class="counter2">${mpoCounter}</span>)</span>
-<a class="ctaButton">Nieuwe lijst maken</a>
+<a class="ctaButton newList">Nieuwe lijst maken</a>
 </div>
 <div class="content">
 <span class="introText">Je hebt nog geen producten toegevoegd. Producten die je toevoegd of een prijsalerts voor instelt kun je hier terugvinden. Ook kun je lijsten maken om je producten in te verdelen.</span>
@@ -89,6 +95,11 @@ let html = `
 let popover = document.createElement('div');
 popover.className = 'pop-over';
 popover.innerHTML = html;
+
+let newListButton = popover.querySelector('.newList');
+newListButton.addEventListener('click', () =>{
+    createNewList();
+})
 
 //Append the new popover to the body
 let body = document.querySelector('body');
@@ -130,7 +141,6 @@ function singleProducts(){
         addButton.addEventListener('click', () => {
             if(addButton.className === 'addItem'){
                 addButton.classList.add('active');
-                addToMPO();
             }else{
                 addButton.classList.remove('active');
             }
@@ -158,6 +168,7 @@ function addToMPO(productID, label){
            let specs = productAdd[0].specline;
            let price = productAdd[0].price;
 
+           console.log(title);
            //HTML for the list item and add the properties
            let itemHTML = `
            <div class='itemWrapper'>
@@ -184,7 +195,9 @@ function addToMPO(productID, label){
             price: price,
             imageUrl: image,
             priceAlert: false,
-            alertPrice: 0,  
+            alertPrice: 0,
+            selected: false,
+              
         });
         
         //Set the innerHTML for the item to the itemHTML and append it to the contentview
@@ -206,6 +219,12 @@ function addToMPO(productID, label){
                }else{
                    deletePriceAlert(productID, priceAlert)
                }
+           })
+
+
+           let addList = item.querySelector('.addList');
+           addList.addEventListener('click', () => {
+               // function for adding to a list
            })
     }
 
@@ -230,7 +249,7 @@ label.classList.remove('selected');
 function setPriceAlert(productID, alert){
    
     let product = productsMPO.filter(item => item.id === productID);
-    let notification = createNotification('test', productID);
+    let notification = createNotification('prijsalert', productID);
 
     let submitButton = notification.querySelector('.ctaButton');
     submitButton.addEventListener('click', () =>{
@@ -296,7 +315,10 @@ function calcPriceAlerts(){
     }
 }
 
-function createNotification(category, productID){
+function createNotification(category, productID = null){
+    let popupNotification = document.createElement('div');
+
+if(category === 'prijsalert'){
     let product = productsOnPage.filter(item => item.id === productID)
     let popupNotificationHTML = `<div class="popup-notificationWrapper">
     <div class="textArea">
@@ -306,15 +328,60 @@ function createNotification(category, productID){
     </div>
     <a style="line-height: 50px; text-align: center; font-size: 14px; font-weight: bolder; width: 100%; height: 50px; margin-top: 5px;" class="ctaButton">Prijsalert instellen</a>
     </div`;
-    let popupNotification = document.createElement('div');
+    
     popupNotification.innerHTML = popupNotificationHTML;
+}else if(category === 'newlist'){
+    popupNotificationHTML = `<div class="popup-notificationWrapper">
+    <div class="textArea">
+    <p class="pop-upTitle">Nieuwe lijst maken</p>
+    <p class="announcementText" style="margin-bottom: 0px;">Typ de naam van de nieuwe lijst</p>
+    <span style="margin-top: 15px;"><input class="text" type="text" size="30" name="product" id="" value=""></span>
+    </div>
+    <a style="line-height: 50px; text-align: center; font-size: 14px; font-weight: bolder; width: 100%; height: 50px; margin-top: 5px;" class="ctaButton">Nieuwe lijst aanmaken</a>
+    </div`;
+    popupNotification.innerHTML = popupNotificationHTML;
+}
+
     popover.appendChild(popupNotification);
     return popupNotification;
 }
 
+
+function createNewList(){
+    
+    let notification = createNotification('newlist');
+    let submitButton = notification.querySelector('.ctaButton');
+    let id = Math.floor((Math.random() * 10000) + 20000);
+
+    submitButton.addEventListener('click', () => {
+        let listName = notification.querySelector('input').value;
+        lists.push({
+            id: id,
+            name: listName,
+            products: [],
+        });
+        notification.style.display = 'none';
+      
+        let listHTML = `
+        <span class="list-title" style="margin-left: 5px;">${listName}</span>
+        <div class='listContent' style="background-color: #D9D9D9; width: 98%; height: 120px; margin: 0 auto;">
+        
+        </div>`
+        let list = document.createElement('div');
+        list.className = 'list-wrapper';
+        list.setAttribute('list-id', id)
+        list.innerHTML = listHTML;
+        
+        content.appendChild(list);
+    
+    })
+}
+
+
 //Function for updating the counter
 function updateCounter(){
 let introText = popover.querySelector('.introText');
+let singleItemWrapper = popover.querySelector('.single-item-wrapper');
 
     let counter1 = popover.querySelector('.counter1');
     let counter2 = popover.querySelector('.counter2');
@@ -327,8 +394,10 @@ let introText = popover.querySelector('.introText');
 
     if(mpoCounter < 1){
         introText.style.display = 'block';
+        singleItemWrapper.style.display = 'block';
     }else{
         introText.style.display = 'none';
+        singleItemWrapper.style.display ='none';
     }
 }
 
