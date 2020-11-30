@@ -83,6 +83,9 @@ let html = `
 </div>
 </div>
 
+<div class="all-lists">
+</div>
+
 <div class="bottom-info">
 <p style="margin-bottom: 5px; font-size: 12px;"><a href="#"><span>${listCounter}</span> lijsten, met in totaal <span class="counter3">${mpoCounter}</span> producten</a></p>
 <p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
@@ -351,7 +354,7 @@ function createNewList(){
     
     let notification = createNotification('newlist');
     let submitButton = notification.querySelector('.ctaButton');
-    let id = Math.floor((Math.random() * 10000) + 20000);
+    let id = Math.floor((Math.random() * 11000) + 22000);
 
     submitButton.addEventListener('click', () => {
         let listName = notification.querySelector('input').value;
@@ -363,16 +366,20 @@ function createNewList(){
         notification.style.display = 'none';
       
         let listHTML = `
-        <span class="list-title" style="margin-left: 5px;">${listName}</span>
-        <div class='listContent' style="background-color: #D9D9D9; width: 98%; height: 120px; margin: 0 auto;">
+        <span class="list-title" style="margin-left: 10px;">${listName}<span> (${lists[0].products.length})</span></span>
+
+        <div class='listContent' style="background-color: #D9D9D9; width: 355px; height: 120px; margin: 0 auto;">
         
-        </div>`
+        </div>
+        <a class="ctaButton secondary" style="float: right; margin-right: 10px; margin-top: 10px;">Totaal berekenen</a>
+        `
         let list = document.createElement('div');
         list.className = 'list-wrapper';
         list.setAttribute('list-id', id)
+        list.style.marginBottom = '40px';
         list.innerHTML = listHTML;
-        
-        content.appendChild(list);
+        let allLists = popover.querySelector('.all-lists')
+        allLists.appendChild(list);
     
     })
 }
@@ -716,6 +723,12 @@ style.innerHTML = `
     padding: 15px;
     padding-right: 7px;
     box-shadow: 8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rgba(0,0,0,0.1);
+}
+
+.list-options-top.option.share{
+    background-color: black;
+    width: 20px;
+    height: 20px;
 }
 `
 head.appendChild(style);
