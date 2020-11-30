@@ -371,7 +371,7 @@ function createNewList(){
         <div class='listContent' style="background-color: #D9D9D9; width: 355px; height: 120px; margin: 0 auto;">
         
         </div>
-        <a class="ctaButton secondary" style="float: right; margin-right: 10px; margin-top: 10px;">Totaal berekenen</a>
+        <a class="ctaButton secondary" style="float: right; margin-right: 10px;">Totaal berekenen</a>
         `
         let list = document.createElement('div');
         list.className = 'list-wrapper';
@@ -489,6 +489,9 @@ style.innerHTML = `
     left: 550px;
     display: block;
     box-shadow:  8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rgba(0,0,0,0.1);
+    border-color: #cccccc;
+    border-width: 1px;
+    border-style: solid;
 }
 
 .tabbar button{
@@ -663,10 +666,32 @@ style.innerHTML = `
     display: none;
 }
 
+/* width */
 .contentWrapper::-webkit-scrollbar {
-    display: none;
-  }
+  width: 4px;
+  overflow: overlay;
+  position: absolute;
+  z-index: 100;
+}
 
+/* Track */
+.contentWrapper::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+  overflow: overlay;
+  position: absolute;
+}
+ 
+/* Handle */
+.contentWrapper::-webkit-scrollbar-thumb {
+  background: #888; 
+  overflow: overlay;
+  position: absolute;
+}
+
+/* Handle on hover */
+.contentWrapper::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
 .option {
     background-color: #D9D9D9;
     background-position: center center;
