@@ -66,7 +66,9 @@ let html = `
 <span class="topTitle">Mijn Producten(<span class="counter2">${mpoCounter}</span>)</span>
 <a class="ctaButton">Nieuwe lijst maken</a>
 </div>
-<div class="content"></div>
+<div class="content">
+<span class="introText">Je hebt nog geen producten toegevoegd. Producten die je toevoegd of een price alert voor instelt kun je hier terugvinden. Ook kun je lijsten maken om je producten in te verdelen.</span>
+</div>
 
 <div style="margin-top: 40px;" class="priceAlertsBlock">
 <span class="list-title">Mijn Prijsalerts</span>
@@ -92,9 +94,34 @@ popover.innerHTML = html;
 let body = document.querySelector('body');
 body.appendChild(popover);
 
+
 //Style the wrapper for the content
 let contentWrapper = popover.querySelector('.contentWrapper');
 let content = contentWrapper.querySelector('.content');
+
+
+singleProducts();
+function singleProducts(){
+
+    let singleItemWrapper = document.createElement('div');
+    singleItemWrapper.className = 'single-item-wrapper';
+    contentWrapper.appendChild(singleItemWrapper);
+    for(i = 0; i < 4; i++){
+        
+        let singleItem = document.createElement('div');
+        singleItem.className = 'single-item';
+
+        let singleItemHTML = `
+        <div class="single-item-content" style='background-image: url("${productsOnPage[i].imageUrl}");'>
+        <button class="addItem"></button>
+        </div>
+        `
+        singleItem.innerHTML = singleItemHTML;
+        singleItemWrapper.appendChild(singleItem);
+    
+    }
+}
+
 
 //Function for adding products to the content listview
 function addToMPO(productID, label){
@@ -122,10 +149,10 @@ function addToMPO(productID, label){
            <div class='option addList' style="margin-top: 43px; margin-right: 5px; float: right;"></div>
            <div class="imageProduct" style='background-image: url("${image}");'></div>
            <div class='itemInfo'>
-           <ul style="list-style-type: none; margin-left: 50px; padding-top: 10px;">
-           <li style="max-width: 200px; max-height: 16px; overflow: hidden; font-weight: bolder; font-size: 14px; word-wrap: break-word;"><span class='titleProduct'><a>${title}</a></span></li>
-           <li style="max-width: 150px;  font-size: 12px; word-wrap: break-word; overflow: hidden; margin-top: 5px; max-height: 16px;"> <span class='speclineProduct'><a style="color: #666666;">${specs}</a></span></li>
-           <li style="margin-top: 10px; margin-bottom: 10px; font-size: 13px;"><span class='priceProduct'><a>${price}</a></span></li>
+           <ul>
+           <li class='titleProduct'><span><a>${title}</a></span></li>
+           <li class='speclineProduct'><span><a style="color: #666666;">${specs}</a></span></li>
+           <li  class='priceProduct'><span><a>${price}</a></span></li>
            </ul>
            </div>
            <label style="float: right;" class="compare ctaButton unselected checkbox"><input type="checkbox" name="products[]" value="${productID}"><span>vergelijk</span></label>
@@ -270,6 +297,8 @@ function createNotification(category, productID){
 
 //Function for updating the counter
 function updateCounter(){
+let introText = popover.querySelector('.introText');
+
     let counter1 = popover.querySelector('.counter1');
     let counter2 = popover.querySelector('.counter2');
     let counter3 = popover.querySelector('.counter3');
@@ -278,6 +307,12 @@ function updateCounter(){
     counter1.innerText = mpoCounter;
     counter2.innerText = mpoCounter;
     counter3.innerText = mpoCounter;
+
+    if(mpoCounter < 1){
+        introText.style.display = 'block';
+    }else{
+        introText.style.display = 'none';
+    }
 }
 
 //Search compare icon content and add a eventlistener to it
@@ -386,6 +421,39 @@ style.innerHTML = `
     height: auto;
 }
 
+.single-item{
+    width: 125px;
+    height: 125px;
+    background-color: white;
+    margin: 10px; 
+    float: left;
+    border-radius: 2px;
+}
+
+.single-item-wrapper{
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.single-item-content{
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: fit;
+    background-position: center center;
+}
+
+.single-item-content button{
+    float: right;
+    width: 25px;
+    height: 25px;
+    background-color: #0A95CD;
+    margin: 5px;
+    border: none;
+}
+
+
 .itemWrapper{
     height: 80px;
     margin: 0 auto;
@@ -394,6 +462,45 @@ style.innerHTML = `
     right: 0;
     background-color: #E5E5E5;
     border-radius: 2px;
+    
+}
+
+.itemWrapper ul{
+    list-style-type: none;
+    margin-left: 50px;
+    padding-top: 10px;
+}
+
+.introText{
+    display: block;
+    width: 77%;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 40px;
+}
+
+.titleProduct{
+    max-width: 200px;
+    max-height: 16px;
+    overflow: hidden;
+    font-weight: bolder;
+    font-size: 14px;
+    word-wrap: break-word;
+}
+
+.speclineProduct{
+    max-width: 150px;
+    font-size: 12px;
+    word-wrap: break-word;
+    overflow: hidden;
+    margin-top: 5px;
+    max-height: 16px;
+}
+
+.priceProduct{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 13px;
 }
 
 .closeButton{
