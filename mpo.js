@@ -67,7 +67,7 @@ let html = `
 <a class="ctaButton">Nieuwe lijst maken</a>
 </div>
 <div class="content">
-<span class="introText">Je hebt nog geen producten toegevoegd. Producten die je toevoegd of een price alert voor instelt kun je hier terugvinden. Ook kun je lijsten maken om je producten in te verdelen.</span>
+<span class="introText">Je hebt nog geen producten toegevoegd. Producten die je toevoegd of een prijsalerts voor instelt kun je hier terugvinden. Ook kun je lijsten maken om je producten in te verdelen.</span>
 </div>
 
 <div style="margin-top: 40px;" class="priceAlertsBlock">
@@ -112,12 +112,29 @@ function singleProducts(){
         singleItem.className = 'single-item';
 
         let singleItemHTML = `
-        <div class="single-item-content" style='background-image: url("${productsOnPage[i].imageUrl}");'>
+        <div class="single-item-content">
         <button class="addItem"></button>
+        <div class="single-item-info" style="tex-align: left; background-color: white; margin-left: 5px; height: auto;">
+     
+        <p style="max-width: 115px; height: 14px; word-wrap: break-word; overflow: hidden; margin-top: 87px; margin-bottom: 5px; font-size: 14px; color: #1668AC">${productsOnPage[i].title}</p>
+        <p style="max-width: 100px; height: 14px; word-wrap: break-word; overflow: hidden; color: #666666;">${productsOnPage[i].specline}</p>
+        
+        </div>
         </div>
         `
         singleItem.innerHTML = singleItemHTML;
+        singleItem.style.backgroundImage = `url("${productsOnPage[i].imageUrl}")`;
         singleItemWrapper.appendChild(singleItem);
+
+        let addButton = singleItem.querySelector('.addItem');
+        addButton.addEventListener('click', () => {
+            if(addButton.className === 'addItem'){
+                addButton.classList.add('active');
+                addToMPO();
+            }else{
+                addButton.classList.remove('active');
+            }
+        })
     
     }
 }
@@ -428,21 +445,24 @@ style.innerHTML = `
     margin: 10px; 
     float: left;
     border-radius: 2px;
+
+    background-repeat: no-repeat;
+    background-size: fit;
+    background-position: center center;
 }
 
 .single-item-wrapper{
     width: 80%;
     margin: 0 auto;
-    text-align: center;
 }
 
 .single-item-content{
     width: 100%;
     height: 100%;
-    background-repeat: no-repeat;
-    background-size: fit;
-    background-position: center center;
+    float: right;
+  
 }
+
 
 .single-item-content button{
     float: right;
@@ -451,8 +471,18 @@ style.innerHTML = `
     background-color: #0A95CD;
     margin: 5px;
     border: none;
+    background-image: url('data:image/svg+xml, %3Csvg width="9" height="8" viewBox="0 0 9 8" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M5.45597 3.22974H8.01187V5.07764H5.45597V7.96631H3.50894V5.07764H0.945955V3.22974H3.50894V0.461426H5.45597V3.22974Z" fill="white"/%3E%3C/svg%3E');
+    background-size: fit;
+    background-position: center center;
+    background-repeat: no-repeat;
+    border-radius: 2px;
 }
 
+.addItem.active{
+    background-color: #9FBF22;
+    background-image: url('data:image/svg+xml, %3Csvg width="5" height="3" viewBox="0 0 5 3" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M4.45426 2.4104H0.468172V0.760742H4.45426V2.4104Z" fill="white"/%3E%3C/svg%3E');
+
+}
 
 .itemWrapper{
     height: 80px;
