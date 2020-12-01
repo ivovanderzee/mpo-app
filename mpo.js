@@ -683,7 +683,7 @@ try{
 
 
 // Make the DIV element draggable:
-dragElement(document.querySelector(".pop-over").querySelector('.wrapper'));
+dragElement(document.querySelector(".pop-over"));
 
 function dragElement(elmnt) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -696,7 +696,7 @@ function dragElement(elmnt) {
   }
   function dragMouseDown(e) {
     e = e || window.event;
-    e.preventDefault();
+    
     // get the mouse cursor position at startup:
     pos3 = e.clientX;
     pos4 = e.clientY;
@@ -977,8 +977,9 @@ style.innerHTML = `
     width: 322px;
     margin-left: 101%;
     margin-top: 53px;
-    position: absolute;
     top: 0;
+    position: absolute;
+    cursor: pointer;
     border-radius: 2px;
     box-shadow: 8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rgba(0,0,0,0.1);
 }
