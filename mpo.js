@@ -3,6 +3,7 @@ let productsOnPage = [];
 let productsMPO = [];
 let productsCompare = [];
 let allPriceAlerts = [];
+let selectedProducts = [];
 let lists = [];
 
 //All the counters that are counting products
@@ -100,7 +101,7 @@ popover.className = 'pop-over';
 popover.innerHTML = html;
 
 let newListButton = popover.querySelector('.newList');
-newListButton.addEventListener('click', () =>{
+newListButton.addEventListener('click', () => {
     createNewList();
 })
 
@@ -228,6 +229,13 @@ function addToMPO(productID, label){
            let addList = item.querySelector('.addList');
            addList.addEventListener('click', () => {
                // function for adding to a list
+               
+               if(addList.className === 'option addList'){
+               addToList(productID);
+               addList.classList.add('active');
+               }else{
+                   addList.classList.remove('active');
+               }
            })
     }
 
@@ -320,6 +328,7 @@ function calcPriceAlerts(){
 
 function createNotification(category, productID = null){
     let popupNotification = document.createElement('div');
+    popupNotification.className = 'popup-notification';
 
 if(category === 'prijsalert'){
     let product = productsOnPage.filter(item => item.id === productID)
@@ -343,7 +352,51 @@ if(category === 'prijsalert'){
     <a style="line-height: 50px; text-align: center; font-size: 14px; font-weight: bolder; width: 100%; height: 50px; margin-top: 5px;" class="ctaButton">Nieuwe lijst aanmaken</a>
     </div`;
     popupNotification.innerHTML = popupNotificationHTML;
-}
+}else if(category === 'addToList'){
+  
+
+        
+   
+    popupNotificationHTML = `<div class="popup-notificationWrapper">
+    <div class="textArea">
+    <p class="pop-upTitle"><span>${selectedProducts.length}</span> producten toevoegen</p>
+    <ul class="lists" style="list-style-type: none">
+
+    </ul>
+    </div>
+    <a style="line-height: 50px; text-align: center; font-size: 14px; font-weight: bolder; width: 100%; height: 50px; margin-top: 5px;" class="ctaButton">Klaar</a>
+    </div`;
+    popupNotification.innerHTML = popupNotificationHTML;
+
+    popover.appendChild(popupNotification);
+    let ul = popupNotification.querySelector('ul');
+    ul.style.maxHeight = '270px';
+    ul.style.height = 'auto';
+    ul.style.marginLeft = '0px';
+    ul.style.paddingLeft = '0px';
+    ul.style.width = '290px';
+    for(i = 0; i < lists.length; i++){
+    let selectListItem = document.createElement('li');
+    selectListItem.style.height = '50px';
+    selectListItem.style.width = '100%';
+    selectListItem.style.backgroundColor = '#F2F2F2';
+    selectListItem.style.marginBottom = '5px';
+    selectListItem.style.padding = '10px';
+    let selectListItemHTML = `
+    <span style="font-weight: bolder; font-size: 14px">${lists[i].name}</span>
+    <br>
+    <span style="font-weight: lighter; font-size: 11px;">${lists[i].products.length} producten in lijst</span>
+    `
+    selectListItem.innerHTML = selectListItemHTML;
+
+    
+    ul.appendChild(selectListItem);
+    }
+
+    }
+   
+
+
 
     popover.appendChild(popupNotification);
     return popupNotification;
@@ -406,6 +459,17 @@ function createNewList(){
     })
 }
 
+
+function addToList(productID){
+    let selectedProduct = productsMPO.filter(item => item.id === productID);
+    selectedProduct[0].selected = true;
+    selectedProducts.push(selectedProduct[0]);
+    console.log(selectedProducts);
+    createNotification('addToList', productID)
+    
+    
+
+}
 
 //Function for updating the counter
 function updateCounter(){
@@ -691,10 +755,7 @@ style.innerHTML = `
 
 /* width */
 .contentWrapper::-webkit-scrollbar {
-  width: 4px;
-  overflow: overlay;
-  position: absolute;
-  z-index: 100;
+  display: none;
 }
 
 /* Track */
@@ -720,7 +781,7 @@ style.innerHTML = `
     background-position: center center;
     background-size: contain; 
     background-repeat: no-repeat;
-    background-size: 18px;
+    background-size: 16px;
     border-radius: 2px;
     height: 35px;
     width: 35px;
@@ -744,7 +805,7 @@ style.innerHTML = `
 }
 
 .option.addList.active{
-    background-image: url("data:image/svg+xml,%3Csvg width='19' height='19' viewBox='0 0 19 19' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0)'%3E%3Cpath d='M16.9896 8.58846C16.6885 8.58846 16.4442 8.34346 16.4442 8.04158C16.4442 5.94741 15.6312 3.97941 14.1549 2.49847C13.9419 2.28484 13.9419 1.93851 14.1549 1.72488C14.368 1.51126 14.7134 1.51126 14.9266 1.72488C16.6086 3.41211 17.535 5.65582 17.535 8.04158C17.535 8.34346 17.2906 8.58846 16.9896 8.58846Z' fill='white'/%3E%3Cpath d='M2.08155 8.58852C1.78048 8.58852 1.53613 8.34352 1.53613 8.04165C1.53613 5.65588 2.46265 3.41217 4.14537 1.72562C4.35842 1.51199 4.70397 1.51199 4.91702 1.72562C5.13008 1.93924 5.13008 2.28571 4.91702 2.49933C3.44003 3.97947 2.62697 5.94748 2.62697 8.04165C2.62697 8.34352 2.38262 8.58852 2.08155 8.58852Z' fill='white'/%3E%3Cpath d='M9.53568 18.25C8.03179 18.25 6.80859 17.0235 6.80859 15.5156C6.80859 15.2137 7.05294 14.9688 7.35401 14.9688C7.65508 14.9688 7.89943 15.2137 7.89943 15.5156C7.89943 16.4206 8.63313 17.1562 9.53568 17.1562C10.4381 17.1562 11.1719 16.4206 11.1719 15.5156C11.1719 15.2137 11.4163 14.9688 11.7173 14.9688C12.0184 14.9688 12.2628 15.2137 12.2628 15.5156C12.2628 17.0235 11.0396 18.25 9.53568 18.25Z' fill='white'/%3E%3Cpath d='M15.5356 16.0625H3.5364C2.83452 16.0625 2.26367 15.4901 2.26367 14.7865C2.26367 14.4131 2.42586 14.0595 2.70882 13.8167C3.81483 12.8797 4.44534 11.5177 4.44534 10.0746V8.04162C4.44534 5.22714 6.72887 2.9375 9.53598 2.9375C12.343 2.9375 14.6265 5.22714 14.6265 8.04162V10.0746C14.6265 11.5177 15.257 12.8797 16.3558 13.8116C16.646 14.0595 16.8082 14.4131 16.8082 14.7865C16.8082 15.4901 16.2373 16.0625 15.5356 16.0625ZM9.53598 4.03125C7.33021 4.03125 5.53617 5.83009 5.53617 8.04162V10.0746C5.53617 11.8398 4.76465 13.5068 3.42002 14.6464C3.39459 14.6683 3.35451 14.7136 3.35451 14.7865C3.35451 14.8856 3.43746 14.9688 3.5364 14.9688H15.5356C15.6344 14.9688 15.7173 14.8856 15.7173 14.7865C15.7173 14.7136 15.6774 14.6683 15.6533 14.6479C14.3072 13.5068 13.5357 11.8398 13.5357 10.0746V8.04162C13.5357 5.83009 11.7416 4.03125 9.53598 4.03125Z' fill='white'/%3E%3Cpath d='M9.53565 4.03125C9.23458 4.03125 8.99023 3.78625 8.99023 3.48438V1.29688C8.99023 0.994999 9.23458 0.75 9.53565 0.75C9.83672 0.75 10.0811 0.994999 10.0811 1.29688V3.48438C10.0811 3.78625 9.83672 4.03125 9.53565 4.03125Z' fill='white'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0'%3E%3Crect width='17.4533' height='17.5' fill='white' transform='translate(0.820312 0.75)'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E%0A");
+    background-image: url('data:image/svg+xml, %3Csvg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Crect y="3.63312" width="13.3333" height="1.45326" fill="white"/%3E%3Crect width="13.3333" height="1.45326" fill="white"/%3E%3Crect y="7.2663" width="8" height="1.45326" fill="white"/%3E%3Crect y="10.8994" width="8" height="1.45326" fill="white"/%3E%3Cpath d="M15.3216 11.281H11.9857V10.2488H15.3216V11.281Z" fill="white"/%3E%3C/svg%3E');
 }
 
 .popup-notificationWrapper{
