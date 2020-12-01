@@ -240,6 +240,12 @@ function MPOProducts(){
               addList.classList.remove('active');
           }
       })
+
+      if(productsMPO[i].priceAlert === true){
+          priceAlert.classList.add('active');
+      }else{
+          //nothing
+      }
 }
 }
 
