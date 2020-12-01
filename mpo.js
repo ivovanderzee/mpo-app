@@ -3,7 +3,6 @@ let productsOnPage = [];
 let productsMPO = [];
 let productsCompare = [];
 let allPriceAlerts = [];
-let selectedProducts = [];
 let lists = [];
 
 //All the counters that are counting products
@@ -12,8 +11,6 @@ let compareCounter = 0;
 let listCounter = 0;
 
 addCheckbox();
-
-
 function addCheckbox(){
 //Grab all the list items on a pricewatch page
 let pricewatchItems = document.querySelector('.listing.useVisitedState').querySelectorAll('.largethumb');
@@ -73,20 +70,17 @@ let html = `
 <span class="topTitle">Mijn Producten(<span class="counter2">${mpoCounter}</span>)</span>
 <a class="ctaButton newList">Nieuwe lijst maken</a>
 </div>
-<div class="singleProducts">
 <span class="introText">Je hebt nog geen producten toegevoegd. Producten die je toevoegd of een prijsalerts voor instelt kun je hier terugvinden. Ook kun je lijsten maken om je producten in te verdelen.</span>
+<div class="singleProducts">
 </div>
-
 <div style="margin-top: 40px;" class="priceAlertsList">
 <span class="list-title">Mijn Prijsalerts</span>
 <div class="priceAlertContent">
 <span class="alertAnnounce">Je hebt nog geen Prijsalerts ingesteld</span>
 </div>
 </div>
-
 <div class="all-lists">
 </div>
-
 <div class="bottom-info">
 <p style="margin-bottom: 5px; font-size: 12px;"><a href="#"><span>${listCounter}</span> lijsten, met in totaal <span class="counter3">${mpoCounter}</span> producten</a></p>
 <p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
@@ -112,6 +106,20 @@ body.appendChild(popover);
 //Style the wrapper for the content
 let contentWrapper = popover.querySelector('.contentWrapper');
 let singleProducts = contentWrapper.querySelector('.singleProducts');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //Run the function suggestion items once
 appendSuggestions();
@@ -162,6 +170,19 @@ function appendSuggestions(){
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Function for adding products to the content listview
 function addToMPO(productID, label){
     //Select the product that needs to be added
@@ -176,6 +197,15 @@ function addToMPO(productID, label){
     mpoCounter++;
     updateCounter();
 }
+
+
+
+
+
+
+
+
+
 
 function MPOProducts(){
     singleProducts.innerHTML = '';
@@ -249,6 +279,21 @@ function MPOProducts(){
 }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Function that removes the product with the right ID from the content listview div
 function deleteFromMPO(productID, label){
 label.classList.remove('selected');
@@ -258,6 +303,20 @@ label.classList.add('unselected');
     productsMPO.splice(index, 1)
     MPOProducts();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function setPriceAlert(productID, alert){
     let product = productsMPO.filter(item => item.id === productID);
@@ -275,8 +334,21 @@ function setPriceAlert(productID, alert){
     })
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function deletePriceAlert(productID){
-    
 try{
     let alert = Array.from(singleProducts.querySelectorAll('.productItem')).filter(item => item.getAttribute('id') === productID);
     alert = alert[0].querySelector('.setAlert');
@@ -292,6 +364,14 @@ try{
         allPriceAlerts.splice(index, 1)
         calcPriceAlerts();
 }
+
+
+
+
+
+
+
+
 
 //Function the calculates all the price alerts in the price alert array
 function calcPriceAlerts(){
@@ -338,6 +418,20 @@ function calcPriceAlerts(){
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function createNotification(category, productID = null){
     let popupNotification = document.createElement('div');
     popupNotification.className = 'popup-notification';
@@ -366,87 +460,59 @@ if(category === 'prijsalert'){
     popupNotification.innerHTML = popupNotificationHTML;
 }else if(category === 'addToList'){
   
-
-        
-   
     popupNotificationHTML = `<div class="popup-notificationWrapper">
     <div class="textArea">
-    <p class="pop-upTitle"><span>${selectedProducts.length}</span> producten toevoegen aan lijst</p>
+    <p class="pop-upTitle"><span>zoveel</span> producten toevoegen aan lijst</p>
     <ul class="lists" style="list-style-type: none">
     </ul>
     </div>
-    <a style="line-height: 50px; text-align: center; font-size: 14px; font-weight: bolder; width: 100%; height: 50px; margin-top: 5px;" class="ctaButton">Klaar</a>
+    <a style="line-height: 50px; text-align: center; font-size: 14px; font-weight: bolder; width: 100%; height: 50px; margin-top: 5px;" class="ctaButton">Toevoegen</a>
     </div`;
     popupNotification.innerHTML = popupNotificationHTML;
 
     popover.appendChild(popupNotification);
     let ul = popupNotification.querySelector('ul');
-    ul.style.maxHeight = '270px';
-    ul.style.height = 'auto';
-    ul.style.marginLeft = '0px';
-    ul.style.paddingLeft = '0px';
-    ul.style.width = '290px';
+    
     for(i = 0; i < lists.length; i++){
     let selectListItem = document.createElement('li');
     let addToListButton = document.createElement('button');
+    let listID = lists[i].id;
+    addToListButton.setAttribute('list-id', listID)    
+
     addToListButton.className = 'addItem';
-    selectListItem.style.maxHeight = '50px';
-    selectListItem.style.width = '100%';
-    selectListItem.style.backgroundColor = '#F2F2F2';
-    selectListItem.style.marginBottom = '5px';
-    selectListItem.style.padding = '10px';
+    
     let selectListItemHTML = `
-   
     <span style="font-weight: bolder; font-size: 14px">${lists[i].name}</span>
     <br>
     <span style="font-weight: lighter; font-size: 11px;">${lists[i].products.length} producten in lijst</span>
-    
     `
     selectListItem.innerHTML = selectListItemHTML;
     selectListItem.appendChild(addToListButton);
-
-    
     ul.appendChild(selectListItem);
     }
-
     }
-   
-
-
-
     popover.appendChild(popupNotification);
     return popupNotification;
 }
 
 
-function createNewList(){
-    
-    let notification = createNotification('newlist');
-    let submitButton = notification.querySelector('.ctaButton');
-    let id = Math.floor((Math.random() * 11000) + 22000);
 
-    submitButton.addEventListener('click', () => {
-        let listName = notification.querySelector('input').value;
-        lists.push({
-            id: id,
-            name: listName,
-            products: [],
-        });
-        notification.style.display = 'none';
-      
+
+function calcLists(){
+    let allLists = popover.querySelector('.all-lists');
+    allLists.innerHTML = '';
+
+    for(i = 0; i < lists.length; i++){
+        let id = lists[i].id;
+
         let listHTML = `
         <div class="list-options-top" style="width: auto;">
-        <span class="list-title" style="width: auto; margin-left: 10px;">${listName}<span> (${lists[0].products.length})</span></span>
+        <span class="list-title" style="width: auto; margin-left: 10px;">${lists[i].name}<span> (${lists[i].products.length})</span></span>
         <button class="option share" style="float: right; margin-right: 10px; height: 20px; width: 20px;"></button>
         <button class="option collapse" style="float: right; margin-right: 5px; height: 20px; width: 20px;"></button>
         </div>
-
-       
-
         <div class='list-content' style="background-color: #D9D9D9; width: 355px; height: 120px; margin: 0 auto; margin-top: 15px;">
-        
         </div>
-
         <div class="list-options-bottom" style="text-align: right">
         <button class="ctaButton secondary" style="margin-top: 10px; margin-right: -5px; text-align: right;">Verwijder lijst</button>
         <button class="ctaButton secondary" style=" margin-top: 10px; margin-right: 10px;">Totaal berekenen</button>
@@ -456,7 +522,6 @@ function createNewList(){
         list.className = 'list-wrapper';
         list.setAttribute('list-id', id);
         list.innerHTML = listHTML;
-        let allLists = popover.querySelector('.all-lists')
         allLists.appendChild(list);
 
         let collapseBtn = list.querySelector('.collapse');
@@ -471,18 +536,82 @@ function createNewList(){
                 collapseBtn.style.transform = 'rotate(0deg)';
             }
         })
-    
+    }
+}
+
+
+
+
+
+
+
+
+
+function createNewList(){
+    let notification = createNotification('newlist');
+    let submitButton = notification.querySelector('.ctaButton');
+    let id = Math.floor((Math.random() * 11000) + 22000);
+
+    submitButton.addEventListener('click', () => {
+        let listName = notification.querySelector('input').value;
+        lists.push({
+            id: id,
+            name: listName,
+            products: [],
+        });
+        notification.style.display = 'none';
+        calcLists();
     })
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 function addToList(productID){
     let selectedProduct = productsMPO.filter(item => item.id === productID);
     selectedProduct[0].selected = true;
-    selectedProducts.push(selectedProduct[0]);
-    console.log(selectedProducts);
-    createNotification('addToList', productID)
+
+    let notification = createNotification('addToList', productID)
+    let buttons = notification.querySelectorAll('.addItem');
+
+    
+        for(i = 0; i < buttons.length; i++){
+            let listID = buttons[i].getAttribute('list-id');
+        buttons[i].addEventListener('click', () =>{
+            
+         
+            let selectedProducts = Array.from(productsMPO.filter(item => item.selected === true));
+         
+            let selectedList = lists.filter(item => item.id == listID);
+            for(i = 0; i < selectedProducts.length; i++){
+                selectedList[0].products.push(selectedProducts[i]);
+            }
+            console.log(lists);
+        })
+    }
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 //Function for updating the counter
 function updateCounter(){
@@ -507,6 +636,17 @@ let suggestionItemWrapper = popover.querySelector('.suggestion-item-wrapper');
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
 //Search compare icon content and add a eventlistener to it
 let iconHeader = document.querySelector('.icon.compare');
 console.log(iconHeader);
@@ -527,6 +667,20 @@ try{
         iconHeader.classList.remove('selected');
 }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Make the DIV element draggable:
 dragElement(document.querySelector(".pop-over").querySelector('.wrapper'));
@@ -659,7 +813,6 @@ style.innerHTML = `
 .addItem.active{
     background-color: #9FBF22;
     background-image: url('data:image/svg+xml, %3Csvg width="5" height="3" viewBox="0 0 5 3" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M4.45426 2.4104H0.468172V0.760742H4.45426V2.4104Z" fill="white"/%3E%3C/svg%3E');
-
 }
 
 .itemWrapper{
@@ -772,9 +925,7 @@ style.innerHTML = `
 
 /* Track */
 .contentWrapper::-webkit-scrollbar-track {
-  background: #f1f1f1; 
-  overflow: overlay;
-  position: absolute;
+  display: none;
 }
  
 /* Handle */
@@ -872,6 +1023,22 @@ style.innerHTML = `
 .share{
     background-image: url('data:image/svg+xml, %3Csvg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M4.44473 3.00859C3.03077 4.47153 3.33933 6.89934 4.95899 7.97483C5.01236 8.01028 5.08336 8.00325 5.1292 7.95846C5.47018 7.62529 5.75864 7.30257 6.01122 6.89214C6.04987 6.82935 6.02583 6.74786 5.961 6.71274C5.71395 6.5789 5.46812 6.32793 5.32973 6.06283L5.32957 6.06293C5.16379 5.73282 5.10735 5.36279 5.19512 4.98064C5.19521 4.98066 5.1953 4.98068 5.1954 4.98068C5.29639 4.49142 5.82165 4.03629 6.22282 3.61538C6.22197 3.6151 6.22115 3.61479 6.22031 3.61451L7.7234 2.0804C8.3224 1.46904 9.30768 1.464 9.9129 2.06922C10.5242 2.6682 10.5343 3.65845 9.93536 4.26979L9.02492 5.20602C8.98279 5.24935 8.96912 5.31257 8.98884 5.36971C9.19846 5.9776 9.25002 6.83474 9.10955 7.48233C9.10561 7.50045 9.12798 7.51232 9.14094 7.49907L11.0786 5.52137C12.3165 4.25799 12.306 2.20104 11.0553 0.950372C9.77896 -0.325972 7.70112 -0.31535 6.43788 0.973937L4.4525 3.00029C4.44987 3.00306 4.44738 3.00587 4.44473 3.00859Z" fill="white"/%3E%3Cpath d="M8.06699 8.25341C8.06697 8.25348 8.06692 8.25355 8.0669 8.25362C8.06814 8.25311 8.06929 8.25261 8.07053 8.25207C8.46598 7.52896 8.54383 6.69963 8.35849 5.89117L8.35765 5.89203L8.35674 5.89164C8.18076 5.17157 7.6979 4.45655 7.0421 4.01631C6.98569 3.97844 6.89558 3.98283 6.84275 4.02555C6.51056 4.29415 6.18541 4.63857 5.97086 5.07811C5.93716 5.14711 5.96239 5.23 6.0288 5.26855C6.27779 5.41311 6.50266 5.62475 6.65322 5.90573L6.65345 5.90556C6.77078 6.10405 6.88641 6.48067 6.81151 6.88534C6.81147 6.88534 6.8114 6.88534 6.81135 6.88534C6.74148 7.42185 6.19969 7.91398 5.76899 8.35743L5.7692 8.35764C5.44135 8.6929 4.60794 9.54251 4.27423 9.88344C3.67525 10.4948 2.685 10.5049 2.07366 9.90591C1.46232 9.30693 1.45222 8.31667 2.0512 7.70534L2.96433 6.76629C3.00572 6.72373 3.01979 6.66188 3.00138 6.60544C2.79863 5.98334 2.74308 5.14552 2.87106 4.49866C2.87462 4.48063 2.85244 4.46912 2.83957 4.48225L0.931017 6.43019C-0.319512 7.70653 -0.308913 9.78459 0.954605 11.0481C2.23088 12.2986 4.29822 12.2774 5.5487 11.0012C5.98312 10.5152 7.84273 8.79346 8.06699 8.25341Z" fill="white"/%3E%3C/svg%3E');
 
+}
+
+.popup-notification ul{
+    max-height: 270px;
+    height: auto;
+    margin-left: 0px;
+    padding-left: 0px;
+    width: 290px;
+}
+
+.popup-notification ul li{
+    max-height: 50px;
+    width: 100%;
+    background-color: #F2F2F2;
+    margin-bottom: 5px;
+    padding: 10px;
 }
 
 `
