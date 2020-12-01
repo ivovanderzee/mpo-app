@@ -453,6 +453,7 @@ if(category === 'prijsalert'){
     <div class="textArea">
     <p class="pop-upTitle">Nieuwe lijst maken</p>
     <p class="announcementText" style="margin-bottom: 0px;">Typ de naam van de nieuwe lijst</p>
+    <br>
     <span style="margin-top: 15px;"><input class="text" type="text" size="30" name="product" id="" value=""></span>
     </div>
     <a style="line-height: 50px; text-align: center; font-size: 14px; font-weight: bolder; width: 100%; height: 50px; margin-top: 5px;" class="ctaButton">Nieuwe lijst aanmaken</a>
