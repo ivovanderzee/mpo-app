@@ -91,7 +91,7 @@ let html = `
 <p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
 <a class="ctaButton">Bekijk Pricewatch</a>
 </div>
-</div
+</div>
 </div>
 `
 //Create a new popover and set the styling and innerHTML
@@ -366,20 +366,42 @@ function createNewList(){
         notification.style.display = 'none';
       
         let listHTML = `
-        <span class="list-title" style="margin-left: 10px;">${listName}<span> (${lists[0].products.length})</span></span>
+        <div class="list-options-top" style="width: auto;">
+        <span class="list-title" style="width: auto; margin-left: 10px;">${listName}<span> (${lists[0].products.length})</span></span>
+        <button class="option share" style="float: right; margin-right: 10px; height: 20px; width: 20px;"></button>
+        <button class="option collapse" style="float: right; margin-right: 5px; height: 20px; width: 20px;"></button>
+        </div>
 
-        <div class='listContent' style="background-color: #D9D9D9; width: 355px; height: 120px; margin: 0 auto;">
+       
+
+        <div class='list-content' style="background-color: #D9D9D9; width: 355px; height: 120px; margin: 0 auto; margin-top: 15px;">
         
         </div>
-        <a class="ctaButton secondary" style="float: right; margin-right: 10px;">Totaal berekenen</a>
+
+        <div class="list-options-bottom" style="text-align: right">
+        <button class="ctaButton secondary" style="margin-top: 10px; margin-right: -5px; text-align: right;">Verwijder lijst</button>
+        <button class="ctaButton secondary" style=" margin-top: 10px; margin-right: 10px;">Totaal berekenen</button>
+        </div>
         `
         let list = document.createElement('div');
         list.className = 'list-wrapper';
-        list.setAttribute('list-id', id)
-        list.style.marginBottom = '40px';
+        list.setAttribute('list-id', id);
         list.innerHTML = listHTML;
         let allLists = popover.querySelector('.all-lists')
         allLists.appendChild(list);
+
+        let collapseBtn = list.querySelector('.collapse');
+        let listContent = list.querySelector('.list-content');
+        console.log(listContent);
+        collapseBtn.addEventListener('click', () => {
+            if(listContent.className === 'list-content'){
+                listContent.classList.add('collapsed');
+                collapseBtn.style.transform = 'rotate(-180deg)';
+            }else{
+                listContent.classList.remove('collapsed');
+                collapseBtn.style.transform = 'rotate(0deg)';
+            }
+        })
     
     })
 }
@@ -492,6 +514,7 @@ style.innerHTML = `
     border-color: #cccccc;
     border-width: 1px;
     border-style: solid;
+    border-radius: 2px;
 }
 
 .tabbar button{
@@ -750,10 +773,33 @@ style.innerHTML = `
     box-shadow: 8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rgba(0,0,0,0.1);
 }
 
-.list-options-top.option.share{
-    background-color: black;
-    width: 20px;
-    height: 20px;
+.list-wrapper{
+    margin-bottom: 40px;
 }
+
+.list-content{
+    display: block;
+}
+.list-content.collapsed{
+    display: none;
+}
+
+.list-options-top button{
+    background-color: #1668AC;
+    border-radius: 2px;
+    border: none;
+    background-size: 11px;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.collapse{
+    background-image: url('data:image/svg+xml, %3Csvg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M5.53176 0.666452L0.191706 6.0066C0.068097 6.13011 0 6.29499 0 6.4708C0 6.6466 0.068097 6.81148 0.191706 6.93499L0.584873 7.32825C0.841066 7.58415 1.25745 7.58415 1.51326 7.32825L5.99751 2.844L10.4867 7.33323C10.6104 7.45674 10.7751 7.52493 10.9508 7.52493C11.1267 7.52493 11.2915 7.45674 11.4152 7.33323L11.8083 6.93996C11.9319 6.81635 12 6.65157 12 6.47577C12 6.29997 11.9319 6.13509 11.8083 6.01158L6.46336 0.666452C6.33936 0.542648 6.1738 0.474648 5.99781 0.475039C5.82112 0.474648 5.65566 0.542648 5.53176 0.666452Z" fill="white"/%3E%3C/svg%3E');
+}
+.share{
+    background-image: url('data:image/svg+xml, %3Csvg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M4.44473 3.00859C3.03077 4.47153 3.33933 6.89934 4.95899 7.97483C5.01236 8.01028 5.08336 8.00325 5.1292 7.95846C5.47018 7.62529 5.75864 7.30257 6.01122 6.89214C6.04987 6.82935 6.02583 6.74786 5.961 6.71274C5.71395 6.5789 5.46812 6.32793 5.32973 6.06283L5.32957 6.06293C5.16379 5.73282 5.10735 5.36279 5.19512 4.98064C5.19521 4.98066 5.1953 4.98068 5.1954 4.98068C5.29639 4.49142 5.82165 4.03629 6.22282 3.61538C6.22197 3.6151 6.22115 3.61479 6.22031 3.61451L7.7234 2.0804C8.3224 1.46904 9.30768 1.464 9.9129 2.06922C10.5242 2.6682 10.5343 3.65845 9.93536 4.26979L9.02492 5.20602C8.98279 5.24935 8.96912 5.31257 8.98884 5.36971C9.19846 5.9776 9.25002 6.83474 9.10955 7.48233C9.10561 7.50045 9.12798 7.51232 9.14094 7.49907L11.0786 5.52137C12.3165 4.25799 12.306 2.20104 11.0553 0.950372C9.77896 -0.325972 7.70112 -0.31535 6.43788 0.973937L4.4525 3.00029C4.44987 3.00306 4.44738 3.00587 4.44473 3.00859Z" fill="white"/%3E%3Cpath d="M8.06699 8.25341C8.06697 8.25348 8.06692 8.25355 8.0669 8.25362C8.06814 8.25311 8.06929 8.25261 8.07053 8.25207C8.46598 7.52896 8.54383 6.69963 8.35849 5.89117L8.35765 5.89203L8.35674 5.89164C8.18076 5.17157 7.6979 4.45655 7.0421 4.01631C6.98569 3.97844 6.89558 3.98283 6.84275 4.02555C6.51056 4.29415 6.18541 4.63857 5.97086 5.07811C5.93716 5.14711 5.96239 5.23 6.0288 5.26855C6.27779 5.41311 6.50266 5.62475 6.65322 5.90573L6.65345 5.90556C6.77078 6.10405 6.88641 6.48067 6.81151 6.88534C6.81147 6.88534 6.8114 6.88534 6.81135 6.88534C6.74148 7.42185 6.19969 7.91398 5.76899 8.35743L5.7692 8.35764C5.44135 8.6929 4.60794 9.54251 4.27423 9.88344C3.67525 10.4948 2.685 10.5049 2.07366 9.90591C1.46232 9.30693 1.45222 8.31667 2.0512 7.70534L2.96433 6.76629C3.00572 6.72373 3.01979 6.66188 3.00138 6.60544C2.79863 5.98334 2.74308 5.14552 2.87106 4.49866C2.87462 4.48063 2.85244 4.46912 2.83957 4.48225L0.931017 6.43019C-0.319512 7.70653 -0.308913 9.78459 0.954605 11.0481C2.23088 12.2986 4.29822 12.2774 5.5487 11.0012C5.98312 10.5152 7.84273 8.79346 8.06699 8.25341Z" fill="white"/%3E%3C/svg%3E');
+
+}
+
 `
 head.appendChild(style);
