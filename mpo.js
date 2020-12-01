@@ -12,17 +12,19 @@ let compareCounter = 0;
 let listCounter = 0;
 
 addCheckbox();
+
+
 function addCheckbox(){
 //Grab all the list items on a pricewatch page
-let listsItems = document.querySelector('.listing.useVisitedState').querySelectorAll('.largethumb');
+let pricewatchItems = document.querySelector('.listing.useVisitedState').querySelectorAll('.largethumb');
 
 //Add the checkbox the to all the products in the list on a pricewatch page
-for(i=0; i < listsItems.length; i++){
-    let id = listsItems[i].querySelector('input').getAttribute('value');
-    let title = listsItems[i].querySelector('.itemname').querySelector('.ellipsis').querySelector('a').innerText;
-    let specline = listsItems[i].querySelector('.itemname').querySelector('.specline.ellipsis').querySelector('a').innerText;
-    let price = listsItems[i].querySelector('.price').querySelector('a').innerText;
-    let imageUrl = listsItems[i].querySelector('.pwimage').querySelector('a').querySelector('img').getAttribute('src');
+for(i=0; i < pricewatchItems.length; i++){
+    let id = pricewatchItems[i].querySelector('input').getAttribute('value');
+    let title = pricewatchItems[i].querySelector('.itemname').querySelector('.ellipsis').querySelector('a').innerText;
+    let specline = pricewatchItems[i].querySelector('.itemname').querySelector('.specline.ellipsis').querySelector('a').innerText;
+    let price = pricewatchItems[i].querySelector('.price').querySelector('a').innerText;
+    let imageUrl = pricewatchItems[i].querySelector('.pwimage').querySelector('a').querySelector('img').getAttribute('src');
     
     //Set the HTML for the checkbox
     let checkBoxhtml = `<input type="checkbox" name="products[] value="${id}"">
@@ -32,7 +34,7 @@ for(i=0; i < listsItems.length; i++){
     let label = document.createElement('label');
     label.className = 'mpo checkbox unselected';
     label.innerHTML = checkBoxhtml;
-    let itemName = listsItems[i].querySelector('.itemname');
+    let itemName = pricewatchItems[i].querySelector('.itemname');
     itemName.appendChild(label);
         
     //Push the data to a JSON file
@@ -55,11 +57,6 @@ for(i=0; i < listsItems.length; i++){
         })
     }
 }
-
-
-
-
-
 
 //HTML for the new popover element
 let html = `
@@ -109,39 +106,38 @@ newListButton.addEventListener('click', () => {
 let body = document.querySelector('body');
 body.appendChild(popover);
 
-
 //Style the wrapper for the content
 let contentWrapper = popover.querySelector('.contentWrapper');
 let content = contentWrapper.querySelector('.content');
 
+calcSuggestions();
+function calcSuggestions(){
 
-singleProducts();
-function singleProducts(){
-
-    let singleItemWrapper = document.createElement('div');
-    singleItemWrapper.className = 'single-item-wrapper';
-    contentWrapper.appendChild(singleItemWrapper);
+    let suggestionItemWrapper = document.createElement('div');
+    suggestionItemWrapper.className = 'suggestion-item-wrapper';
+    contentWrapper.appendChild(suggestionItemWrapper);
     for(i = 0; i < 4; i++){
-        
-        let singleItem = document.createElement('div');
-        singleItem.className = 'single-item';
+        let randomNumber = Math.floor((Math.random() * 25) + 1);
 
-        let singleItemHTML = `
-        <div class="single-item-content">
+        let suggestionItem = document.createElement('div');
+        suggestionItem.className = 'suggestion-item';
+
+        let suggestionItemHTML = `
+        <div class="suggestion-item-content">
         <button class="addItem"></button>
-        <div class="single-item-info" style="tex-align: left; background-color: white; margin-left: 5px; height: auto;">
+        <div class="suggestion-item-info" style="tex-align: left; background-color: white; margin-left: 5px; height: auto;">
      
-        <p style="max-width: 115px; height: 14px; word-wrap: break-word; overflow: hidden; margin-top: 87px; margin-bottom: 5px; font-size: 14px; color: #1668AC">${productsOnPage[i].title}</p>
-        <p style="max-width: 100px; height: 14px; word-wrap: break-word; overflow: hidden; color: #666666;">${productsOnPage[i].specline}</p>
+        <p style="max-width: 115px; height: 14px; word-wrap: break-word; overflow: hidden; margin-top: 87px; margin-bottom: 5px; font-size: 14px; color: #1668AC">${productsOnPage[randomNumber].title}</p>
+        <p style="max-width: 100px; height: 14px; word-wrap: break-word; overflow: hidden; color: #666666;">${productsOnPage[randomNumber].specline}</p>
         
         </div>
         </div>
         `
-        singleItem.innerHTML = singleItemHTML;
-        singleItem.style.backgroundImage = `url("${productsOnPage[i].imageUrl}")`;
-        singleItemWrapper.appendChild(singleItem);
+        suggestionItem.innerHTML = suggestionItemHTML;
+        suggestionItem.style.backgroundImage = `url("${productsOnPage[randomNumber].imageUrl}")`;
+        suggestionItemWrapper.appendChild(suggestionItem);
 
-        let addButton = singleItem.querySelector('.addItem');
+        let addButton = suggestionItem.querySelector('.addItem');
         addButton.addEventListener('click', () => {
             if(addButton.className === 'addItem'){
                 addButton.classList.add('active');
@@ -361,7 +357,6 @@ if(category === 'prijsalert'){
     <div class="textArea">
     <p class="pop-upTitle"><span>${selectedProducts.length}</span> producten toevoegen aan lijst</p>
     <ul class="lists" style="list-style-type: none">
-
     </ul>
     </div>
     <a style="line-height: 50px; text-align: center; font-size: 14px; font-weight: bolder; width: 100%; height: 50px; margin-top: 5px;" class="ctaButton">Klaar</a>
@@ -377,17 +372,22 @@ if(category === 'prijsalert'){
     ul.style.width = '290px';
     for(i = 0; i < lists.length; i++){
     let selectListItem = document.createElement('li');
+    let addToListButton = document.createElement('button');
+    addToListButton.className = 'addItem';
     selectListItem.style.maxHeight = '50px';
     selectListItem.style.width = '100%';
     selectListItem.style.backgroundColor = '#F2F2F2';
     selectListItem.style.marginBottom = '5px';
     selectListItem.style.padding = '10px';
     let selectListItemHTML = `
+   
     <span style="font-weight: bolder; font-size: 14px">${lists[i].name}</span>
     <br>
     <span style="font-weight: lighter; font-size: 11px;">${lists[i].products.length} producten in lijst</span>
+    
     `
     selectListItem.innerHTML = selectListItemHTML;
+    selectListItem.appendChild(addToListButton);
 
     
     ul.appendChild(selectListItem);
@@ -604,7 +604,7 @@ style.innerHTML = `
     height: auto;
 }
 
-.single-item{
+.suggestion-item{
     width: 125px;
     height: 125px;
     background-color: white;
@@ -617,20 +617,19 @@ style.innerHTML = `
     background-position: center center;
 }
 
-.single-item-wrapper{
+.suggestion-item-wrapper{
     width: 80%;
     margin: 0 auto;
 }
 
-.single-item-content{
+.suggestion-item-content{
     width: 100%;
     height: 100%;
     float: right;
   
 }
 
-
-.single-item-content button{
+.addItem{
     float: right;
     width: 25px;
     height: 25px;
