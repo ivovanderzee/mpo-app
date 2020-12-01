@@ -359,7 +359,7 @@ if(category === 'prijsalert'){
    
     popupNotificationHTML = `<div class="popup-notificationWrapper">
     <div class="textArea">
-    <p class="pop-upTitle"><span>${selectedProducts.length}</span> producten toevoegen</p>
+    <p class="pop-upTitle"><span>${selectedProducts.length}</span> producten toevoegen aan lijst</p>
     <ul class="lists" style="list-style-type: none">
 
     </ul>
@@ -377,7 +377,7 @@ if(category === 'prijsalert'){
     ul.style.width = '290px';
     for(i = 0; i < lists.length; i++){
     let selectListItem = document.createElement('li');
-    selectListItem.style.height = '50px';
+    selectListItem.style.maxHeight = '50px';
     selectListItem.style.width = '100%';
     selectListItem.style.backgroundColor = '#F2F2F2';
     selectListItem.style.marginBottom = '5px';
