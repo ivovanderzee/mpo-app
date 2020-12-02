@@ -395,7 +395,7 @@ function calcPriceAlerts(){
         let priceAlerthtml = `
         <div class='itemWrapper'>
         <img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">
-        <span style="float: right; margin-right: -20px; margin-top: 52px;" class="inputEuro"><input class="text" type="text" size="8" name="" id="" value="${allPriceAlerts[i].alertPrice}"></span>
+        <span style="right: 5px;  bottom: 5px; position: absolute;" class="inputEuro"><input class="text" type="text" size="8" name="" id="" value="${allPriceAlerts[i].alertPrice}"></span>
         
         <div style='height: 80px; width: 80px; background-color: white; background-image: url("${allPriceAlerts[i].imageUrl}"); background-size: contain; background-repeat: no-repeat; background-position: center; float: left; border-top-left-radius: 2px; border-bottom-left-radius: 2px' class="imageProduct" >
         </div>
