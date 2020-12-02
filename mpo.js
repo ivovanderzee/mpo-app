@@ -76,7 +76,7 @@ let html = `
 <div style="margin-top: 40px;" class="priceAlertsList">
 <span class="list-title">Mijn Prijsalerts</span>
 <div class="priceAlertContent">
-<span class="alertAnnounce">Je hebt nog geen Prijsalerts ingesteld</span>
+
 </div>
 </div>
 <div class="all-lists">
@@ -368,7 +368,7 @@ try{
 
 
 
-
+calcPriceAlerts();
 
 
 
@@ -442,9 +442,10 @@ if(category === 'prijsalert'){
     <div class="textArea">
     <p class="pop-upTitle">Prijsalert instellen</p>
     <p class="announcementText" style="margin-bottom: 0px;">Je gaat een prijsalert instellen voor <span style="font-weight: bolder;">${product[0].title}</span></p>
-    <span style="margin-top: 15px;" class="inputEuro"><input class="text" type="text" size="8" name="product" id="fsdfgb" value=""></span>
+    <span style="margin-top: 15px; width: 80%;"" class="inputEuro"><input  class="text" type="text" size="10" name="product" id="fsdfgb" value=""></span>
+    
+    <a style="margin-top: 15px;" class="ctaButton">Prijsalert instellen</a>
     </div>
-    <a style="line-height: 50px; text-align: center; font-size: 14px; font-weight: bolder; width: 100%; height: 50px; margin-top: 5px;" class="ctaButton">Prijsalert instellen</a>
     </div`;
     
     popupNotification.innerHTML = popupNotificationHTML;
@@ -455,8 +456,9 @@ if(category === 'prijsalert'){
     <p class="announcementText" style="margin-bottom: 0px;">Typ de naam van de nieuwe lijst</p>
     <br>
     <span style="margin-top: 15px;"><input class="text" type="text" size="30" name="product" id="" value=""></span>
+    <br>
+    <a style="margin-top: 15px;" class="ctaButton">Nieuwe lijst aanmaken</a>
     </div>
-    <a style="line-height: 50px; text-align: center; font-size: 14px; font-weight: bolder; width: 100%; height: 50px; margin-top: 5px;" class="ctaButton">Nieuwe lijst aanmaken</a>
     </div`;
     popupNotification.innerHTML = popupNotificationHTML;
 }else if(category === 'addToList'){
@@ -466,8 +468,9 @@ if(category === 'prijsalert'){
     <p class="pop-upTitle"><span>zoveel</span> producten toevoegen aan lijst</p>
     <ul class="lists" style="list-style-type: none">
     </ul>
+    <br>
+    <a style="margin-top: 15px;" class="ctaButton">Toevoegen</a>
     </div>
-    <a style="line-height: 50px; text-align: center; font-size: 14px; font-weight: bolder; width: 100%; height: 50px; margin-top: 5px;" class="ctaButton">Toevoegen</a>
     </div`;
     popupNotification.innerHTML = popupNotificationHTML;
 
@@ -512,8 +515,8 @@ function calcLists(){
         <button class="option share" style="float: right; margin-right: 10px; height: 20px; width: 20px;"></button>
         <button class="option collapse" style="float: right; margin-right: 5px; height: 20px; width: 20px;"></button>
         </div>
-        <div class='list-content' style="background-color: #D9D9D9; width: 355px; height: 120px; margin: 0 auto; margin-top: 15px;">
-        </div>
+        <div class='list-content' style="background-color: #D9D9D9; width: 95%; height: auto; margin: 0 auto; margin-top: 15px;">
+        </div
         <div class="list-options-bottom" style="text-align: right">
         <button class="ctaButton secondary" style="margin-top: 10px; margin-right: -5px; text-align: right;">Verwijder lijst</button>
         <button class="ctaButton secondary" style=" margin-top: 10px; margin-right: 10px;">Totaal berekenen</button>
@@ -537,6 +540,32 @@ function calcLists(){
                 collapseBtn.style.transform = 'rotate(0deg)';
             }
         })
+
+        let products = lists[i].products;
+
+
+        for(i = 0; i < products.length; i++){
+            let productInList = document.createElement('div');
+            productInList.className = ''
+
+            let productInListHTML = `
+        <div class='itemWrapper'>
+        <span class="closeButton product" style="float: right; margin: 2px;"></span>
+        <div style='height: 80px; width: 80px; background-color: white; background-image: url("${products[i].imageUrl}"); background-size: contain; background-repeat: no-repeat; background-position: center; float: left; border-top-left-radius: 2px; border-bottom-left-radius: 2px' class="imageProduct" >
+        </div>
+        <div class='itemInfo'>
+        <ul style="list-style-type: none; margin-left: 50px; padding-top: 10px;">
+        <li style="max-width: 200px; max-height: 16px; overflow: hidden; font-weight: bolder; font-size: 14px; word-wrap: break-word;"><span class='titleProduct'><a>${products[i].title}</a></span></li>
+        <li style="max-width: 150px; font-size: 12px; word-wrap: break-word; overflow: hidden; margin-top: 5px; max-height: 16px;"> <span class='speclineProduct'><a style="color: #666666;">${products[i].specline}</a></span></li>
+        <li style="margin-top: 10px; margin-bottom: 10px; font-size: 13px;"><span class='priceProduct'><a>${products[i].price}</a></span></li>
+        </ul>
+        </div>
+        </div>
+        `;
+        productInList.innerHTML = productInListHTML;
+        listContent.appendChild(productInList);
+        
+        }
     }
 }
 
@@ -597,6 +626,7 @@ function addToList(productID){
                 selectedList[0].products.push(selectedProducts[i]);
             }
             console.log(lists);
+            calcLists();
         })
     }
     
@@ -819,7 +849,7 @@ style.innerHTML = `
 .itemWrapper{
     height: 80px;
     margin: 0 auto;
-    width: 355px;
+    width: 95%;
     left: 0;
     right: 0;
     background-color: #E5E5E5;
@@ -984,6 +1014,9 @@ style.innerHTML = `
     border-radius: 2px;
     box-shadow: 8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rgba(0,0,0,0.1);
 }
+
+
+
 .pop-upTitle{
     font-size: 16px;
     font-weight: bolder;
@@ -1042,6 +1075,7 @@ style.innerHTML = `
     margin-bottom: 5px;
     padding: 10px;
 }
+
 
 `
 head.appendChild(style);
