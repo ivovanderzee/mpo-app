@@ -225,9 +225,11 @@ function MPOProducts(){
       //HTML for the list item and add the properties
       let itemHTML = `
       <div class='itemWrapper'>
-      <span class="closeButton product"></span>
-      <div class='option setAlert' style="margin-top: 43px; margin-right: -20px; float: right;"></div>
-      <div class='option addList' style="margin-top: 43px; margin-right: 5px; float: right;"></div>
+      <img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">
+      <div class="itemOptions" style="float: right; margin-right: 0px;">
+      <div class='option addList' style="margin-right: 5px;"></div>
+      <div class='option setAlert'></div>
+      </div>
       <div class="imageProduct" style='background-image: url("${productsMPO[i].imageUrl}");'></div>
       <div class='itemInfo'>
       <ul>
@@ -245,7 +247,7 @@ function MPOProducts(){
       singleProducts.appendChild(productItem);
 
       //Add eventlistener to the delete button
-      let deletebtn = productItem.querySelector('.closeButton');
+      let deletebtn = productItem.querySelector('.delProduct');
       deletebtn.addEventListener('click', () => {
           deleteFromMPO(id, label);
       })
@@ -392,7 +394,7 @@ function calcPriceAlerts(){
         //HTML for the price alert item
         let priceAlerthtml = `
         <div class='itemWrapper'>
-        <span class="closeButton product" style="float: right; margin: 2px;"></span>
+        <img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">
         <span style="float: right; margin-right: -20px; margin-top: 52px;" class="inputEuro"><input class="text" type="text" size="8" name="" id="" value="${allPriceAlerts[i].alertPrice}"></span>
         
         <div style='height: 80px; width: 80px; background-color: white; background-image: url("${allPriceAlerts[i].imageUrl}"); background-size: contain; background-repeat: no-repeat; background-position: center; float: left; border-top-left-radius: 2px; border-bottom-left-radius: 2px' class="imageProduct" >
@@ -410,7 +412,7 @@ function calcPriceAlerts(){
         priceAlertItem.innerHTML = priceAlerthtml;
         priceAlertContent.appendChild(priceAlertItem);
 
-        let deleteBtn = priceAlertItem.querySelector('.closeButton');
+        let deleteBtn = priceAlertItem.querySelector('.delProduct');
         deleteBtn.addEventListener('click', () =>{
             deletePriceAlert(id);
         })
@@ -544,27 +546,29 @@ function calcLists(){
         let products = lists[i].products;
 
 
+        if(products.length > 0){
         for(i = 0; i < products.length; i++){
             let productInList = document.createElement('div');
             productInList.className = ''
-
             let productInListHTML = `
-        <div class='itemWrapper' style="margin-bottom: 10px;">
-        <span class="closeButton product" style="float: right; margin: 2px;"></span>
-        <div style='height: 80px; width: 80px; background-color: white; background-image: url("${products[i].imageUrl}"); background-size: contain; background-repeat: no-repeat; background-position: center; float: left; border-top-left-radius: 2px; border-bottom-left-radius: 2px' class="imageProduct" >
-        </div>
-        <div class='itemInfo'>
-        <ul style="list-style-type: none; margin-left: 50px; padding-top: 10px; margin-top: 0px;">
-        <li style="max-width: 200px; max-height: 16px; overflow: hidden; font-weight: bolder; font-size: 14px; word-wrap: break-word;"><span class='titleProduct'><a>${products[i].title}</a></span></li>
-        <li style="max-width: 150px; font-size: 12px; word-wrap: break-word; overflow: hidden; margin-top: 5px; max-height: 16px;"> <span class='speclineProduct'><a style="color: #666666;">${products[i].specline}</a></span></li>
-        <li style="margin-top: 10px; margin-bottom: 10px; font-size: 13px;"><span class='priceProduct'><a>${products[i].price}</a></span></li>
-        </ul>
-        </div>
-        </div>
-        `;
-        productInList.innerHTML = productInListHTML;
-        listContent.appendChild(productInList);
-        
+            <div class='itemWrapper' style="margin-bottom: 10px;">
+            <img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">
+            <div style='height: 80px; width: 80px; background-color: white; background-image: url("${products[i].imageUrl}"); background-size: contain; background-repeat: no-repeat; background-position: center; float: left; border-top-left-radius: 2px; border-bottom-left-radius: 2px' class="imageProduct" >
+            </div>
+            <div class='itemInfo'>
+            <ul style="list-style-type: none; margin-left: 50px; padding-top: 10px; margin-top: 0px;">
+            <li style="max-width: 200px; max-height: 16px; overflow: hidden; font-weight: bolder; font-size: 14px; word-wrap: break-word;"><span class='titleProduct'><a>${products[i].title}</a></span></li>
+            <li style="max-width: 150px; font-size: 12px; word-wrap: break-word; overflow: hidden; margin-top: 5px; max-height: 16px;"> <span class='speclineProduct'><a style="color: #666666;">${products[i].specline}</a></span></li>
+            <li style="margin-top: 10px; margin-bottom: 10px; font-size: 13px;"><span class='priceProduct'><a>${products[i].price}</a></span></li>
+            </ul>
+            </div>
+            </div>
+            `;
+            productInList.innerHTML = productInListHTML;
+            listContent.appendChild(productInList);
+        }
+        }else{
+        //nothing
         }
     }
 }
@@ -854,6 +858,7 @@ style.innerHTML = `
     right: 0;
     background-color: #E5E5E5;
     border-radius: 2px;
+    position: relative;
     
 }
 
@@ -895,7 +900,7 @@ style.innerHTML = `
     font-size: 13px;
 }
 
-.closeButton{
+.delProduct{
     float: right; 
     margin: 2px;
 }
@@ -976,7 +981,7 @@ style.innerHTML = `
   background: #555; 
 }
 
-.option {
+.option{
     background-color: #D9D9D9;
     background-position: center center;
     background-size: contain; 
@@ -985,7 +990,14 @@ style.innerHTML = `
     border-radius: 2px;
     height: 35px;
     width: 35px;
-    text-align: center;
+    float: left;
+ 
+}
+
+.itemOptions{
+    right: 5px;
+    bottom: 5px;
+    position: absolute;
 }
 
 .option.active{
