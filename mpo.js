@@ -86,7 +86,15 @@ let html = `
 <p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
 <a class="ctaButton">Bekijk Pricewatch</a>
 </div>
+
+<div style="height: 50px; width: 95%; background-color: white; bottom: 10px; position: absolute; left: 0; right: 0; margin: 0 auto; border-radius: 2px; line-height: 50px;" class="scrollButtonContent">
+<span style="margin-left: 10px;">x producten geselecteerd</span>
+<a class="ctaButton newList" style="float: right; margin-right: 10px; margin-top: 11px;">Selectie in lijst plaatsen</a>
 </div>
+
+</div>
+
+
 </div>
 `
 //Create a new popover and set the styling and innerHTML
@@ -95,9 +103,7 @@ popover.className = 'pop-over';
 popover.innerHTML = html;
 
 let newListButton = popover.querySelector('.newList');
-newListButton.addEventListener('click', () => {
-    createNewList();
-})
+newListButton.addEventListener("click", createNewList);
 
 //Append the new popover to the body
 let body = document.querySelector('body');
@@ -603,17 +609,18 @@ function createNewList(){
 
 
 
-
-
-
 function addToList(productID){
     let selectedProduct = productsMPO.filter(item => item.id === productID);
     selectedProduct[0].selected = true;
 
-    let notification = createNotification('addToList', productID)
-    let buttons = notification.querySelectorAll('.addItem');
+    newListButton.innerText = 'Selectie in lijst plaatsen';
+    newListButton.removeEventListener('click', createNewList);
 
-    
+    newListButton.addEventListener('click', () => {
+
+        let notification = createNotification('addToList', productID)
+        let buttons = notification.querySelectorAll('.addItem');
+
         for(i = 0; i < buttons.length; i++){
             let listID = buttons[i].getAttribute('list-id');
         buttons[i].addEventListener('click', () =>{
@@ -629,13 +636,28 @@ function addToList(productID){
             calcLists();
         })
     }
-    
+    })
 }
 
 
 
 
 
+
+
+contentWrapper.addEventListener('scroll', () => {
+    let scrollPosition = contentWrapper.scrollTop;
+    let scrollButton = popover.querySelector('.scrollButtonContent')
+    if(newListButton.innerText == 'Selectie in lijst plaatsen'){
+        if(scrollPosition > 55){
+            scrollButton.style.display = 'block';
+        }else{
+            scrollButton.style.display = 'none';
+        }
+    }else{
+        //nothing
+    }
+})
 
 
 
@@ -757,6 +779,7 @@ function dragElement(elmnt) {
 //Adding css to the javascript code
 let head = document.querySelector('head');
 let style = document.createElement('style');
+
 style.innerHTML = `
 
 .pop-over{
@@ -771,10 +794,11 @@ style.innerHTML = `
     border-width: 1px;
     border-style: solid;
     border-radius: 2px;
+    border-top: none;
 }
 
 .tabbar li{
-    width: 49%;
+    width: 49.8%;
     border: none;
     float: left;
     color: black;
@@ -800,7 +824,12 @@ style.innerHTML = `
 }
 
 .tabbar :last-child{
-    margin-left: 3px;
+    border-left: none;
+    border-right: none;
+}
+
+.tabbar :first-child{
+    border-left: none;
 }
 
 .tabbar li:first-child{
@@ -1108,6 +1137,10 @@ style.innerHTML = `
     background-color: #F2F2F2;
     margin-bottom: 5px;
     padding: 10px;
+}
+
+.scrollButtonContent{
+    display: none;
 }
 
 
