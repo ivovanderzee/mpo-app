@@ -61,10 +61,10 @@ for(i=0; i < pricewatchItems.length; i++){
 //HTML for the new popover element
 let html = `
 <div class="wrapper">
-<div class="tabbar">
-<button style="float: left; border-top-left-radius: 2px;" class="button-tab mpo-tab"><span>Mijn Producten(<span class="counter1">${mpoCounter}</span>)</span></button>
-<button style="float: right; border-top-right-radius: 2px" class="button-tab compare-tab"><span>Vergelijk<span>(0)</span</span></button>
-</div>
+<ul class="tabbar">
+<li id="tab_select_mijnProducten"><span>Mijn Producten(<span class="counter1">${mpoCounter}</span>)</span></li>
+<li id="tab_select_compare"><span>Vergelijk<span>(0)</span</span></li>
+</ul>
 <div class="contentWrapper">
 <div class="topInfo">
 <span class="topTitle">Mijn Producten(<span class="counter2">${mpoCounter}</span>)</span>
@@ -371,10 +371,6 @@ try{
 
 
 calcPriceAlerts();
-
-
-
-
 //Function the calculates all the price alerts in the price alert array
 function calcPriceAlerts(){
     //Select the view
@@ -763,12 +759,6 @@ let head = document.querySelector('head');
 let style = document.createElement('style');
 style.innerHTML = `
 
-.popover.wrapper{
-   width: 375px; 
-   height: 50px; 
-   margin-bottom: 3px;
-}
-
 .pop-over{
     z-index: 200;
     position: fixed;
@@ -783,14 +773,38 @@ style.innerHTML = `
     border-radius: 2px;
 }
 
-.tabbar button{
-    line-heigth: 50px;
-    width: 49.8%;
+.tabbar li{
+    width: 49%;
     border: none;
-    background-color: white;
-    color: #1668ac;
-    font-size: 16px;
-    height: 50px;
+    float: left;
+    color: black;
+    font-size: 12px;
+    height: 100%;
+    border: 1px #D9D9D9 solid;
+    background-image: linear-gradient(#fff, #f2f2f2);
+    border-bottom: none;
+    text-align: center;
+}
+
+.tabbar li span{
+    line-height: 30px;
+}
+
+.tabbar{
+    list-style-type: none;
+    height: 30px;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+
+}
+
+.tabbar :last-child{
+    margin-left: 3px;
+}
+
+.tabbar li:first-child{
+    color: #b9133d;
 }
 
 .contentWrapper{
