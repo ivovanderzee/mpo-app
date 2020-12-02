@@ -76,7 +76,6 @@ let html = `
 <div style="margin-top: 40px;" class="priceAlertsList">
 <span class="list-title">Mijn Prijsalerts</span>
 <div class="priceAlertContent">
-
 </div>
 </div>
 <div class="all-lists">
@@ -86,15 +85,11 @@ let html = `
 <p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
 <a class="ctaButton">Bekijk Pricewatch</a>
 </div>
-
 <div style="height: 50px; width: 95%; background-color: white; bottom: 10px; position: absolute; left: 0; right: 0; margin: 0 auto; border-radius: 2px; line-height: 50px;" class="scrollButtonContent">
 <span style="margin-left: 10px;">x producten geselecteerd</span>
 <a class="ctaButton newList" style="float: right; margin-right: 10px; margin-top: 11px;">Selectie in lijst plaatsen</a>
 </div>
-
 </div>
-
-
 </div>
 `
 //Create a new popover and set the styling and innerHTML
@@ -112,20 +107,6 @@ body.appendChild(popover);
 //Style the wrapper for the content
 let contentWrapper = popover.querySelector('.contentWrapper');
 let singleProducts = contentWrapper.querySelector('.singleProducts');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //Run the function suggestion items once
 appendSuggestions();
@@ -176,19 +157,6 @@ function appendSuggestions(){
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 //Function for adding products to the content listview
 function addToMPO(productID, label){
     //Select the product that needs to be added
@@ -203,15 +171,6 @@ function addToMPO(productID, label){
     mpoCounter++;
     updateCounter();
 }
-
-
-
-
-
-
-
-
-
 
 function MPOProducts(){
     singleProducts.innerHTML = '';
@@ -287,21 +246,6 @@ function MPOProducts(){
 }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //Function that removes the product with the right ID from the content listview div
 function deleteFromMPO(productID, label){
 label.classList.remove('selected');
@@ -311,20 +255,6 @@ label.classList.add('unselected');
     productsMPO.splice(index, 1)
     MPOProducts();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function setPriceAlert(productID, alert){
     let product = productsMPO.filter(item => item.id === productID);
@@ -342,20 +272,6 @@ function setPriceAlert(productID, alert){
     })
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function deletePriceAlert(productID){
 try{
     let alert = Array.from(singleProducts.querySelectorAll('.productItem')).filter(item => item.getAttribute('id') === productID);
@@ -372,9 +288,6 @@ try{
         allPriceAlerts.splice(index, 1)
         calcPriceAlerts();
 }
-
-
-
 
 calcPriceAlerts();
 //Function the calculates all the price alerts in the price alert array
@@ -421,20 +334,6 @@ function calcPriceAlerts(){
     }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function createNotification(category, productID = null){
     let popupNotification = document.createElement('div');
@@ -502,9 +401,6 @@ if(category === 'prijsalert'){
     popover.appendChild(popupNotification);
     return popupNotification;
 }
-
-
-
 
 function calcLists(){
     let allLists = popover.querySelector('.all-lists');
@@ -575,14 +471,6 @@ function calcLists(){
     }
 }
 
-
-
-
-
-
-
-
-
 function createNewList(){
     let notification = createNotification('newlist');
     let submitButton = notification.querySelector('.ctaButton');
@@ -599,15 +487,6 @@ function createNewList(){
         calcLists();
     })
 }
-
-
-
-
-
-
-
-
-
 
 function addToList(productID){
     let selectedProduct = productsMPO.filter(item => item.id === productID);
@@ -639,12 +518,6 @@ function addToList(productID){
     })
 }
 
-
-
-
-
-
-
 contentWrapper.addEventListener('scroll', () => {
     let scrollPosition = contentWrapper.scrollTop;
     let scrollButton = popover.querySelector('.scrollButtonContent')
@@ -658,13 +531,6 @@ contentWrapper.addEventListener('scroll', () => {
         //nothing
     }
 })
-
-
-
-
-
-
-
 
 //Function for updating the counter
 function updateCounter(){
@@ -689,17 +555,6 @@ let suggestionItemWrapper = popover.querySelector('.suggestion-item-wrapper');
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
 //Search compare icon content and add a eventlistener to it
 let iconHeader = document.querySelector('.icon.compare');
 console.log(iconHeader);
@@ -721,23 +576,8 @@ try{
 }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Make the DIV element draggable:
 dragElement(document.querySelector(".pop-over"));
-
 function dragElement(elmnt) {
   var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
   if (document.getElementById(elmnt.id + "header")) {
@@ -781,7 +621,6 @@ let head = document.querySelector('head');
 let style = document.createElement('style');
 
 style.innerHTML = `
-
 .pop-over{
     z-index: 200;
     position: fixed;
