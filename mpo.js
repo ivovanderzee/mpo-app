@@ -465,7 +465,7 @@ if(category === 'prijsalert'){
   
     popupNotificationHTML = `<div class="popup-notificationWrapper">
     <div class="textArea">
-    <p class="pop-upTitle"><span>zoveel</span> producten toevoegen aan lijst</p>
+    <p class="pop-upTitle"><span>x</span> producten toevoegen aan lijst</p>
     <ul class="lists" style="list-style-type: none">
     </ul>
     <br>
@@ -515,7 +515,7 @@ function calcLists(){
         <button class="option share" style="float: right; margin-right: 10px; height: 20px; width: 20px;"></button>
         <button class="option collapse" style="float: right; margin-right: 5px; height: 20px; width: 20px;"></button>
         </div>
-        <div class='list-content' style="background-color: #D9D9D9; width: 95%; height: auto; margin: 0 auto; margin-top: 15px;">
+        <div class='list-content' style="background-color: #D9D9D9; width: 95%; padding-top: 10px; height: auto; margin: 0 auto; margin-top: 15px;">
         </div
         <div class="list-options-bottom" style="text-align: right">
         <button class="ctaButton secondary" style="margin-top: 10px; margin-right: -5px; text-align: right;">Verwijder lijst</button>
@@ -530,7 +530,7 @@ function calcLists(){
 
         let collapseBtn = list.querySelector('.collapse');
         let listContent = list.querySelector('.list-content');
-        console.log(listContent);
+     
         collapseBtn.addEventListener('click', () => {
             if(listContent.className === 'list-content'){
                 listContent.classList.add('collapsed');
@@ -549,12 +549,12 @@ function calcLists(){
             productInList.className = ''
 
             let productInListHTML = `
-        <div class='itemWrapper'>
+        <div class='itemWrapper' style="margin-bottom: 10px;">
         <span class="closeButton product" style="float: right; margin: 2px;"></span>
         <div style='height: 80px; width: 80px; background-color: white; background-image: url("${products[i].imageUrl}"); background-size: contain; background-repeat: no-repeat; background-position: center; float: left; border-top-left-radius: 2px; border-bottom-left-radius: 2px' class="imageProduct" >
         </div>
         <div class='itemInfo'>
-        <ul style="list-style-type: none; margin-left: 50px; padding-top: 10px;">
+        <ul style="list-style-type: none; margin-left: 50px; padding-top: 10px; margin-top: 0px;">
         <li style="max-width: 200px; max-height: 16px; overflow: hidden; font-weight: bolder; font-size: 14px; word-wrap: break-word;"><span class='titleProduct'><a>${products[i].title}</a></span></li>
         <li style="max-width: 150px; font-size: 12px; word-wrap: break-word; overflow: hidden; margin-top: 5px; max-height: 16px;"> <span class='speclineProduct'><a style="color: #666666;">${products[i].specline}</a></span></li>
         <li style="margin-top: 10px; margin-bottom: 10px; font-size: 13px;"><span class='priceProduct'><a>${products[i].price}</a></span></li>
@@ -951,12 +951,17 @@ style.innerHTML = `
 
 /* width */
 .contentWrapper::-webkit-scrollbar {
-  display: none;
+  width: 4px;
+  overflow: overlay;
+  position: absolute;
+  z-index: 100;
 }
 
 /* Track */
 .contentWrapper::-webkit-scrollbar-track {
-  display: none;
+  background: #f1f1f1; 
+  overflow: overlay;
+  position: absolute;
 }
  
 /* Handle */
@@ -970,6 +975,7 @@ style.innerHTML = `
 .contentWrapper::-webkit-scrollbar-thumb:hover {
   background: #555; 
 }
+
 .option {
     background-color: #D9D9D9;
     background-position: center center;
@@ -1042,6 +1048,8 @@ style.innerHTML = `
 .list-content.collapsed{
     display: none;
 }
+
+
 
 .list-options-top button{
     background-color: #1668AC;
