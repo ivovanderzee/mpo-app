@@ -85,7 +85,7 @@ let html = `
 <p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
 <a class="ctaButton">Bekijk Pricewatch</a>
 </div>
-<div style="height: 50px; width: 95%; background-color: white; top: 40px; position: absolute; left: 0; right: 0; margin: 0 auto; border-radius: 2px; line-height: 50px;" class="scrollButtonContent">
+<div style="height: 50px; width: 100%; background-color: #f2f2f2; top: 30px; position: absolute; left: 0; right: 0; margin: 0 auto; border-radius: 2px; line-height: 50px;" class="scrollButtonContent">
 <span style="margin-left: 10px;">x producten geselecteerd</span>
 <a class="ctaButton newList" style="float: right; margin-right: 10px; margin-top: 11px;">Selectie in lijst plaatsen</a>
 </div>
@@ -128,6 +128,10 @@ function appendSuggestions(){
         let suggestionItem = document.createElement('div');
         suggestionItem.className = 'suggestion-item';
 
+        //Get ID and label
+        let id = productsOnPage[randomNumber].id;
+        let label = productsOnPage[randomNumber].label;
+
         //HTML for the suggestion item
         let suggestionItemHTML = `
         <div class="suggestion-item-content">
@@ -150,6 +154,7 @@ function appendSuggestions(){
         addButton.addEventListener('click', () => {
             if(addButton.className === 'addItem'){
                 addButton.classList.add('active');
+                addToMPO(id, label)
             }else{
                 addButton.classList.remove('active');
             }
@@ -446,8 +451,6 @@ function calcLists(){
         })
 
         let products = lists[i].products;
-
-
         if(products.length > 0){
         for(i = 0; i < products.length; i++){
             let productInList = document.createElement('div');
@@ -939,8 +942,6 @@ style.innerHTML = `
     box-shadow: 8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rgba(0,0,0,0.1);
 }
 
-
-
 .pop-upTitle{
     font-size: 16px;
     font-weight: bolder;
@@ -966,8 +967,6 @@ style.innerHTML = `
 .list-content.collapsed{
     display: none;
 }
-
-
 
 .list-options-top button{
     background-color: #1668AC;
@@ -1004,9 +1003,8 @@ style.innerHTML = `
 
 .scrollButtonContent{
     display: none;
-    border: 1px #D9D9D9 solid;
+    border-bottom: 1px #D9D9D9 solid;
+    
 }
-
-
 `
 head.appendChild(style);
