@@ -190,6 +190,7 @@ function MPOProducts(){
       //HTML for the list item and add the properties
       let itemHTML = `
       <div class='itemWrapper'>
+      <div class="itemContentWrapper">  
       <img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">
       <div class="itemOptions" style="float: right; margin-right: 0px;">
       <div class='option addList' style="margin-right: 5px;"></div>
@@ -203,7 +204,10 @@ function MPOProducts(){
       <li  class='priceProduct'><span><a>${productsMPO[i].price}</a></span></li>
       </ul>
       </div>
-      <label style="float: right;" class="compare ctaButton unselected checkbox"><input type="checkbox" name="products[]" value="${productsMPO[i].id}"><span>vergelijk</span></label>
+      </div>
+      <div class="item-options-bottom" style="text-align: right; margin-right: 10px; margin-top: 5px;">
+      <label class="compare ctaButton unselected checkbox"><input type="checkbox" name="products[]" value="${productsMPO[i].id}"><span>Vergelijk</span></label>
+      </div>
       </div>
       `;
 
@@ -415,7 +419,7 @@ function calcLists(){
         <button class="option share" style="float: right; margin-right: 10px; height: 20px; width: 20px;"></button>
         <button class="option collapse" style="float: right; margin-right: 5px; height: 20px; width: 20px;"></button>
         </div>
-        <div class='list-content' style="background-color: #D9D9D9; width: 95%; padding-top: 10px; height: auto; margin: 0 auto; margin-top: 15px;">
+        <div class='list-content' style="background-color: #D9D9D9; max-width: 95%; height: auto; margin: 0 auto; margin-top: 15px; padding-bottom: 10px; padding-top: 10px;">
         </div>
         <div class="list-options-bottom" style="width: 95%; margin: 0 auto; margin-top: 10px; ">
         <button class="ctaButton secondary" style="float: right">Totaal berekenen</button>
@@ -449,21 +453,33 @@ function calcLists(){
             let productInList = document.createElement('div');
             productInList.className = ''
             let productInListHTML = `
-            <div class='itemWrapper' style="margin-bottom: 10px;">
+            <div class='itemWrapper'>
+            <div class="itemContentWrapper"> 
             <img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">
-            <div style='height: 80px; width: 80px; background-color: white; background-image: url("${products[i].imageUrl}"); background-size: contain; background-repeat: no-repeat; background-position: center; float: left; border-top-left-radius: 2px; border-bottom-left-radius: 2px' class="imageProduct" >
+            <div class="itemOptions" style="float: right; margin-right: 0px;">
+            <div class='option addList' style="margin-right: 5px;"></div>
+            <div class='option setAlert'></div>
             </div>
+            <div class="imageProduct" style='background-image: url("${products[i].imageUrl}");'></div>
             <div class='itemInfo'>
-            <ul style="list-style-type: none; margin-left: 50px; padding-top: 10px; margin-top: 0px;">
-            <li style="max-width: 200px; max-height: 16px; overflow: hidden; font-weight: bolder; font-size: 14px; word-wrap: break-word;"><span class='titleProduct'><a>${products[i].title}</a></span></li>
-            <li style="max-width: 150px; font-size: 12px; word-wrap: break-word; overflow: hidden; margin-top: 5px; max-height: 16px;"> <span class='speclineProduct'><a style="color: #666666;">${products[i].specline}</a></span></li>
-            <li style="margin-top: 10px; margin-bottom: 10px; font-size: 13px;"><span class='priceProduct'><a>${products[i].price}</a></span></li>
+            <ul>
+            <li class='titleProduct'><span><a>${products[i].title}</a></span></li>
+            <li class='speclineProduct'><span><a style="color: #666666;">${products[i].specline}</a></span></li>
+            <li  class='priceProduct'><span><a>${products[i].price}</a></span></li>
             </ul>
+            </div>
+            </div>
+            <div class="item-options-bottom" style="text-align: right; margin-right: 10px; margin-top: 5px;">
+            <label class="compare ctaButton unselected checkbox"><input type="checkbox" name="products[]" value="${products[i].id}"><span>Gekocht</span></label>
+            <label class="compare ctaButton unselected checkbox"><input type="checkbox" name="products[]" value="${products[i].id}"><span>Vergelijk</span></label>
             </div>
             </div>
             `;
             productInList.innerHTML = productInListHTML;
+            productInList.style.marginTop = '10px';
+            
             listContent.appendChild(productInList);
+            listContent.firstElementChild.style.marginTop = '0px';
         }
         }else{
         //nothing
@@ -731,7 +747,7 @@ style.innerHTML = `
     background-image: url('data:image/svg+xml, %3Csvg width="5" height="3" viewBox="0 0 5 3" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M4.45426 2.4104H0.468172V0.760742H4.45426V2.4104Z" fill="white"/%3E%3C/svg%3E');
 }
 
-.itemWrapper{
+.itemContentWrapper{
     height: 80px;
     margin: 0 auto;
     width: 95%;
@@ -743,10 +759,19 @@ style.innerHTML = `
     
 }
 
-.itemWrapper ul{
+.itemContentWrapper ul{
     list-style-type: none;
     margin-left: 50px;
     padding-top: 10px;
+    margin-top: 0px;
+}
+
+.itemWrapper{
+    height: auto;
+}
+
+.list-content :first-child{
+    margin-top: 0px;
 }
 
 .introText{
@@ -787,7 +812,7 @@ style.innerHTML = `
 }
 
 .productItem{
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .imageProduct{
