@@ -416,10 +416,10 @@ function calcLists(){
         <button class="option collapse" style="float: right; margin-right: 5px; height: 20px; width: 20px;"></button>
         </div>
         <div class='list-content' style="background-color: #D9D9D9; width: 95%; padding-top: 10px; height: auto; margin: 0 auto; margin-top: 15px;">
-        </div
-        <div class="list-options-bottom" style="text-align: right">
-        <button class="ctaButton secondary" style="margin-top: 10px; margin-right: -5px; text-align: right;">Verwijder lijst</button>
-        <button class="ctaButton secondary" style=" margin-top: 10px; margin-right: 10px;">Totaal berekenen</button>
+        </div>
+        <div class="list-options-bottom" style="width: 95%; margin: 0 auto; margin-top: 10px; ">
+        <button class="ctaButton secondary" style="float: right">Totaal berekenen</button>
+        <button class="ctaButton secondary" style="float: right">Verwijder lijst</button>
         </div>
         `
         let list = document.createElement('div');
