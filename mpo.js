@@ -6,9 +6,9 @@ let allPriceAlerts = [];
 let lists = [];
 
 //All the counters that are counting products
-let mpoCounter = 0;
-let compareCounter = 0;
-let listCounter = 0;
+let mpoCounter = productsMPO.length + allPriceAlerts.length;
+let compareCounter = productsCompare.length;
+let listCounter = lists.length;
 
 addCheckbox();
 function addCheckbox(){
@@ -62,12 +62,12 @@ for(i=0; i < pricewatchItems.length; i++){
 let html = `
 <div class="wrapper">
 <ul class="tabbar">
-<li id="tab_select_mijnProducten"><span>Mijn Producten(<span class="counter1">${mpoCounter}</span>)</span></li>
+<li id="tab_select_mijnProducten"><span>Mijn Producten(<span class="counter mpo">${mpoCounter}</span>)</span></li>
 <li id="tab_select_compare"><span>Vergelijk<span>(0)</span</span></li>
 </ul>
 <div class="contentWrapper">
 <div class="topInfo">
-<span class="topTitle">Mijn Producten(<span class="counter2">${mpoCounter}</span>)</span>
+<span class="topTitle">Mijn Producten(<span class="counter mpo">${mpoCounter}</span>)</span>
 <a class="ctaButton newList">Nieuwe lijst maken</a>
 </div>
 <span class="introText">Je hebt nog geen producten toegevoegd. Producten die je toevoegd of een prijsalerts voor instelt kun je hier terugvinden. Ook kun je lijsten maken om je producten in te verdelen.</span>
@@ -81,7 +81,7 @@ let html = `
 <div class="all-lists">
 </div>
 <div class="bottom-info">
-<p style="margin-bottom: 5px; font-size: 12px;"><a href="#"><span>${listCounter}</span> lijsten, met in totaal <span class="counter3">${mpoCounter}</span> producten</a></p>
+<p style="margin-bottom: 5px; font-size: 12px;"><a href="#"><span class="counter lists">${listCounter}</span> lijsten, met in totaal <span class="counter mpo">${mpoCounter}</span> producten</a></p>
 <p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
 <a class="ctaButton">Bekijk Pricewatch</a>
 </div>
@@ -168,13 +168,10 @@ function addToMPO(productID, label){
     let productToAdd = productsOnPage.filter(item => item.id === productID);
     productsMPO.push(productToAdd[0]);
     MPOProducts();
-
+    updateCounter();
     //Change the class of the checkbox
     label.classList.remove('unselected');
     label.classList.add('selected');
-
-    mpoCounter++;
-    updateCounter();
 }
 
 function MPOProducts(){
@@ -263,6 +260,7 @@ label.classList.add('unselected');
     let index = productsMPO.indexOf(productToRemove[0])
     productsMPO.splice(index, 1)
     MPOProducts();
+    updateCounter();
 }
 
 function setPriceAlert(productID, alert){
@@ -504,7 +502,9 @@ function createNewList(){
         });
         notification.style.display = 'none';
         calcLists();
+        updateCounter();
     })
+
 }
 
 function addToList(productID){
@@ -555,22 +555,32 @@ function updateCounter(){
 let introText = popover.querySelector('.introText');
 let suggestionItemWrapper = popover.querySelector('.suggestion-item-wrapper');
 
-    let counter1 = popover.querySelector('.counter1');
-    let counter2 = popover.querySelector('.counter2');
-    let counter3 = popover.querySelector('.counter3');
+mpoCounter = productsMPO.length + allPriceAlerts.length;
+compareCounter = productsCompare.length;
+listCounter = lists.length;
 
-    //Set the innertext to the updated count int
-    counter1.innerText = mpoCounter;
-    counter2.innerText = mpoCounter;
-    counter3.innerText = mpoCounter;
+    //Grab all the counters on the page
+    let counters = popover.querySelectorAll('.counter');
 
-    if(mpoCounter < 1){
-        introText.style.display = 'block';
-        suggestionItemWrapper.style.display = 'block';
-    }else{
-        introText.style.display = 'none';
-        suggestionItemWrapper.style.display ='none';
+    for(i = 0; i < counters.length; i++){
+        let className = counters[i].className;
+        if(className === 'counter mpo'){
+            counters[i].innerHTML = '';
+            counters[i].innerHTML = mpoCounter;
+        }else if(className === 'counter lists'){
+            counters[i].innerHTML = '';
+            counters[i].innerHTML = listCounter;
+        }
     }
+    
+
+    // if(mpoCounter < 1){
+    //     introText.style.display = 'block';
+    //     suggestionItemWrapper.style.display = 'block';
+    // }else{
+    //     introText.style.display = 'none';
+    //     suggestionItemWrapper.style.display ='none';
+    // }
 }
 
 //Search compare icon content and add a eventlistener to it
