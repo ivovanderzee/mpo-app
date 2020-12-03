@@ -85,7 +85,7 @@ let html = `
 <p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
 <a class="ctaButton">Bekijk Pricewatch</a>
 </div>
-<div style="height: 50px; width: 95%; background-color: white; bottom: 10px; position: absolute; left: 0; right: 0; margin: 0 auto; border-radius: 2px; line-height: 50px;" class="scrollButtonContent">
+<div style="height: 50px; width: 95%; background-color: white; top: 40px; position: absolute; left: 0; right: 0; margin: 0 auto; border-radius: 2px; line-height: 50px;" class="scrollButtonContent">
 <span style="margin-left: 10px;">x producten geselecteerd</span>
 <a class="ctaButton newList" style="float: right; margin-right: 10px; margin-top: 11px;">Selectie in lijst plaatsen</a>
 </div>
@@ -495,32 +495,31 @@ function addToList(productID){
     newListButton.innerText = 'Selectie in lijst plaatsen';
     newListButton.removeEventListener('click', createNewList);
 
-    newListButton.addEventListener('click', () => {
+    let scrollableBtn = popover.querySelector('.scrollButtonContent').querySelector('.ctaButton');
 
-        let notification = createNotification('addToList', productID)
-        let buttons = notification.querySelectorAll('.addItem');
+    scrollableBtn.addEventListener('click', productsSelected);
+    newListButton.addEventListener('click', productsSelected);
 
-        for(i = 0; i < buttons.length; i++){
-            let listID = buttons[i].getAttribute('list-id');
-        buttons[i].addEventListener('click', () =>{
-            
-         
-            let selectedProducts = Array.from(productsMPO.filter(item => item.selected === true));
-         
-            let selectedList = lists.filter(item => item.id == listID);
+        function productsSelected(){
+            let notification = createNotification('addToList', productID)
+            let buttons = notification.querySelectorAll('.addItem');
+            for(i = 0; i < buttons.length; i++){
+                let listID = buttons[i].getAttribute('list-id');
+                buttons[i].addEventListener('click', () =>{
+                let selectedProducts = Array.from(productsMPO.filter(item => item.selected === true));
+                let selectedList = lists.filter(item => item.id == listID);
             for(i = 0; i < selectedProducts.length; i++){
                 selectedList[0].products.push(selectedProducts[i]);
             }
-            console.log(lists);
             calcLists();
         })
     }
-    })
+        }
 }
 
 contentWrapper.addEventListener('scroll', () => {
     let scrollPosition = contentWrapper.scrollTop;
-    let scrollButton = popover.querySelector('.scrollButtonContent')
+    let scrollButton = popover.querySelector('.scrollButtonContent');
     if(newListButton.innerText == 'Selectie in lijst plaatsen'){
         if(scrollPosition > 55){
             scrollButton.style.display = 'block';
@@ -980,6 +979,7 @@ style.innerHTML = `
 
 .scrollButtonContent{
     display: none;
+    border: 1px #D9D9D9 solid;
 }
 
 
