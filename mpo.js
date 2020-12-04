@@ -369,8 +369,8 @@ if(category === 'prijsalert'){
     <div class="popup-notificationWrapper">
     <div class="textArea">
     <p class="pop-upTitle">Prijsalert instellen</p>
-    <span class="bodyText" style="margin-bottom: 0px;">Je gaat een prijsalert instellen voor <span style="font-weight: bolder;">${product[0].title}</span></p>
-    <span style="margin-top: 15px; width: 80%;"" class="inputEuro"><input  class="text" type="text" size="10" name="product" id="fsdfgb" value=""></span>
+    <span class="bodyText" style="margin-bottom: 5px;">Je gaat een prijsalert instellen voor <span style="font-weight: bolder;">${product[0].title}</span></span>
+    <span style="width: 80%;"" class="inputEuro"><input  class="text" type="text" size="10" name="product" id="fsdfgb" value=""></span>
     <a style="margin-top: 15px;" class="ctaButton">Prijsalert instellen</a>
     </div>
     </div>`;
@@ -380,10 +380,8 @@ if(category === 'prijsalert'){
     popupNotificationHTML = `<div class="popup-notificationWrapper">
     <div class="textArea">
     <p class="pop-upTitle">Nieuwe lijst maken</p>
-    <p class="bodyText" style="margin-bottom: 0px;">Typ de naam van de nieuwe lijst</p>
-    <br>
-    <span style="margin-top: 15px;"><input class="text" type="text" size="30" name="product" id="" value=""></span>
-    <br>
+    <span class="bodyText" style="margin-bottom: 5px;">Typ de naam van de nieuwe lijst</span>
+    <span><input class="text" type="text" size="30" name="product" id="" value=""></span>
     <a style="margin-top: 15px;" class="ctaButton">Nieuwe lijst aanmaken</a>
     </div>
     </div`;
@@ -393,10 +391,9 @@ if(category === 'prijsalert'){
   
     popupNotificationHTML = `<div class="popup-notificationWrapper">
     <div class="textArea">
-    <p class="pop-upTitle"><span>x</span> producten toevoegen aan lijst</p>
+    <p class="pop-upTitle">Selecteer een lijst</p>
     <ul class="lists" style="list-style-type: none">
     </ul>
-    <br>
     <a style="margin-top: 15px;" class="ctaButton">Toevoegen</a>
     </div>
     </div`;
@@ -406,18 +403,14 @@ if(category === 'prijsalert'){
 
     for(i = 0; i < lists.length; i++){
     let selectListItem = document.createElement('li');
-    let addToListButton = document.createElement('button');
-    let listID = lists[i].id;
-    addToListButton.setAttribute('list-id', listID)    
-    addToListButton.className = 'addItem';
     
     let selectListItemHTML = `
     <span style="font-weight: bolder; font-size: 14px">${lists[i].name}</span>
     <br>
     <span style="font-weight: lighter; font-size: 11px;">${lists[i].products.length} producten in lijst</span>
+    <button class="addItem" list-id="${lists[i].id}"></button>
     `
     selectListItem.innerHTML = selectListItemHTML;
-    selectListItem.appendChild(addToListButton);
     ul.appendChild(selectListItem);
     }
     }
@@ -1010,20 +1003,33 @@ style.innerHTML = `
 }
 
 .popup-notification ul{
-    max-height: 270px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    max-height: 300px;
     height: auto;
     margin-left: 0px;
     padding-left: 0px;
-    width: 290px;
+    margin-bottom: 0px;
 }
 
 .popup-notification ul li{
     max-height: 50px;
-    width: 100%;
-    background-color: #F2F2F2;
+    background-color: white;
     margin-bottom: 5px;
     padding: 10px;
+    border-radius: 2px;
+    position: relative
+
 }
+
+.popup-notification ul li button{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 10px;
+    margin-top: 13px;
+}
+
 
 .popUpContent{
     border-bottom: 1px #D9D9D9 solid;
