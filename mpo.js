@@ -249,10 +249,10 @@ function MPOProducts(){
       let addList = productItem.querySelector('.addList');
       addList.addEventListener('click', () => {
           if(addList.className === 'option addList'){
-          addToList(id);
+          selectProducts(id);
           addList.classList.add('active');
           }else{
-              addList.classList.remove('active');
+          addList.classList.remove('active');
           }
       })
 
@@ -521,7 +521,8 @@ function createNewList(){
 
 }
 
-function addToList(productID){
+//Function to select products
+function selectProducts(productID){
     let selectedProduct = productsMPO.filter(item => item.id === productID);
     selectedProduct[0].selected = true;
 
@@ -530,10 +531,12 @@ function addToList(productID){
 
     let scrollableBtn = popover.querySelector('.scrollPopUp').querySelector('.ctaButton');
 
-    scrollableBtn.addEventListener('click', productsSelected);
-    newListButton.addEventListener('click', productsSelected);
+    scrollableBtn.addEventListener('click', addToList);
+    newListButton.addEventListener('click', addToList);
+}
 
-        function productsSelected(){
+function addToList(productID){
+    
             let notification = createNotification('addToList', productID)
             let buttons = notification.querySelectorAll('.addItem');
             for(i = 0; i < buttons.length; i++){
@@ -547,7 +550,7 @@ function addToList(productID){
             calcLists();
              })
         }
-        }
+        
 }
 
 contentWrapper.addEventListener('scroll', () => {
