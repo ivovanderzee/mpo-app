@@ -61,34 +61,46 @@ for(i=0; i < pricewatchItems.length; i++){
 //HTML for the new popover element
 let html = `
 <div class="wrapper">
+
 <ul class="tabbar">
 <li id="tab_select_mijnProducten"><span>Mijn Producten(<span class="counter mpo">${mpoCounter}</span>)</span></li>
 <li id="tab_select_compare"><span>Vergelijk<span>(0)</span</span></li>
 </ul>
+
 <div class="contentWrapper">
+
 <div class="topInfo">
 <span class="topTitle">Mijn Producten(<span class="counter mpo">${mpoCounter}</span>)</span>
 <a class="ctaButton newList">Nieuwe lijst maken</a>
 </div>
+
 <span class="introText">Je hebt nog geen producten toegevoegd. Producten die je toevoegd of een prijsalerts voor instelt kun je hier terugvinden. Ook kun je lijsten maken om je producten in te verdelen.</span>
+
 <div class="singleProducts">
 </div>
+
 <div style="margin-top: 40px;" class="priceAlertsList">
 <span class="list-title">Mijn Prijsalerts</span>
 <div class="priceAlertContent">
 </div>
 </div>
+
 <div class="all-lists">
 </div>
+
 <div class="bottom-info">
 <p style="margin-bottom: 5px; font-size: 12px;"><a href="#"><span class="counter lists">${listCounter}</span> lijsten, met in totaal <span class="counter mpo">${mpoCounter}</span> producten</a></p>
 <p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
 <a class="ctaButton">Bekijk Pricewatch</a>
 </div>
-<div style="height: 50px; width: 100%; background-color: #f2f2f2; top: 30px; position: absolute; left: 0; right: 0; margin: 0 auto; border-radius: 2px; line-height: 50px;" class="scrollButtonContent">
+
+<div style="height: auto; width: 100%; background-color: #f2f2f2; top: 30px; position: absolute; left: 0; right: 0; border-radius: 2px;" class="popUpContent">
+
+<div class="scrollPopUp" style="height: 50px; line-height: 50px;">
 <span style="margin-left: 10px;">x producten geselecteerd</span>
 <a class="ctaButton newList" style="float: right; margin-right: 10px; margin-top: 11px;">Selectie in lijst plaatsen</a>
 </div>
+
 </div>
 </div>
 `
@@ -345,25 +357,27 @@ function calcPriceAlerts(){
 function createNotification(category, productID = null){
     let popupNotification = document.createElement('div');
     popupNotification.className = 'popup-notification';
-
-if(category === 'prijsalert'){
     let product = productsOnPage.filter(item => item.id === productID)
-    let popupNotificationHTML = `<div class="popup-notificationWrapper">
+    let popUpContent = popover.querySelector('.popUpContent');
+    let popupNotificationHTML = ``;
+    
+if(category === 'prijsalert'){
+    popupNotificationHTML = `
+    <div class="popup-notificationWrapper">
     <div class="textArea">
     <p class="pop-upTitle">Prijsalert instellen</p>
-    <p class="announcementText" style="margin-bottom: 0px;">Je gaat een prijsalert instellen voor <span style="font-weight: bolder;">${product[0].title}</span></p>
+    <span class="bodyText" style="margin-bottom: 0px;">Je gaat een prijsalert instellen voor <span style="font-weight: bolder;">${product[0].title}</span></p>
     <span style="margin-top: 15px; width: 80%;"" class="inputEuro"><input  class="text" type="text" size="10" name="product" id="fsdfgb" value=""></span>
-    
     <a style="margin-top: 15px;" class="ctaButton">Prijsalert instellen</a>
     </div>
-    </div`;
-    
+    </div>`;
     popupNotification.innerHTML = popupNotificationHTML;
+    popUpContent.appendChild(popupNotification);
 }else if(category === 'newlist'){
     popupNotificationHTML = `<div class="popup-notificationWrapper">
     <div class="textArea">
     <p class="pop-upTitle">Nieuwe lijst maken</p>
-    <p class="announcementText" style="margin-bottom: 0px;">Typ de naam van de nieuwe lijst</p>
+    <p class="bodyText" style="margin-bottom: 0px;">Typ de naam van de nieuwe lijst</p>
     <br>
     <span style="margin-top: 15px;"><input class="text" type="text" size="30" name="product" id="" value=""></span>
     <br>
@@ -371,6 +385,7 @@ if(category === 'prijsalert'){
     </div>
     </div`;
     popupNotification.innerHTML = popupNotificationHTML;
+    popUpContent.appendChild(popupNotification);
 }else if(category === 'addToList'){
   
     popupNotificationHTML = `<div class="popup-notificationWrapper">
@@ -383,16 +398,14 @@ if(category === 'prijsalert'){
     </div>
     </div`;
     popupNotification.innerHTML = popupNotificationHTML;
+    popUpContent.appendChild(popupNotification);
+    let ul = popUpContent.querySelector('ul');
 
-    popover.appendChild(popupNotification);
-    let ul = popupNotification.querySelector('ul');
-    
     for(i = 0; i < lists.length; i++){
     let selectListItem = document.createElement('li');
     let addToListButton = document.createElement('button');
     let listID = lists[i].id;
     addToListButton.setAttribute('list-id', listID)    
-
     addToListButton.className = 'addItem';
     
     let selectListItemHTML = `
@@ -405,7 +418,6 @@ if(category === 'prijsalert'){
     ul.appendChild(selectListItem);
     }
     }
-    popover.appendChild(popupNotification);
     return popupNotification;
 }
 
@@ -514,7 +526,7 @@ function addToList(productID){
     newListButton.innerText = 'Selectie in lijst plaatsen';
     newListButton.removeEventListener('click', createNewList);
 
-    let scrollableBtn = popover.querySelector('.scrollButtonContent').querySelector('.ctaButton');
+    let scrollableBtn = popover.querySelector('.scrollPopUp').querySelector('.ctaButton');
 
     scrollableBtn.addEventListener('click', productsSelected);
     newListButton.addEventListener('click', productsSelected);
@@ -531,19 +543,21 @@ function addToList(productID){
                 selectedList[0].products.push(selectedProducts[i]);
             }
             calcLists();
-        })
-    }
+             })
+        }
         }
 }
 
 contentWrapper.addEventListener('scroll', () => {
     let scrollPosition = contentWrapper.scrollTop;
-    let scrollButton = popover.querySelector('.scrollButtonContent');
+
+    let scrollPopUp = popover.querySelector('.popUpContent').querySelector('.scrollPopUp');
+
     if(newListButton.innerText == 'Selectie in lijst plaatsen'){
         if(scrollPosition > 55){
-            scrollButton.style.display = 'block';
+            scrollPopUp.style.display = 'block';
         }else{
-            scrollButton.style.display = 'none';
+            scrollPopUp.style.display = 'none';
         }
     }else{
         //nothing
@@ -940,16 +954,9 @@ style.innerHTML = `
 }
 
 .popup-notificationWrapper{
-    float: right;
     height: auto;
-    width: 322px;
-    margin-left: 101%;
-    margin-top: 53px;
+    width: 100%;
     top: 0;
-    position: absolute;
-    cursor: pointer;
-    border-radius: 2px;
-    box-shadow: 8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rgba(0,0,0,0.1);
 }
 
 .pop-upTitle{
@@ -960,11 +967,7 @@ style.innerHTML = `
 
 .textArea{
     height: auto;
-    width: 322px;
-    background-color: white;
     padding: 15px;
-    padding-right: 7px;
-    box-shadow: 8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rgba(0,0,0,0.1);
 }
 
 .list-wrapper{
@@ -1011,10 +1014,12 @@ style.innerHTML = `
     padding: 10px;
 }
 
-.scrollButtonContent{
-    display: none;
+.popUpContent{
     border-bottom: 1px #D9D9D9 solid;
-    
+}
+
+.scrollPopUp{
+    display:none;
 }
 `
 head.appendChild(style);
