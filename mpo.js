@@ -328,6 +328,7 @@ function calcPriceAlerts(){
         //HTML for the price alert item
         let priceAlerthtml = `
         <div class='itemWrapper'>
+        <div class="itemContentWrapper">
         <img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">
         <span style="right: 5px;  bottom: 5px; position: absolute;" class="inputEuro"><input class="text" type="text" size="8" name="" id="" value="${allPriceAlerts[i].alertPrice}"></span>
         
@@ -339,6 +340,7 @@ function calcPriceAlerts(){
         <li style="max-width: 150px; font-size: 12px; word-wrap: break-word; overflow: hidden; margin-top: 5px; max-height: 16px;"> <span class='speclineProduct'><a style="color: #666666;">${allPriceAlerts[i].specline}</a></span></li>
         <li style="margin-top: 10px; margin-bottom: 10px; font-size: 13px;"><span class='priceProduct'><a>${allPriceAlerts[i].price}</a></span></li>
         </ul>
+        </div>
         </div>
         </div>
         `;
