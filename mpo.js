@@ -64,20 +64,23 @@ let html = `
 <div class="wrapper">
 
 <ul class="tabbar">
-<li id="tab_select_mijnProducten"><span>Mijn Producten(<span class="counter mpo">${mpoCounter}</span>)</span></li>
-<li id="tab_select_compare"><span>Vergelijk<span>(0)</span</span></li>
+<li class="tab_select_mijnProducten"><span>Mijn Producten(<span class="counter mpo">${mpoCounter}</span>)</span></li>
+<li class="tab_select_compare"><span>Vergelijk(<span class="counter compare">${compareCounter}</span>)</span></li>
 </ul>
 
 <div class="contentWrapper">
 
 <div class="topInfo">
-<span class="topTitle">Mijn Producten(<span class="counter mpo">${mpoCounter}</span>)</span>
+<span class="topTitle">Mijn Producten</span>
 <a class="ctaButton newList">Nieuwe lijst maken</a>
 </div>
 
 <span class="introText">Je hebt nog geen producten toegevoegd. Producten die je toevoegd of een prijsalerts voor instelt kun je hier terugvinden. Ook kun je lijsten maken om je producten in te verdelen.</span>
 
 <div class="singleProducts">
+</div>
+
+<div class="compareProducts">
 </div>
 
 <div style="margin-top: 40px;" class="priceAlertsList">
@@ -120,6 +123,30 @@ body.appendChild(popover);
 //Style the wrapper for the content
 let contentWrapper = popover.querySelector('.contentWrapper');
 let singleProducts = contentWrapper.querySelector('.singleProducts');
+
+
+let mpoTab = popover.querySelector('.tab_select_mijnProducten');
+mpoTab.addEventListener('click', () => {
+    mpoTab.classList.add('active');
+    compareTab.classList.remove('active');
+    switchContent();
+});
+let compareTab = popover.querySelector('.tab_select_compare');
+compareTab.addEventListener('click', () => {
+    compareTab.classList.add('active');
+    mpoTab.classList.remove('active');
+    switchContent();
+});
+
+
+function switchContent(){
+    if(mpoTab.className === 'tab_select_mijnProducten active'){
+        
+        topTitle.innerText = 'Mijn Producten';
+
+    }else if(compareTab.className ==='tab_select_compare active'){
+    }
+}
 
 //Run the function suggestion items once
 appendSuggestions();
@@ -185,6 +212,17 @@ function addToMPO(productID, label){
     //Change the class of the checkbox
     label.classList.remove('unselected');
     label.classList.add('selected');
+}
+
+//Function for adding products to the content listview
+function addToCompare(productID){
+    //Select the product that needs to be added
+    let productToAdd = productsOnPage.filter(item => item.id === productID);
+    productsCompare.push(productToAdd[0]);
+    updateCounter();
+    //Change the class of the checkbox
+    // label.classList.remove('unselected');
+    // label.classList.add('selected');
 }
 
 function MPOProducts(){
@@ -256,6 +294,18 @@ function MPOProducts(){
           addList.classList.remove('active');
           }
       })
+
+      //Event listener for adding the product to a list
+      let addCompare = productItem.querySelector('.compare');
+      addCompare.addEventListener('click', () => {
+          if(addCompare.className === 'compare ctaButton unselected checkbox'){
+          addToCompare(id);
+          addCompare.className = 'compare ctaButton selected checkbox'
+          }else{
+          addCompare.className = 'compare ctaButton unselected checkbox'
+          }
+      })
+
 
       if(productsMPO[i].priceAlert === true){
           priceAlert.classList.add('active');
@@ -588,6 +638,9 @@ selectedCounter = Array.from(productsMPO.filter(item => item.selected === true))
         }else if(className === 'counter selected'){
             counters[i].innerHTML = '';
             counters[i].innerHTML = selectedCounter;
+        }else if(className === 'counter compare'){
+            counters[i].innerHTML = '';
+            counters[i].innerHTML = compareCounter;
         }
     }
     
@@ -732,6 +785,10 @@ style.innerHTML = `
 
 .contentWrapper.singleProducts{
     height: auto;
+}
+.contentWrapper.compareProducts{
+    height: auto;
+    display: none;
 }
 
 .suggestion-item{
