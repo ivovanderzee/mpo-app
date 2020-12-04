@@ -9,6 +9,7 @@ let lists = [];
 let mpoCounter = productsMPO.length + allPriceAlerts.length;
 let compareCounter = productsCompare.length;
 let listCounter = lists.length;
+let selectedCounter = Array.from(productsMPO.filter(item => item.selected === true)).length
 
 addCheckbox();
 function addCheckbox(){
@@ -97,7 +98,7 @@ let html = `
 <div style="height: auto; width: 100%; background-color: #f2f2f2; top: 30px; position: absolute; left: 0; right: 0; border-radius: 2px;" class="popUpContent">
 
 <div class="scrollPopUp" style="height: 50px; line-height: 50px;">
-<span style="margin-left: 10px;">x producten geselecteerd</span>
+<span style="margin-left: 10px;"><span style="font-weight: bolder;" class="counter selected">${selectedCounter}</span> producten geselecteerd</span>
 <a class="ctaButton newList" style="float: right; margin-right: 10px; margin-top: 11px;">Selectie in lijst plaatsen</a>
 </div>
 
@@ -533,6 +534,7 @@ function selectProducts(productID){
 
     scrollableBtn.addEventListener('click', addToList);
     newListButton.addEventListener('click', addToList);
+    updateCounter();
 }
 
 function addToList(productID){
@@ -577,6 +579,7 @@ let suggestionItemWrapper = popover.querySelector('.suggestion-item-wrapper');
 mpoCounter = productsMPO.length + allPriceAlerts.length;
 compareCounter = productsCompare.length;
 listCounter = lists.length;
+selectedCounter = Array.from(productsMPO.filter(item => item.selected === true)).length;
 
     //Grab all the counters on the page
     let counters = popover.querySelectorAll('.counter');
@@ -589,6 +592,9 @@ listCounter = lists.length;
         }else if(className === 'counter lists'){
             counters[i].innerHTML = '';
             counters[i].innerHTML = listCounter;
+        }else if(className === 'counter selected'){
+            counters[i].innerHTML = '';
+            counters[i].innerHTML = selectedCounter;
         }
     }
     
