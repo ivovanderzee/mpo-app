@@ -550,62 +550,72 @@ function calcPriceAlerts() {
 
 //Function to generate the pop up notification to the view
 function createNotification(category, id = null) {
+    //Variables in the popup notification
+    let popUpTitle;
+    let popUpMessage;
+    let inputFieldSize;
+    let popUpBtnTitle;
+    let inputField;
+    let ul;
+
+    //Create new element and set classname
     let popupNotification = document.createElement('div');
     popupNotification.className = 'popup-notification';
-    let product = productsOnPage.filter(product => product.id === id);
-    let html = ``;
+
+    //Select the product 
+    let product = productsOnPage.filter(product => product.id === id)[0];
 
     if (category === 'prijsalert') {
-        html = `
+    popUpTitle = 'Prijsalert instellen';
+    inputFieldSize = '10';
+    popUpBtnTitle = 'Prijsalert instellen';
+    popUpMessage = `Je gaat een prijsalert instellen voor <span style="font-weight: bolder">${product.title}</span>`;
+    inputField = `<span style="width: 80%;" class="inputEuro"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
+    ul = '';
+    }else if (category === 'newlist') {
+    popUpTitle = 'Nieuwe lijst maken';
+    inputFieldSize = '30';
+    popUpBtnTitle = 'Nieuwe lijst aanmaken';
+    popUpMessage = 'Typ de naam van de nieuwe lijst';
+    inputField = `<span style="width: 80%;" class="inputEuro"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
+    ul = '';
+    }else if (category === 'addToList') {
+    popUpTitle = 'Selecteer een lijst';
+    inputFieldSize = '0';
+    popUpBtnTitle = 'Toevoegen';
+    popUpMessage = 'Selecteer de lijsten waaraan je deze producten wilt toevoegen of maak een nieuwe lijst aan';
+    inputField = ``;
+    ul = `<ul class="lists-popup" style="list-style-type: none">${appendLists()}</ul>`
+     
+    //Function to append the lists to the popup notification
+    function appendLists(){
+        return `${lists.map(function (list) {
+            return `<li>
+            <span style="font-weight: bolder; font-size: 14px">${list.name}</span>
+            <br>
+            <span style="font-weight: lighter; font-size: 11px;">${list.products.length} producten in lijst</span>
+            <button class="addItem" list-id="${list.name}"></button>
+            </li>`;
+        })}
+        ` 
+    }
+        
+    }
+    //Set the html and append it to the item
+    let html = `
     <div class="popup-notificationWrapper">
     <div class="textArea">
-    <p class="pop-upTitle">Prijsalert instellen</p>
-    <span class="bodyText">Je gaat een prijsalert instellen voor <span style="font-weight: bolder;">${product[0].title}</span></span>
+    <p class="pop-upTitle">${popUpTitle}</p>
+    <span class="bodyText">${popUpMessage}</span>
     <br>
-    <span style="width: 80%;" class="inputEuro"><input  class="text" type="text" size="10" name="product" id="" value=""></span>
-    <a style="margin-top: 15px;" class="ctaButton">Prijsalert instellen</a>
+    ${inputField}
+    ${ul}
+    <a style="margin-top: 15px;" class="ctaButton">${popUpBtnTitle}</a>
     </div>
-    </div>`;
-        popupNotification.innerHTML = html;
-        popUpContent.appendChild(popupNotification);
-    } else if (category === 'newlist') {
-        html = `<div class="popup-notificationWrapper">
-    <div class="textArea">
-    <p class="pop-upTitle">Nieuwe lijst maken</p>
-    <span class="bodyText">Typ de naam van de nieuwe lijst</span>
-    <span><input class="text" type="text" size="30" name="product" id="" value=""></span>
-    <a style="margin-top: 15px;" class="ctaButton">Nieuwe lijst aanmaken</a>
     </div>
-    </div`;
-        popupNotification.innerHTML = html;
-        popUpContent.appendChild(popupNotification);
-    } else if (category === 'addToList') {
-
-        html = `<div class="popup-notificationWrapper">
-    <div class="textArea">
-    <p class="pop-upTitle">Selecteer een lijst</p>
-    <ul class="lists" style="list-style-type: none">
-    </ul>
-    <a style="margin-top: 15px;" class="ctaButton">Toevoegen</a>
-    </div>
-    </div`;
-        popupNotification.innerHTML = html;
-        popUpContent.appendChild(popupNotification);
-        let ul = popUpContent.querySelector('ul');
-
-        for (i = 0; i < lists.length; i++) {
-            let selectListItem = document.createElement('li');
-
-            let html = `
-    <span style="font-weight: bolder; font-size: 14px">${lists[i].name}</span>
-    <br>
-    <span style="font-weight: lighter; font-size: 11px;">${lists[i].products.length} producten in lijst</span>
-    <button class="addItem" list-id="${lists[i].id}"></button>
-    `
-            selectListItem.innerHTML = html;
-            ul.appendChild(selectListItem);
-        }
-    }
+    `;
+    popupNotification.innerHTML = html;
+    popUpContent.appendChild(popupNotification);
     return popupNotification;
 }
 
