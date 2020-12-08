@@ -817,7 +817,9 @@ function updateCounter() {
     }
 }
 
-// Make the DIV element draggable:
+//Make the element draggable only on desktop
+if(window.innerWidth > 767){
+    // Make the DIV element draggable:
 dragElement(document.querySelector(".pop-over"));
 function dragElement(elmnt) {
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -856,6 +858,11 @@ function dragElement(elmnt) {
         document.onmousemove = null;
     }
 }
+}else{
+    //nothing
+}
+
+
 
 //Adding css to the javascript code
 let head = document.querySelector('head');
