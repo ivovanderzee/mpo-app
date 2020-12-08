@@ -1,3 +1,27 @@
+//Search compare icon content and add a eventlistener to it
+let iconHeader = document.querySelector('.icon.compare');
+
+//Add event listener to the icon in the header
+iconHeader.addEventListener('click', () => {
+
+//Try to delete the old compare popup
+try{
+    let popupCompare = document.querySelector('.popup');
+    iconHeader.className = 'icon compare';
+    let parent = popupCompare.parentElement;
+    parent.removeChild(popupCompare);
+}catch{
+    //error
+}
+        if(popover.style.display == 'none'){
+        popover.style.display = 'block';
+        iconHeader.classList.add('selected');
+        }else{
+        popover.style.display = 'none';
+        iconHeader.classList.remove('selected');
+}
+});
+
 //JSON data that gets all the products when the page loads
 let productsOnPage = [];
 let productsMPO = [];
@@ -11,18 +35,21 @@ let compareCounter = productsCompare.length;
 let listCounter = lists.length;
 let selectedCounter = Array.from(productsMPO.filter(item => item.selected === true)).length
 
-addCheckbox();
+//Function to add a checkbox to products on a Pricewatch page
 function addCheckbox(){
 //Grab all the list items on a pricewatch page
 let pricewatchItems = document.querySelector('.listing.useVisitedState').querySelectorAll('.largethumb');
 
 //Add the checkbox the to all the products in the list on a pricewatch page
 for(i=0; i < pricewatchItems.length; i++){
+
+    //Specify some properties from each product
     let id = pricewatchItems[i].querySelector('input').getAttribute('value');
     let title = pricewatchItems[i].querySelector('.itemname').querySelector('.ellipsis').querySelector('a').innerText;
     let specline = pricewatchItems[i].querySelector('.itemname').querySelector('.specline.ellipsis').querySelector('a').innerText;
     let price = pricewatchItems[i].querySelector('.price').querySelector('a').innerText;
     let imageUrl = pricewatchItems[i].querySelector('.pwimage').querySelector('a').querySelector('img').getAttribute('src');
+    let itemName = pricewatchItems[i].querySelector('.itemname');
     
     //Set the HTML for the checkbox
     let checkBoxhtml = `<input type="checkbox" name="products[] value="${id}"">
@@ -30,12 +57,13 @@ for(i=0; i < pricewatchItems.length; i++){
     
     //Create a new label and set the innerHTML to the checkbox HTML
     let label = document.createElement('label');
-    label.className = 'mpo checkbox unselected';
     label.innerHTML = checkBoxhtml;
-    let itemName = pricewatchItems[i].querySelector('.itemname');
+    let checkbox = label.querySelector('input');
+    
+    //Append the label to the item
     itemName.appendChild(label);
         
-    //Push the data to a JSON file
+    //Push the properties to a JSON file
         productsOnPage.push({
             id: id,
             title: title,
@@ -45,15 +73,15 @@ for(i=0; i < pricewatchItems.length; i++){
             priceAlert: false,
             alertPrice: 0,
             selected: false,
-            label: label,
+            checkbox: checkbox,
         });
 
-        //Add an eventlistener to the label button for adding and deleting products to the quickaction menu
+        //Add an eventlistener to the label button for adding and deleting products
         label.addEventListener('click', () => {
-            if(label.className === 'mpo checkbox unselected'){
-                addToMPO(id, label);
+            if(!checkbox.getAttribute('checked')){
+                addToMPO(id, checkbox);
             }else{
-                deleteFromMPO(id, label); 
+                deleteFromMPO(id, checkbox);
             }
         })
     }
@@ -64,18 +92,18 @@ let html = `
 <div class="wrapper">
 
 <ul class="tabbar">
-<li class="tab_select_mijnProducten"><span>Mijn Producten(<span class="counter mpo">${mpoCounter}</span>)</span></li>
-<li class="tab_select_compare"><span>Vergelijk(<span class="counter compare">${compareCounter}</span>)</span></li>
+<li class="tab_select mijnProducten active"><span>Mijn Producten(<span class="counter mpo">${mpoCounter}</span>)</span></li>
+<li class="tab_select compare"><span>Vergelijk(<span class="counter compare">${compareCounter}</span>)</span></li>
 </ul>
 
 <div class="contentWrapper">
 
 <div class="topInfo">
-<span class="topTitle">Mijn Producten</span>
-<a class="ctaButton newList">Nieuwe lijst maken</a>
+<span class="topTitle"></span>
+<a class="ctaButton top"></a>
 </div>
 
-<span class="introText">Je hebt nog geen producten toegevoegd. Producten die je toevoegd of een prijsalerts voor instelt kun je hier terugvinden. Ook kun je lijsten maken om je producten in te verdelen.</span>
+<span class="introText">Je hebt momenteel geen producten toegevoegd. Voeg producten toe om deze in een lijst te zetten, een Prijsalert voor aan te maken of te vergelijken.</span>
 
 <div class="singleProducts">
 </div>
@@ -83,7 +111,7 @@ let html = `
 <div class="compareProducts">
 </div>
 
-<div style="margin-top: 40px;" class="priceAlertsList">
+<div class="priceAlertsList">
 <span class="list-title">Mijn Prijsalerts</span>
 <div class="priceAlertContent">
 </div>
@@ -93,14 +121,17 @@ let html = `
 </div>
 
 <div class="bottom-info">
-<p style="margin-bottom: 5px; font-size: 12px;"><a href="#"><span class="counter lists">${listCounter}</span> lijsten, met in totaal <span class="counter mpo">${mpoCounter}</span> producten</a></p>
+<p style="margin-bottom: 5px; font-size: 12px;"><span class="counter lists">${listCounter}</span> lijsten, met in totaal <span class="counter mpo">${mpoCounter}</span> producten</p>
 <p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
 <a class="ctaButton">Bekijk Pricewatch</a>
 </div>
 
-<div style="height: auto; width: 100%; background-color: #f2f2f2; top: 30px; position: absolute; left: 0; right: 0; border-radius: 2px;" class="popUpContent">
+<div class="suggestion-item-wrapper">
+</div>
 
-<div class="scrollPopUp" style="height: 50px; line-height: 50px;">
+<div class="popUpContent">
+
+<div class="scrollPopUp"">
 <span style="margin-left: 10px;"><span style="font-weight: bolder;" class="counter selected">${selectedCounter}</span> producten geselecteerd</span>
 <a class="ctaButton newList" style="float: right; margin-right: 10px; margin-top: 11px;">Selectie in lijst plaatsen</a>
 </div>
@@ -113,51 +144,82 @@ let popover = document.createElement('div');
 popover.className = 'pop-over';
 popover.innerHTML = html;
 
-let newListButton = popover.querySelector('.newList');
-newListButton.addEventListener("click", createNewList);
-
 //Append the new popover to the body
 let body = document.querySelector('body');
 body.appendChild(popover);
 
-//Style the wrapper for the content
+//Grab elements in the popover to user in the code
+let mpoTab = popover.querySelector('.tab_select.mijnProducten');
+let compareTab = popover.querySelector('.tab_select.compare');
+let topTitle = popover.querySelector('.topTitle');
+let buttonTop = popover.querySelector('.ctaButton.top');
 let contentWrapper = popover.querySelector('.contentWrapper');
-let singleProducts = contentWrapper.querySelector('.singleProducts');
+let singleProducts = popover.querySelector('.singleProducts');
+let priceAlertContent = popover.querySelector('.priceAlertContent');
+let priceAlertList = popover.querySelector('.priceAlertsList');
+let allLists = popover.querySelector('.all-lists');
+let introText = popover.querySelector('.introText');
+let suggestionItemWrapper = popover.querySelector('.suggestion-item-wrapper');
+let compareProducts = popover.querySelector('.compareProducts');
+let popUpContent = popover.querySelector('.popUpContent');
 
+//Add event listener to the button in the popover
+buttonTop.addEventListener("click", createNewList);
 
-let mpoTab = popover.querySelector('.tab_select_mijnProducten');
+//Event listeners to the tab buttons
 mpoTab.addEventListener('click', () => {
     mpoTab.classList.add('active');
     compareTab.classList.remove('active');
     switchContent();
 });
-let compareTab = popover.querySelector('.tab_select_compare');
 compareTab.addEventListener('click', () => {
     compareTab.classList.add('active');
     mpoTab.classList.remove('active');
     switchContent();
 });
 
-
+//Function to switch the contentview in the popover
 function switchContent(){
-    if(mpoTab.className === 'tab_select_mijnProducten active'){
-        
+    if(mpoTab.className === 'tab_select mijnProducten active'){
         topTitle.innerText = 'Mijn Producten';
-
-    }else if(compareTab.className ==='tab_select_compare active'){
+        buttonTop.innerText = 'Nieuwe lijst maken';
+        singleProducts.style.display = 'block';
+        priceAlertContent.style.display = 'block';
+        allLists.style.display = 'block';
+        compareProducts.style.display = 'none';
+    }else if(compareTab.className ==='tab_select compare active'){
+        topTitle.innerText = 'Vergelijking';
+        buttonTop.innerText = 'Vergelijk';
+        compareProducts.style.display = 'block';
+        singleProducts.style.display = 'none';
+        priceAlertContent.style.display = 'none';
+        allLists.style.display = 'none';
+    }else{
+        //nothing
     }
 }
 
-//Run the function suggestion items once
+//Run all the essential functions once
+addCheckbox();
+computeMPOProducts();
+calcPriceAlerts();
+calcLists();
+switchContent();
+updateCounter();
 appendSuggestions();
+
+
+//Function to change the state of an element to active or inactive
+function changeState(elem){
+    if(elem.classList.contains('active')){
+        elem.classList.remove('active');
+    }else{
+        elem.classList.add('active');
+    }
+}
+
+//Function to add some suggestions to the view
 function appendSuggestions(){
-    //Create a wrapper for all the suggestion items and give it a classname
-    let suggestionItemWrapper = document.createElement('div');
-    suggestionItemWrapper.className = 'suggestion-item-wrapper';
-
-    //Add the wrapper to the contentview
-    contentWrapper.appendChild(suggestionItemWrapper);
-
     //Add a 4 suggestion items to the wrapper
     for(i = 0; i < 4; i++){
 
@@ -170,20 +232,20 @@ function appendSuggestions(){
 
         //Get ID and label
         let id = productsOnPage[randomNumber].id;
-        let label = productsOnPage[randomNumber].label;
+        let checkbox = productsOnPage[randomNumber].checkbox;
 
         //HTML for the suggestion item
-        let suggestionItemHTML = `
+        let html = `
         <div class="suggestion-item-content">
         <button class="addItem"></button>
-        <div class="suggestion-item-info" style="tex-align: left; background-color: white; margin-left: 5px; height: auto;">
-        <p style="max-width: 115px; height: 14px; word-wrap: break-word; overflow: hidden; margin-top: 87px; margin-bottom: 5px; font-size: 14px; color: #1668AC">${productsOnPage[randomNumber].title}</p>
-        <p style="max-width: 100px; height: 14px; word-wrap: break-word; overflow: hidden; color: #666666;">${productsOnPage[randomNumber].specline}</p>
+        <div class="suggestion-item-info">
+        <p style="max-width: 115px; margin-bottom: 5px; color: #1668AC">${productsOnPage[randomNumber].title}</p>
+        <p style="max-width: 100px; color: #666666; font-size: 12px;">${productsOnPage[randomNumber].specline}</p>
         </div>
         </div>
         `;
         //Set the HTML as innerHTML
-        suggestionItem.innerHTML = suggestionItemHTML;
+        suggestionItem.innerHTML = html;
 
         //Set a background image for the item
         suggestionItem.style.backgroundImage = `url("${productsOnPage[randomNumber].imageUrl}")`;
@@ -193,212 +255,291 @@ function appendSuggestions(){
         let addButton = suggestionItem.querySelector('.addItem');
         addButton.addEventListener('click', () => {
             if(addButton.className === 'addItem'){
-                addButton.classList.add('active');
-                addToMPO(id, label)
+                changeState(addButton);
+                addToMPO(id, checkbox);
             }else{
-                addButton.classList.remove('active');
+                changeState(addButton);
+                //removeFromMPO(id, label);
             }
         })
     }
 }
 
-//Function for adding products to the content listview
-function addToMPO(productID, label){
+//Function that adds products to the MPO array
+function addToMPO(id, checkbox){
     //Select the product that needs to be added
-    let productToAdd = productsOnPage.filter(item => item.id === productID);
-    productsMPO.push(productToAdd[0]);
-    MPOProducts();
+    let product = productsOnPage.filter(product => product.id === id)[0];
+    productsMPO.push(product);
+    computeMPOProducts();
     updateCounter();
-    //Change the class of the checkbox
-    label.classList.remove('unselected');
-    label.classList.add('selected');
+
+    //Set the label for that product to checked
+    checkbox.setAttribute('checked', 'true')
 }
 
+//Function that removes the product from the MPO array
+function deleteFromMPO(id, checkbox){
+    //Select the product that needs to be removed
+        let product = productsMPO.filter(item => item.id === id)[0];
+
+        //Search for the index of the product in the array
+        let index = productsMPO.indexOf(product)
+
+        //Remove product
+        productsMPO.splice(index, 1)
+        computeMPOProducts();
+        updateCounter();
+
+        //Remove the checked attribute on the checkbox
+        checkbox.removeAttribute('checked');
+    }
+    
+//Function to add all the products in the MPO array to the view
+function computeMPOProducts(){
+        //Remove all the HTML from the single products view
+        singleProducts.innerHTML = '';
+    
+        //Append all the items in the array to the view
+        for(i = 0; i < productsMPO.length; i++){
+
+         //Define the properties of the item
+        let id = productsMPO[i].id;
+        let checkbox = productsOnPage[i].checkbox;
+
+         //Create new item element
+        let productItem = document.createElement('div');
+    
+        //Set the attribute id to the productID and style the element
+        productItem.setAttribute('id', id);
+        productItem.className = 'productItem';
+    
+        //HTML for the list item and add the properties
+        let html = `
+        <div class='itemWrapper'>
+        <div class="itemContentWrapper">  
+        <img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">
+        <div class="itemOptions">
+        <div class='option addList' style="margin-right: 5px;"></div>
+        <div class='${productsMPO[i].priceAlert ? 'option setAlert active' : 'option setAlert'}'></div>
+        </div>
+        <div class="imageProduct" style='background-image: url("${productsMPO[i].imageUrl}");'></div>
+        <div class='itemInfo'>
+        <ul>
+        <li class='titleProduct'><span><a>${productsMPO[i].title}</a></span></li>
+        <li class='speclineProduct'><span><a style="color: #666666;">${productsMPO[i].specline}</a></span></li>
+        <li  class='priceProduct'><span><a>${productsMPO[i].price}</a></span></li>
+        </ul>
+        </div>
+        </div>
+        <div class="item-options-bottom">
+        <label class="compare ctaButton unselected checkbox"><input type="checkbox" name="products[]" value="${productsMPO[i].id}"><span>Vergelijk</span></label>
+        </div>
+        </div>
+        `;
+    
+        //Set the innerHTML for the item to the itemHTML and append it to the contentview
+        productItem.innerHTML = html;
+        singleProducts.appendChild(productItem);
+    
+        //Define all the buttons of the product item
+        let deleteBtn = productItem.querySelector('.delProduct');
+        let priceAlertBtn = productItem.querySelector('.setAlert');
+        let addListBtn = productItem.querySelector('.addList');
+
+        //Eventlistener for deleting a product from the list
+        deleteBtn.addEventListener('click', () => {
+            deleteFromMPO(id, checkbox);
+        })
+    
+        //Eventlistener for setting a price alert for the product
+        priceAlertBtn.addEventListener('click', () =>{
+            if(priceAlertBtn.className == 'option setAlert'){
+                setPriceAlert(id, priceAlertBtn);
+            }else{
+                deletePriceAlert(id)
+              }
+          })
+    
+        //Eventlistener for adding the product to a list
+        addListBtn.addEventListener('click', () => {
+            if(addListBtn.className === 'option addList'){
+                selectProducts(id);
+                changeState(addListBtn)
+            }else{
+                changeState(addListBtn);
+            }
+        })
+    
+        //Event listener for adding the product to a list
+        let addCompare = productItem.querySelector('.compare');
+        addCompare.addEventListener('click', () => {
+            if(addCompare.className === 'compare ctaButton unselected checkbox'){
+                addToCompare(id);
+                addCompare.className = 'compare ctaButton selected checkbox'
+            }else{
+                addCompare.className = 'compare ctaButton unselected checkbox'
+            }
+        })
+    }
+    }
+
 //Function for adding products to the content listview
-function addToCompare(productID){
+function addToCompare(id){
     //Select the product that needs to be added
-    let productToAdd = productsOnPage.filter(item => item.id === productID);
-    productsCompare.push(productToAdd[0]);
+    let product = productsOnPage.filter(product => product.id === id)[0];
+
+    //Push to the array and append all the products in that array to the view
+    productsCompare.push(product);
+    calcCompareProducts();
     updateCounter();
-    //Change the class of the checkbox
-    // label.classList.remove('unselected');
-    // label.classList.add('selected');
 }
 
-function MPOProducts(){
-    singleProducts.innerHTML = '';
+//Function the add all the products in the compare array to the view
+function calcCompareProducts(){
 
-    //Append all the items in the array to the view
-    for(i = 0; i < productsMPO.length; i++){
-     //Define the properties of the item
+    //Set innerhtml for the compareview to empty
+    compareProducts.innerHTML = '';
+    for(i = 0; i < productsCompare.length; i++){
+
+    //Grab the id from the product
     let id = productsMPO[i].id;
-    let label = productsMPO[i].label;
-     //Create new item element
+
+    //Create new div for the product item
     let productItem = document.createElement('div');
 
-    //Set the attribute id to the productID and style the element
+    //Set the attribute id to the id and give it a classname
     productItem.setAttribute('id', id);
     productItem.className = 'productItem';
 
       //HTML for the list item and add the properties
-      let itemHTML = `
+      let html = `
       <div class='itemWrapper'>
       <div class="itemContentWrapper">  
       <img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">
-      <div class="itemOptions" style="float: right; margin-right: 0px;">
-      <div class='option addList' style="margin-right: 5px;"></div>
-      <div class='option setAlert'></div>
+      <div class="itemOptions">
+      <div class='${productsMPO[i].priceAlert ? 'option setAlert active' : 'option setAlert'}'></div>
       </div>
-      <div class="imageProduct" style='background-image: url("${productsMPO[i].imageUrl}");'></div>
+      <div class="imageProduct" style='background-image: url("${productsCompare[i].imageUrl}");'></div>
       <div class='itemInfo'>
       <ul>
-      <li class='titleProduct'><span><a>${productsMPO[i].title}</a></span></li>
-      <li class='speclineProduct'><span><a style="color: #666666;">${productsMPO[i].specline}</a></span></li>
-      <li  class='priceProduct'><span><a>${productsMPO[i].price}</a></span></li>
+      <li class='titleProduct'><span><a>${productsCompare[i].title}</a></span></li>
+      <li class='speclineProduct'><span><a style="color: #666666;">${productsCompare[i].specline}</a></span></li>
+      <li  class='priceProduct'><span><a>${productsCompare[i].price}</a></span></li>
       </ul>
       </div>
       </div>
-      <div class="item-options-bottom" style="text-align: right; margin-right: 10px; margin-top: 5px;">
-      <label class="compare ctaButton unselected checkbox"><input type="checkbox" name="products[]" value="${productsMPO[i].id}"><span>Vergelijk</span></label>
+      <div class="item-options-bottom">
+      <label class="compare ctaButton unselected checkbox"><input type="checkbox" name="products[]" value="${productsCompare[i].id}"><span>Mijn Producten</span></label>
       </div>
       </div>
       `;
 
       //Set the innerHTML for the item to the itemHTML and append it to the contentview
-      productItem.innerHTML = itemHTML;
-      singleProducts.appendChild(productItem);
+      productItem.innerHTML = html;
+      compareProducts.appendChild(productItem);
+
+      //Grab all the buttons in the product item
+      let deletebtn = productItem.querySelector('.delProduct');
+      let priceAlertBtn = productItem.querySelector('.setAlert');
 
       //Add eventlistener to the delete button
-      let deletebtn = productItem.querySelector('.delProduct');
       deletebtn.addEventListener('click', () => {
           deleteFromMPO(id, label);
       })
 
-      //Event listener for setting a price alert for the product
-      let priceAlert = productItem.querySelector('.setAlert');
-      priceAlert.addEventListener('click', () =>{
-          if(priceAlert.className == 'option setAlert'){
-              setPriceAlert(id, priceAlert);
+      //Eventlistener for setting a price alert for the product
+      priceAlertBtn.addEventListener('click', () =>{
+          if(priceAlertBtn.className == 'option setAlert'){
+              setPriceAlert(id, priceAlertBtn);
           }else{
               deletePriceAlert(id)
           }
       })
-
-      //Event listener for adding the product to a list
-      let addList = productItem.querySelector('.addList');
-      addList.addEventListener('click', () => {
-          if(addList.className === 'option addList'){
-          selectProducts(id);
-          addList.classList.add('active');
-          }else{
-          addList.classList.remove('active');
-          }
-      })
-
-      //Event listener for adding the product to a list
-      let addCompare = productItem.querySelector('.compare');
-      addCompare.addEventListener('click', () => {
-          if(addCompare.className === 'compare ctaButton unselected checkbox'){
-          addToCompare(id);
-          addCompare.className = 'compare ctaButton selected checkbox'
-          }else{
-          addCompare.className = 'compare ctaButton unselected checkbox'
-          }
-      })
-
-
-      if(productsMPO[i].priceAlert === true){
-          priceAlert.classList.add('active');
-      }else{
-          //nothing
-      }
-}
+    }
 }
 
-//Function that removes the product with the right ID from the content listview div
-function deleteFromMPO(productID, label){
-label.classList.remove('selected');
-label.classList.add('unselected');
-    let productToRemove = productsMPO.filter(item => item.id === productID);
-    let index = productsMPO.indexOf(productToRemove[0])
-    productsMPO.splice(index, 1)
-    MPOProducts();
-    updateCounter();
-}
+//Function for setting a price alert
+function setPriceAlert(id, alertBtn){
+    let product = productsMPO.filter(product => product.id === id)[0];
+    let notification = createNotification('prijsalert', id);
 
-function setPriceAlert(productID, alert){
-    let product = productsMPO.filter(item => item.id === productID);
-    let notification = createNotification('prijsalert', productID);
     //If the users submits, the price alert will be set
     let submitButton = notification.querySelector('.ctaButton');
     submitButton.addEventListener('click', () =>{
-        product[0].priceAlert = true;
+        product.priceAlert = true;
         let value = notification.querySelector('input').value;
-        product[0].alertPrice = value;
-        allPriceAlerts.push(product[0]);
-        alert.classList.add('active');
+        product.alertPrice = value;
+
+        //Push the product to the price alerts array
+        allPriceAlerts.push(product);
+        changeState(alertBtn)
         calcPriceAlerts();
         notification.style.display = 'none';
     })
 }
 
-function deletePriceAlert(productID){
+//Function to delete a price alert
+function deletePriceAlert(id){
+    //Search for the product 
+    let product = productsMPO.filter(product => product.id === id)[0];
 try{
-    let alert = Array.from(singleProducts.querySelectorAll('.productItem')).filter(item => item.getAttribute('id') === productID);
-    alert = alert[0].querySelector('.setAlert');
-    alert.classList.remove('active');
-    let product = productsMPO.filter(item => item.id === productID)
-    product[0].priceAlert = false;
-    
+    //Search for the alert button 
+    let alertBtn = Array.from(singleProducts.querySelectorAll('.productItem')).filter(alert => alert.getAttribute('id') === id)[0];
+    alertBtn = alertBtn.querySelector('.setAlert');
+    changeState(alertBtn);
+
+    //Set price alert to false
+    product.priceAlert = false;
 }catch{
     //error
 }
-        let alertToRemove = allPriceAlerts.filter(item => item.id === productID);
-        let index = allPriceAlerts.indexOf(alertToRemove[0])
-        allPriceAlerts.splice(index, 1)
-        calcPriceAlerts();
+    let index = allPriceAlerts.indexOf(product)
+    allPriceAlerts.splice(index, 1)
+    calcPriceAlerts();
 }
 
-calcPriceAlerts();
 //Function the calculates all the price alerts in the price alert array
 function calcPriceAlerts(){
-    //Select the view
-    let priceAlertContent = popover.querySelector('.priceAlertContent');
-    let priceAlertList = popover.querySelector('.priceAlertsList');
-
-    //If/else for displaying the price alert wrapper in the popover
+   
+    // If/else for displaying the price alert wrapper in the popover
     if(allPriceAlerts.length < 1){
         priceAlertList.style.display = 'none';
     }else{
-    priceAlertList.style.display = 'block';
-    priceAlertContent.innerHTML = '';
+        priceAlertList.style.display = 'block';
+        priceAlertContent.innerHTML = '';
 
     for(i = 0; i < allPriceAlerts.length; i++){
         let id = allPriceAlerts[i].id;
 
         //HTML for the price alert item
-        let priceAlerthtml = `
+        let html = `
         <div class='itemWrapper'>
         <div class="itemContentWrapper">
         <img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">
-        <span style="right: 5px;  bottom: 5px; position: absolute;" class="inputEuro"><input class="text" type="text" size="8" name="" id="" value="${allPriceAlerts[i].alertPrice}"></span>
+        <span class="inputEuro"><input class="text" type="text" size="8" name="" id="" value="${allPriceAlerts[i].alertPrice}"></span>
         
-        <div style='height: 80px; width: 80px; background-color: white; background-image: url("${allPriceAlerts[i].imageUrl}"); background-size: contain; background-repeat: no-repeat; background-position: center; float: left; border-top-left-radius: 2px; border-bottom-left-radius: 2px' class="imageProduct" >
+        <div class="imageProduct" style='background-image: url("${allPriceAlerts[i].imageUrl}");'>
         </div>
         <div class='itemInfo'>
-        <ul style="list-style-type: none; margin-left: 50px; padding-top: 10px;">
-        <li style="max-width: 200px; max-height: 16px; overflow: hidden; font-weight: bolder; font-size: 14px; word-wrap: break-word;"><span class='titleProduct'><a>${allPriceAlerts[i].title}</a></span></li>
-        <li style="max-width: 150px; font-size: 12px; word-wrap: break-word; overflow: hidden; margin-top: 5px; max-height: 16px;"> <span class='speclineProduct'><a style="color: #666666;">${allPriceAlerts[i].specline}</a></span></li>
-        <li style="margin-top: 10px; margin-bottom: 10px; font-size: 13px;"><span class='priceProduct'><a>${allPriceAlerts[i].price}</a></span></li>
+        <ul>
+        <li class='titleProduct'><span><a>${allPriceAlerts[i].title}</a></span></li>
+        <li class='speclineProduct'><span><a style="color: #666666;">${allPriceAlerts[i].specline}</a></span></li>
+        <li class='priceProduct'><span><a>${allPriceAlerts[i].price}</a></span></li>
         </ul>
         </div>
         </div>
         </div>
         `;
+
+        //Create new element for the price alert item
         let priceAlertItem = document.createElement('div');
-        priceAlertItem.innerHTML = priceAlerthtml;
+        priceAlertItem.className = 'price-alert-item';
+
+        //Set the innerhtml and append it to the view
+        priceAlertItem.innerHTML = html;
         priceAlertContent.appendChild(priceAlertItem);
 
+        //Eventlistener for the delete button
         let deleteBtn = priceAlertItem.querySelector('.delProduct');
         deleteBtn.addEventListener('click', () =>{
             deletePriceAlert(id);
@@ -407,39 +548,40 @@ function calcPriceAlerts(){
     }
 }
 
-function createNotification(category, productID = null){
+//Function to generate the pop up notification to the view
+function createNotification(category, id = null){
     let popupNotification = document.createElement('div');
     popupNotification.className = 'popup-notification';
-    let product = productsOnPage.filter(item => item.id === productID)
-    let popUpContent = popover.querySelector('.popUpContent');
-    let popupNotificationHTML = ``;
+    let product = productsOnPage.filter(product => product.id === id);
+    let html = ``;
     
 if(category === 'prijsalert'){
-    popupNotificationHTML = `
+    html = `
     <div class="popup-notificationWrapper">
     <div class="textArea">
     <p class="pop-upTitle">Prijsalert instellen</p>
-    <span class="bodyText" style="margin-bottom: 5px;">Je gaat een prijsalert instellen voor <span style="font-weight: bolder;">${product[0].title}</span></span>
-    <span style="width: 80%;"" class="inputEuro"><input  class="text" type="text" size="10" name="product" id="fsdfgb" value=""></span>
+    <span class="bodyText">Je gaat een prijsalert instellen voor <span style="font-weight: bolder;">${product[0].title}</span></span>
+    <br>
+    <span style="width: 80%;" class="inputEuro"><input  class="text" type="text" size="10" name="product" id="" value=""></span>
     <a style="margin-top: 15px;" class="ctaButton">Prijsalert instellen</a>
     </div>
     </div>`;
-    popupNotification.innerHTML = popupNotificationHTML;
+    popupNotification.innerHTML = html;
     popUpContent.appendChild(popupNotification);
 }else if(category === 'newlist'){
-    popupNotificationHTML = `<div class="popup-notificationWrapper">
+    html = `<div class="popup-notificationWrapper">
     <div class="textArea">
     <p class="pop-upTitle">Nieuwe lijst maken</p>
-    <span class="bodyText" style="margin-bottom: 5px;">Typ de naam van de nieuwe lijst</span>
+    <span class="bodyText">Typ de naam van de nieuwe lijst</span>
     <span><input class="text" type="text" size="30" name="product" id="" value=""></span>
     <a style="margin-top: 15px;" class="ctaButton">Nieuwe lijst aanmaken</a>
     </div>
     </div`;
-    popupNotification.innerHTML = popupNotificationHTML;
+    popupNotification.innerHTML = html;
     popUpContent.appendChild(popupNotification);
 }else if(category === 'addToList'){
   
-    popupNotificationHTML = `<div class="popup-notificationWrapper">
+    html = `<div class="popup-notificationWrapper">
     <div class="textArea">
     <p class="pop-upTitle">Selecteer een lijst</p>
     <ul class="lists" style="list-style-type: none">
@@ -447,75 +589,84 @@ if(category === 'prijsalert'){
     <a style="margin-top: 15px;" class="ctaButton">Toevoegen</a>
     </div>
     </div`;
-    popupNotification.innerHTML = popupNotificationHTML;
+    popupNotification.innerHTML = html;
     popUpContent.appendChild(popupNotification);
     let ul = popUpContent.querySelector('ul');
 
     for(i = 0; i < lists.length; i++){
     let selectListItem = document.createElement('li');
     
-    let selectListItemHTML = `
+    let html = `
     <span style="font-weight: bolder; font-size: 14px">${lists[i].name}</span>
     <br>
     <span style="font-weight: lighter; font-size: 11px;">${lists[i].products.length} producten in lijst</span>
     <button class="addItem" list-id="${lists[i].id}"></button>
     `
-    selectListItem.innerHTML = selectListItemHTML;
+    selectListItem.innerHTML = html;
     ul.appendChild(selectListItem);
     }
     }
     return popupNotification;
 }
 
+//Function to append the lists to the view
 function calcLists(){
-    let allLists = popover.querySelector('.all-lists');
+    //Empty the innerhtml of the listview
     allLists.innerHTML = '';
 
+    //Append each list in the list array
     for(i = 0; i < lists.length; i++){
         let id = lists[i].id;
 
-        let listHTML = `
+        //Html for the list
+        let html = `
         <div class="list-options-top" style="width: auto;">
-        <span class="list-title" style="width: auto; margin-left: 10px;">${lists[i].name}<span> (${lists[i].products.length})</span></span>
-        <button class="option share" style="float: right; margin-right: 10px; height: 20px; width: 20px;"></button>
-        <button class="option collapse" style="float: right; margin-right: 5px; height: 20px; width: 20px;"></button>
+        <span class="list-title">${lists[i].name}<span> (${lists[i].products.length})</span></span>
+        <button class="option share" style="margin-right: 10px;"></button>
+        <button class="option collapse" style="margin-right: 5px;"></button>
         </div>
-        <div class='list-content' style="background-color: #D9D9D9; max-width: 95%; height: auto; margin: 0 auto; margin-top: 15px; padding-bottom: 10px; padding-top: 10px;">
+        <div class='list-content active'>
         </div>
-        <div class="list-options-bottom" style="width: 95%; margin: 0 auto; margin-top: 10px; ">
-        <button class="ctaButton secondary" style="float: right">Totaal berekenen</button>
-        <button class="ctaButton secondary" style="float: right">Verwijder lijst</button>
+        <div class="list-options-bottom">
+        <button class="ctaButton secondary">Totaal berekenen</button>
+        <button class="ctaButton secondary">Verwijder lijst</button>
         </div>
         `
+        //Create new element for the list, set the classname and append it to the view
         let list = document.createElement('div');
         list.className = 'list-wrapper';
         list.setAttribute('list-id', id);
-        list.innerHTML = listHTML;
+        list.innerHTML = html;
         allLists.appendChild(list);
 
+        //Grab buttons from the list
         let collapseBtn = list.querySelector('.collapse');
-        let listContent = list.querySelector('.list-content');
+        let listContent = list.querySelector('.list-content.active');
      
+        //Add eventlistener to the collapse button
         collapseBtn.addEventListener('click', () => {
+            changeState(listContent)
             if(listContent.className === 'list-content'){
-                listContent.classList.add('collapsed');
                 collapseBtn.style.transform = 'rotate(-180deg)';
             }else{
-                listContent.classList.remove('collapsed');
                 collapseBtn.style.transform = 'rotate(0deg)';
             }
         })
 
+        //Add all the products in that particular list to the view
         let products = lists[i].products;
         if(products.length > 0){
         for(i = 0; i < products.length; i++){
+
+            //Create a element for the product item
             let productInList = document.createElement('div');
-            productInList.className = ''
-            let productInListHTML = `
+
+            //Html for the product in the list 
+            let html = `
             <div class='itemWrapper'>
             <div class="itemContentWrapper"> 
             <img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">
-            <div class="itemOptions" style="float: right; margin-right: 0px;">
+            <div class="itemOptions">
             <div class='option addList' style="margin-right: 5px;"></div>
             <div class='option setAlert'></div>
             </div>
@@ -534,7 +685,7 @@ function calcLists(){
             </div>
             </div>
             `;
-            productInList.innerHTML = productInListHTML;
+            productInList.innerHTML = html;
             productInList.style.marginTop = '10px';
             
             listContent.appendChild(productInList);
@@ -546,8 +697,12 @@ function calcLists(){
     }
 }
 
+//Function for creating a new list
 function createNewList(){
+    //Create notification
     let notification = createNotification('newlist');
+
+    //If the user submits the notification the list is being added to the list array
     let submitButton = notification.querySelector('.ctaButton');
     let id = Math.floor((Math.random() * 11000) + 22000);
 
@@ -566,22 +721,24 @@ function createNewList(){
 }
 
 //Function to select products
-function selectProducts(productID){
-    let selectedProduct = productsMPO.filter(item => item.id === productID);
-    selectedProduct[0].selected = true;
+function selectProducts(id){
+    let product = productsMPO.filter(product => product.id === id)[0];
+    product.selected = true;
 
-    newListButton.innerText = 'Selectie in lijst plaatsen';
-    newListButton.removeEventListener('click', createNewList);
+    buttonTop.innerText = 'Selectie in lijst plaatsen';
+    buttonTop.removeEventListener('click', createNewList);
 
     let scrollableBtn = popover.querySelector('.scrollPopUp').querySelector('.ctaButton');
 
     scrollableBtn.addEventListener('click', addToList);
-    newListButton.addEventListener('click', addToList);
+    buttonTop.addEventListener('click', addToList);
     updateCounter();
 }
 
+//Function for adding products to a list
 function addToList(productID){
     
+    //Create notification
             let notification = createNotification('addToList', productID)
             let buttons = notification.querySelectorAll('.addItem');
             for(i = 0; i < buttons.length; i++){
@@ -595,7 +752,6 @@ function addToList(productID){
             calcLists();
              })
         }
-        
 }
 
 contentWrapper.addEventListener('scroll', () => {
@@ -603,7 +759,7 @@ contentWrapper.addEventListener('scroll', () => {
 
     let scrollPopUp = popover.querySelector('.popUpContent').querySelector('.scrollPopUp');
 
-    if(newListButton.innerText == 'Selectie in lijst plaatsen'){
+    if(buttonTop.innerText == 'Selectie in lijst plaatsen'){
         if(scrollPosition > 55){
             scrollPopUp.style.display = 'block';
         }else{
@@ -616,8 +772,6 @@ contentWrapper.addEventListener('scroll', () => {
 
 //Function for updating the counter
 function updateCounter(){
-let introText = popover.querySelector('.introText');
-let suggestionItemWrapper = popover.querySelector('.suggestion-item-wrapper');
 
 mpoCounter = productsMPO.length + allPriceAlerts.length;
 compareCounter = productsCompare.length;
@@ -653,27 +807,6 @@ selectedCounter = Array.from(productsMPO.filter(item => item.selected === true))
     //     suggestionItemWrapper.style.display ='none';
     // }
 }
-
-//Search compare icon content and add a eventlistener to it
-let iconHeader = document.querySelector('.icon.compare');
-console.log(iconHeader);
-iconHeader.addEventListener('click', () => {
-try{
-    let popupCompare = document.querySelector('.popup');
-    iconHeader.className = 'icon compare';
-    let parent = popupCompare.parentElement;
-    parent.removeChild(popupCompare);
-}catch{
-    //error
-}
-        if(popover.style.display == 'none'){
-        popover.style.display = 'block';
-        iconHeader.classList.add('selected');
-        }else{
-        popover.style.display = 'none';
-        iconHeader.classList.remove('selected');
-}
-});
 
 // Make the DIV element draggable:
 dragElement(document.querySelector(".pop-over"));
@@ -770,7 +903,7 @@ style.innerHTML = `
     border-left: none;
 }
 
-.tabbar li:first-child{
+.tab_select.active{
     color: #b9133d;
 }
 
@@ -802,6 +935,21 @@ style.innerHTML = `
     background-repeat: no-repeat;
     background-size: fit;
     background-position: center center;
+}
+
+.suggestion-item-info{
+    text-align: left; 
+    background-color: white; 
+    margin-left: 5px; 
+    height: auto;
+    margin-top: 87px; 
+}
+
+.suggestion-item-info p{
+    font-size: 14px;
+    height: 14px;
+    word-wrap: break-word; 
+    overflow: hidden; 
 }
 
 .suggestion-item-wrapper{
@@ -942,10 +1090,17 @@ style.innerHTML = `
     font-weight: bolder; 
     margin-left: 10px; 
     font-size: 14px;
+    width: auto;
 }
 
 .priceAlertsBlock{
     display: none;
+}
+
+.price-alert-item .inputEuro{
+    right: 5px;  
+    bottom: 5px; 
+    position: absolute;
 }
 
 /* width */
@@ -975,7 +1130,22 @@ style.innerHTML = `
   background: #555; 
 }
 
-.option{
+.list-wrapper .option{
+    height: 20px; 
+    width: 20px;
+    float:right;
+}
+
+
+.itemOptions{
+    right: 5px;
+    bottom: 5px;
+    position: absolute;
+    float: right; 
+    margin-right: 0px;
+}
+
+.itemOptions .option{
     background-color: #D9D9D9;
     background-position: center center;
     background-size: contain; 
@@ -985,14 +1155,15 @@ style.innerHTML = `
     height: 35px;
     width: 35px;
     float: left;
- 
 }
 
-.itemOptions{
-    right: 5px;
-    bottom: 5px;
-    position: absolute;
+
+.item-options-bottom{
+    text-align: right; 
+    margin-right: 10px; 
+    margin-top: 5px;
 }
+
 
 .option.active{
     background-color: #9FBF22;
@@ -1035,12 +1206,24 @@ style.innerHTML = `
     margin-bottom: 40px;
 }
 
+
+
 .list-content{
+    display: none;
+    background-color: #D9D9D9; 
+    max-width: 95%; 
+    height: auto; 
+    margin: 0 auto; 
+    margin-top: 15px; 
+    padding-bottom: 10px; 
+    padding-top: 10px;
+
+}
+
+.list-content.active{
     display: block;
 }
-.list-content.collapsed{
-    display: none;
-}
+
 
 .list-options-top button{
     background-color: #1668AC;
@@ -1051,6 +1234,16 @@ style.innerHTML = `
     background-repeat: no-repeat;
 }
 
+.list-options-bottom{
+    width: 95%; 
+    margin: 0 auto; 
+    margin-top: 10px;
+}
+
+.list-options-bottom button{
+    float: right;
+}
+
 .collapse{
     background-image: url('data:image/svg+xml, %3Csvg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M5.53176 0.666452L0.191706 6.0066C0.068097 6.13011 0 6.29499 0 6.4708C0 6.6466 0.068097 6.81148 0.191706 6.93499L0.584873 7.32825C0.841066 7.58415 1.25745 7.58415 1.51326 7.32825L5.99751 2.844L10.4867 7.33323C10.6104 7.45674 10.7751 7.52493 10.9508 7.52493C11.1267 7.52493 11.2915 7.45674 11.4152 7.33323L11.8083 6.93996C11.9319 6.81635 12 6.65157 12 6.47577C12 6.29997 11.9319 6.13509 11.8083 6.01158L6.46336 0.666452C6.33936 0.542648 6.1738 0.474648 5.99781 0.475039C5.82112 0.474648 5.65566 0.542648 5.53176 0.666452Z" fill="white"/%3E%3C/svg%3E');
 }
@@ -1059,6 +1252,23 @@ style.innerHTML = `
 
 }
 
+
+
+
+
+/* popup notifications */
+
+.popUpContent{
+    border-bottom: 1px #D9D9D9 solid;
+    height: auto; 
+    width: 100%; 
+    background-color: #f2f2f2; 
+    top: 30px; 
+    position: absolute; 
+    left: 0; 
+    right: 0; 
+    border-radius: 2px;
+}
 .popup-notification ul{
     overflow-x: hidden;
     overflow-y: scroll;
@@ -1068,7 +1278,6 @@ style.innerHTML = `
     padding-left: 0px;
     margin-bottom: 0px;
 }
-
 .popup-notification ul li{
     max-height: 50px;
     background-color: white;
@@ -1078,7 +1287,6 @@ style.innerHTML = `
     position: relative
 
 }
-
 .popup-notification ul li button{
     position: absolute;
     top: 0;
@@ -1086,14 +1294,18 @@ style.innerHTML = `
     right: 10px;
     margin-top: 13px;
 }
-
-
-.popUpContent{
-    border-bottom: 1px #D9D9D9 solid;
+.popup-notification .bodyText{
+    margin-bottom: 5px;
 }
 
 .scrollPopUp{
     display:none;
+    height: 50px; 
+    line-height: 50px;
+}
+
+.priceAlertsList{
+    margin-top: 40px;
 }
 `
 head.appendChild(style);
