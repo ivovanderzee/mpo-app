@@ -88,7 +88,7 @@ function addCheckbox() {
 }
 
 //HTML for the new popover element
-let html = `
+let popoverHTML = `
 <div class="wrapper">
 
 <ul class="tabbar">
@@ -142,7 +142,7 @@ let html = `
 //Create a new popover and set the styling and innerHTML
 let popover = document.createElement('div');
 popover.className = 'pop-over';
-popover.innerHTML = html;
+popover.innerHTML = popoverHTML;
 
 //Append the new popover to the body
 let body = document.querySelector('body');
@@ -594,7 +594,7 @@ function createNotification(category, id = null) {
             <span style="font-weight: bolder; font-size: 14px">${list.name}</span>
             <br>
             <span style="font-weight: lighter; font-size: 11px;">${list.products.length} producten in lijst</span>
-            <button class="addItem" list-id="${list.name}"></button>
+            <button class="addItem" list-id="${list.id}"></button>
             </li>`;
         })}
         ` 
