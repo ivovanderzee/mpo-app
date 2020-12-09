@@ -231,23 +231,19 @@ function generateItemHTML(product, category){
           case 'singleProduct':
             checkBtn1 = `<label class="compare ctaButton unselected checkbox"><input type="checkbox" name="products[]" value="${product.id}"><span>Vergelijk</span></label>`;
             checkBtn2 = '';
-            console.log('eerste optie')
             break;
           case 'priceAlert':
             inputField = `<span class="inputEuro"><input class="text" type="text" size="8" name="" id="" value="${product.alertPrice}"></span>`;
             setAlertBtn = '';
             addToListBtn = '';
-            console.log('tweede optie');
             break;
           case 'productCompare':
             checkBtn1 = `<label class="compare ctaButton unselected checkbox"><input type="checkbox" name="products[]" value="${product.id}"><span>Mijn Producten</span></label>`;
             addToListBtn = '';
-            console.log('derde optie');
             break;
           case 'productInList':
             checkBtn1 = `<label class="compare ctaButton unselected checkbox"><input type="checkbox" name="products[]" value="${product.id}"><span>Gekocht</span></label>`;
             checkBtn2 = `<label class="compare ctaButton unselected checkbox"><input type="checkbox" name="products[]" value="${product.id}"><span>Vergelijk</span></label>`;
-            console.log('laatste optie')
       }
       //Html for the product in the list 
       let html = `
@@ -566,13 +562,25 @@ function createNotification(category, id = null) {
     <br>
     ${inputField}
     ${ul}
+    <a class="popup-closeBtn" style="bottom: 15px; right: 15px; position: absolute;">Sluiten(x)</a>
     <a style="margin-top: 15px;" class="ctaButton">${popUpBtnTitle}</a>
     </div>
     </div>
     `;
     popupNotification.innerHTML = html;
     popUpContent.appendChild(popupNotification);
+
+    //Eventlistener for closing the button
+    let closeBtn = popupNotification.querySelector('.popup-closeBtn');
+    closeBtn.addEventListener('click', () =>{
+        closePopup(popupNotification);
+    });
+
     return popupNotification;
+}
+
+function closePopup(popup){
+    popUpContent.removeChild(popup);
 }
 
 //Function to append the lists to the view
@@ -637,11 +645,9 @@ function calcLists() {
 function createNewList() {
     //Create notification
     let notification = createNotification('newlist');
-
     //If the user submits the notification the list is being added to the list array
     let submitButton = notification.querySelector('.ctaButton');
     let id = Math.floor((Math.random() * 11000) + 22000);
-
     submitButton.addEventListener('click', () => {
         let listName = notification.querySelector('input').value;
         lists.push({
