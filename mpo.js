@@ -167,15 +167,12 @@ function switchContent() {
         singleProducts.style.display = 'block';
         allLists.style.display = 'block';
         compareProducts.style.display = 'none';
-        priceAlertList.style.display = 'block';
     } else if (compareTab.className === 'tab_select compare active') {
         topTitle.innerText = 'Vergelijking';
         buttonTop.innerText = 'Vergelijk';
         compareProducts.style.display = 'block';
         singleProducts.style.display = 'none';
-        priceAlertContent.style.display = 'none';
         allLists.style.display = 'none';
-        priceAlertList.style.display = 'none';
     } else {
         //nothing
     }
@@ -507,7 +504,7 @@ function createNotification(category, id = null) {
     inputFieldSize = '30';
     popUpBtnTitle = 'Nieuwe lijst aanmaken';
     popUpMessage = 'Typ de naam van de nieuwe lijst';
-    inputField = `<span style="width: 80%;" class="inputEuro"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
+    inputField = `<span style="width: 80%;"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
     ul = '';
     }else if (category === 'addToList') {
     popUpTitle = 'Selecteer een lijst';
