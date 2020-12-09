@@ -487,6 +487,7 @@ function createNotification(category, id = null) {
     let popUpBtnTitle;
     let inputField;
     let ul;
+    let newListMessage;
     //Create new element and set classname
     let popupNotification = document.createElement('div');
     popupNotification.className = 'popup-notification';
@@ -499,6 +500,7 @@ function createNotification(category, id = null) {
     popUpMessage = `Je gaat een prijsalert instellen voor <span style="font-weight: bolder">${product.title}</span>`;
     inputField = `<span style="width: 80%;" class="inputEuro"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
     ul = '';
+    newListMessage = '';
     }else if (category === 'newlist') {
     popUpTitle = 'Nieuwe lijst maken';
     inputFieldSize = '30';
@@ -506,13 +508,15 @@ function createNotification(category, id = null) {
     popUpMessage = 'Typ de naam van de nieuwe lijst';
     inputField = `<span style="width: 80%;"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
     ul = '';
+    newListMessage = '';
     }else if (category === 'addToList') {
     popUpTitle = 'Selecteer een lijst';
     inputFieldSize = '0';
     popUpBtnTitle = 'Toevoegen';
     popUpMessage = 'Selecteer de lijsten waaraan je deze producten wilt toevoegen of maak een nieuwe lijst aan';
     inputField = ``;
-    ul = `<ul class="lists-popup" style="list-style-type: none">${appendLists()}</ul>`
+    ul = `<ul class="lists-popup" style="list-style-type: none">${appendLists()}</ul>`;
+    newListMessage = `<a class="newListMessage" style="width: 80%;">+ Maak een nieuwe lijst aan</a><br>`;
     //Function to append the lists to the popup notification
     function appendLists(){
         return `${lists.map(function (list) {
@@ -535,6 +539,7 @@ function createNotification(category, id = null) {
     <br>
     ${inputField}
     ${ul}
+    ${newListMessage}
     <a class="popup-closeBtn" style="bottom: 15px; right: 15px; position: absolute;">Sluiten(x)</a>
     <a style="margin-top: 15px;" class="ctaButton">${popUpBtnTitle}</a>
     </div>
@@ -545,6 +550,16 @@ function createNotification(category, id = null) {
     //Eventlistener for closing the button
     contentWrapper.style.paddingTop = `${popupNotification.offsetHeight - 65}px`;
     let closeBtn = popupNotification.querySelector('.popup-closeBtn');
+
+    try{
+    let newListBtn = popupNotification.querySelector('.newListMessage');
+    newListBtn.addEventListener('click', () =>{
+        createNewList();
+    });
+    }catch{
+        //error
+    }
+
     closeBtn.addEventListener('click', () =>{
         closePopup(popupNotification);
     });
