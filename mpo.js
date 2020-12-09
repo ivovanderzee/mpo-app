@@ -39,10 +39,8 @@ let selectedCounter = Array.from(productsMPO.filter(item => item.selected === tr
 function addCheckbox() {
     //Grab all the list items on a pricewatch page
     let pricewatchItems = document.querySelector('.listing.useVisitedState').querySelectorAll('.largethumb');
-
     //Add the checkbox the to all the products in the list on a pricewatch page
     for (i = 0; i < pricewatchItems.length; i++) {
-
         //Specify some properties from each product
         let id = pricewatchItems[i].querySelector('input').getAttribute('value');
         let title = pricewatchItems[i].querySelector('.itemname').querySelector('.ellipsis').querySelector('a').innerText;
@@ -50,19 +48,15 @@ function addCheckbox() {
         let price = pricewatchItems[i].querySelector('.price').querySelector('a').innerText;
         let imageUrl = pricewatchItems[i].querySelector('.pwimage').querySelector('a').querySelector('img').getAttribute('src');
         let itemName = pricewatchItems[i].querySelector('.itemname');
-
         //Set the HTML for the checkbox
         let checkBoxhtml = `<input type="checkbox" name="products[] value="${id}"">
-    <span>Mijn Producten</span>`;
-
+        <span>Mijn Producten</span>`;
         //Create a new label and set the innerHTML to the checkbox HTML
         let label = document.createElement('label');
         label.innerHTML = checkBoxhtml;
         let checkbox = label.querySelector('input');
-
         //Append the label to the item
         itemName.appendChild(label);
-
         //Push the properties to a JSON file
         productsOnPage.push({
             id: id,
@@ -75,7 +69,6 @@ function addCheckbox() {
             selected: false,
             checkbox: checkbox,
         });
-
         //Add an eventlistener to the label button for adding and deleting products
         label.addEventListener('click', () => {
             if (!checkbox.getAttribute('checked')) {
@@ -90,55 +83,42 @@ function addCheckbox() {
 //HTML for the new popover element
 let popoverHTML = `
 <div class="wrapper">
-
 <ul class="tabbar">
 <li class="tab_select mijnProducten active"><span>Mijn Producten(<span class="counter mpo">${mpoCounter}</span>)</span></li>
 <li class="tab_select compare"><span>Vergelijk(<span class="counter compare">${compareCounter}</span>)</span></li>
 </ul>
-
 <div class="contentWrapper">
-
 <div class="topInfo">
 <span class="topTitle"></span>
 <a class="ctaButton top"></a>
 </div>
-
 <span class="introText">Je hebt momenteel geen producten toegevoegd. Voeg producten toe om deze in een lijst te zetten, een Prijsalert voor aan te maken of te vergelijken.</span>
-
 <div class="singleProducts">
 </div>
-
 <div class="compareProducts">
 </div>
-
 <div class="priceAlertsList">
 <span class="list-title">Mijn Prijsalerts</span>
 <div class="priceAlertContent">
 </div>
 </div>
-
 <div class="all-lists">
 </div>
-
 <div class="bottom-info">
 <p style="margin-bottom: 5px; font-size: 12px;"><span class="counter lists">${listCounter}</span> lijsten, met in totaal <span class="counter mpo">${mpoCounter}</span> producten</p>
 <p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
 <a class="ctaButton">Bekijk Pricewatch</a>
 </div>
-
 <div class="suggestion-item-wrapper">
 </div>
-
 <div class="popUpContent">
-
 <div class="scrollPopUp"">
 <span style="margin-left: 10px;"><span style="font-weight: bolder;" class="counter selected">${selectedCounter}</span> producten geselecteerd</span>
 <a class="ctaButton newList" style="float: right; margin-right: 10px; margin-top: 11px;">Selectie in lijst plaatsen</a>
 </div>
+</div>
+</div>`;
 
-</div>
-</div>
-`
 //Create a new popover and set the styling and innerHTML
 let popover = document.createElement('div');
 popover.className = 'pop-over';
@@ -419,11 +399,9 @@ function calcCompareProducts() {
         //Set the innerHTML for the item to the itemHTML and append it to the contentview
         productItem.innerHTML = generateItemHTML(productsMPO[i], 'compareProduct');
         compareProducts.appendChild(productItem);
-
         //Grab all the buttons in the product item
         let deletebtn = productItem.querySelector('.delProduct');
         let priceAlertBtn = productItem.querySelector('.setAlert');
-
         //Add eventlistener to the delete button
         deletebtn.addEventListener('click', () => {
             deleteFromMPO(id, label);
@@ -453,7 +431,7 @@ function setPriceAlert(id, alertBtn) {
         allPriceAlerts.push(product);
         changeState(alertBtn)
         calcPriceAlerts();
-        notification.style.display = 'none';
+        closePopup(notification);
     })
 }
 
@@ -510,14 +488,11 @@ function createNotification(category, id = null) {
     let popUpBtnTitle;
     let inputField;
     let ul;
-
     //Create new element and set classname
     let popupNotification = document.createElement('div');
     popupNotification.className = 'popup-notification';
-
     //Select the product 
     let product = productsOnPage.filter(product => product.id === id)[0];
-
     if (category === 'prijsalert') {
     popUpTitle = 'Prijsalert instellen';
     inputFieldSize = '10';
@@ -539,7 +514,6 @@ function createNotification(category, id = null) {
     popUpMessage = 'Selecteer de lijsten waaraan je deze producten wilt toevoegen of maak een nieuwe lijst aan';
     inputField = ``;
     ul = `<ul class="lists-popup" style="list-style-type: none">${appendLists()}</ul>`
-    
     //Function to append the lists to the popup notification
     function appendLists(){
         return `${lists.map(function (list) {
@@ -569,16 +543,15 @@ function createNotification(category, id = null) {
     `;
     popupNotification.innerHTML = html;
     popUpContent.appendChild(popupNotification);
-
     //Eventlistener for closing the button
     let closeBtn = popupNotification.querySelector('.popup-closeBtn');
     closeBtn.addEventListener('click', () =>{
         closePopup(popupNotification);
     });
-
     return popupNotification;
 }
 
+//Function to close the popup
 function closePopup(popup){
     popUpContent.removeChild(popup);
 }
@@ -587,11 +560,9 @@ function closePopup(popup){
 function calcLists() {
     //Empty the innerhtml of the listview
     allLists.innerHTML = '';
-
     //Append each list in the list array
     for (i = 0; i < lists.length; i++) {
         let id = lists[i].id;
-
         //Html for the list
         let html = `
         <div class="list-options-top" style="width: auto;">
@@ -655,7 +626,7 @@ function createNewList() {
             name: listName,
             products: [],
         });
-        notification.style.display = 'none';
+        closePopup(notification);
         calcLists();
         updateCounter();
     })
@@ -686,9 +657,11 @@ function addToList(productID) {
             for (i = 0; i < selectedProducts.length; i++) {
                 selectedList[0].products.push(selectedProducts[i]);
             }
+            closePopup(notification);
             calcLists();
         })
     }
+   
 }
 
 contentWrapper.addEventListener('scroll', () => {
@@ -708,15 +681,12 @@ contentWrapper.addEventListener('scroll', () => {
 
 //Function for updating the counter
 function updateCounter() {
-
     mpoCounter = productsMPO.length + allPriceAlerts.length;
     compareCounter = productsCompare.length;
     listCounter = lists.length;
     selectedCounter = Array.from(productsMPO.filter(item => item.selected === true)).length;
-
     //Grab all the counters on the page
     let counters = popover.querySelectorAll('.counter');
-
     for (i = 0; i < counters.length; i++) {
         let className = counters[i].className;
         if (className === 'counter mpo') {
@@ -733,7 +703,6 @@ function updateCounter() {
             counters[i].innerHTML = compareCounter;
         }
     }
-
     //Toggle the introtext and the suggestion items
     if (mpoCounter > 0 || listCounter > 0) {
         introText.style.display = 'none';
