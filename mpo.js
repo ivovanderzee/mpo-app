@@ -110,13 +110,15 @@ let popoverHTML = `
 </div>
 <div class="suggestion-item-wrapper">
 </div>
+</div>
 <div class="popUpContent">
 <div class="scrollPopUp"">
 <span style="margin-left: 10px;"><span style="font-weight: bolder;" class="counter selected">${selectedCounter}</span> producten geselecteerd</span>
 <a class="ctaButton newList" style="float: right; margin-right: 10px; margin-top: 11px;">Selectie in lijst plaatsen</a>
 </div>
 </div>
-</div>`;
+</div>
+`;
 
 //Create a new popover and set the styling and innerHTML
 let popover = document.createElement('div');
@@ -163,9 +165,9 @@ function switchContent() {
         topTitle.innerText = 'Mijn Producten';
         buttonTop.innerText = 'Nieuwe lijst maken';
         singleProducts.style.display = 'block';
-        priceAlertContent.style.display = 'block';
         allLists.style.display = 'block';
         compareProducts.style.display = 'none';
+        priceAlertList.style.display = 'block';
     } else if (compareTab.className === 'tab_select compare active') {
         topTitle.innerText = 'Vergelijking';
         buttonTop.innerText = 'Vergelijk';
@@ -173,6 +175,7 @@ function switchContent() {
         singleProducts.style.display = 'none';
         priceAlertContent.style.display = 'none';
         allLists.style.display = 'none';
+        priceAlertList.style.display = 'none';
     } else {
         //nothing
     }
@@ -543,6 +546,7 @@ function createNotification(category, id = null) {
     popupNotification.innerHTML = html;
     popUpContent.appendChild(popupNotification);
     //Eventlistener for closing the button
+    contentWrapper.style.paddingTop = `${popupNotification.offsetHeight - 65}px`;
     let closeBtn = popupNotification.querySelector('.popup-closeBtn');
     closeBtn.addEventListener('click', () =>{
         closePopup(popupNotification);
@@ -553,6 +557,7 @@ function createNotification(category, id = null) {
 //Function to close the popup
 function closePopup(popup){
     popUpContent.removeChild(popup);
+    contentWrapper.style.paddingTop = '0px';
 }
 
 //Function to append the lists to the view
@@ -1179,18 +1184,19 @@ style.innerHTML = `
 
 }
 
+
 /* popup notifications */
 
 .popUpContent{
     border-bottom: 1px #D9D9D9 solid;
     height: auto; 
     width: 100%; 
-    background-color: #f2f2f2; 
-    top: 30px; 
-    position: absolute; 
-    left: 0; 
-    right: 0; 
+    background-color: #f2f2f2;
     border-radius: 2px;
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
 }
 .popup-notification ul{
     overflow-x: hidden;
