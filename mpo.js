@@ -661,7 +661,6 @@ function addToList(productID) {
             calcLists();
         })
     }
-   
 }
 
 contentWrapper.addEventListener('scroll', () => {
@@ -714,7 +713,7 @@ function updateCounter() {
 }
 
 //Make the element draggable only on desktop
-if(window.innerWidth > 767){
+//if(window.innerWidth > 767){
     // Make the DIV element draggable:
 dragElement(document.querySelector(".pop-over"));
 function dragElement(elmnt) {
@@ -754,15 +753,17 @@ function dragElement(elmnt) {
         document.onmousemove = null;
     }
 }
-}else{
+//}else{
     //nothing
-}
+//}
 
 //Adding css to the javascript code
 let head = document.querySelector('head');
 let style = document.createElement('style');
 
 style.innerHTML = `
+
+
 .pop-over{
     z-index: 200;
     position: fixed;
@@ -825,6 +826,20 @@ style.innerHTML = `
     overflow-x: hidden;
     overflow-y: scroll;
 }
+
+
+/*Responsive css*/
+@media only screen and (max-width: 767px) {
+    .contentWrapper{
+        height: 90vh;
+        width: 100vw;
+    }
+    .pop-over{
+        left: 0px;
+        right: 0px;
+        bottom: 0;
+    }
+  }
 
 .contentWrapper.singleProducts{
     height: auto;
