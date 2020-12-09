@@ -1,24 +1,23 @@
 //Search compare icon content and add a eventlistener to it
-let iconHeader = document.querySelector('.icon.compare');
+let iconCompare = document.querySelector('.icon.compare');
+let iconFlag = document.querySelector('.icon.display.flag');
+let userbar = document.querySelector('#userbar');
+
+let iconMPO = document.createElement('li');
+iconMPO.className = 'iconMPO';
+let iconMPOHTML = `<a></a>`;
+iconMPO.innerHTML = iconMPOHTML;
+//Delete original icon
+userbar.removeChild(iconCompare);
+userbar.insertBefore(iconMPO, iconFlag);
 
 //Add event listener to the icon in the header
-iconHeader.addEventListener('click', () => {
-
-    //Try to delete the old compare popup
-    try {
-        let popupCompare = document.querySelector('.popup');
-        iconHeader.className = 'icon compare';
-        let parent = popupCompare.parentElement;
-        parent.removeChild(popupCompare);
-    } catch {
-        //error
-    }
-    if (popover.style.display == 'none') {
+ iconMPO.addEventListener('click', () => {
+    changeState(iconMPO);
+    if(iconMPO.classList.contains('active')){
         popover.style.display = 'block';
-        iconHeader.classList.add('selected');
-    } else {
+    }else{
         popover.style.display = 'none';
-        iconHeader.classList.remove('selected');
     }
 });
 
@@ -762,7 +761,20 @@ let head = document.querySelector('head');
 let style = document.createElement('style');
 
 style.innerHTML = `
-
+.iconMPO a{
+    display: block;
+    height: 44px;
+    position: relative;
+    width: 31px;
+    background-image: url("data:image/svg+xml,%3Csvg width='17' height='17' viewBox='0 0 17 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0H16.4138V17H0V0ZM2.05172 2.34483H5.12931V4.10345H2.05172V2.34483ZM14.3621 2.34483H7.18103V4.10345H14.3621V2.34483ZM2.05172 5.86207H5.12931V7.62069H2.05172V5.86207ZM14.3621 5.86207H7.18103V7.62069H14.3621V5.86207ZM2.05172 9.37931H5.12931V11.1379H2.05172V9.37931ZM14.3621 9.37931H7.18103V11.1379H14.3621V9.37931ZM2.05172 12.8966H5.12931V14.6552H2.05172V12.8966ZM14.3621 12.8966H7.18103V14.6552H14.3621V12.8966Z' fill='%23D9D9D9'/%3E%3C/svg%3E%0A");
+    background-position: center center;
+    background-size: fit;
+    background-repeat: no-repeat;
+}
+.iconMPO.active a{
+    background-color: white;
+    background-image: url("data:image/svg+xml,%3Csvg width='17' height='17' viewBox='0 0 17 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0H16.4138V17H0V0ZM2.05172 2.34483H5.12931V4.10345H2.05172V2.34483ZM14.3621 2.34483H7.18103V4.10345H14.3621V2.34483ZM2.05172 5.86207H5.12931V7.62069H2.05172V5.86207ZM14.3621 5.86207H7.18103V7.62069H14.3621V5.86207ZM2.05172 9.37931H5.12931V11.1379H2.05172V9.37931ZM14.3621 9.37931H7.18103V11.1379H14.3621V9.37931ZM2.05172 12.8966H5.12931V14.6552H2.05172V12.8966ZM14.3621 12.8966H7.18103V14.6552H14.3621V12.8966Z' fill='black'/%3E%3C/svg%3E%0A");
+}
 
 .pop-over{
     z-index: 200;
@@ -826,20 +838,6 @@ style.innerHTML = `
     overflow-x: hidden;
     overflow-y: scroll;
 }
-
-
-/*Responsive css*/
-@media only screen and (max-width: 767px) {
-    .contentWrapper{
-        height: 90vh;
-        width: 100vw;
-    }
-    .pop-over{
-        left: 0px;
-        right: 0px;
-        bottom: 0;
-    }
-  }
 
 .contentWrapper.singleProducts{
     height: auto;
@@ -1232,5 +1230,22 @@ style.innerHTML = `
 .priceAlertsList{
     margin-top: 40px;
 }
+
+/*Responsive css*/
+@media only screen and (max-width: 767px) {
+    .contentWrapper{
+        height: 90vh;
+        width: 100vw;
+    }
+    .pop-over{
+        left: 0px;
+        right: 0px;
+        bottom: 0;
+    }
+
+    .iconMPO{
+        width: 44px;
+    }
+  }
 `
 head.appendChild(style);
