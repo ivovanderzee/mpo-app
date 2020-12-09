@@ -607,8 +607,14 @@ function calcLists() {
                 listContent.appendChild(productInList);
                 listContent.firstElementChild.style.marginTop = '0px';
             }
-        } else {
-            //nothing
+        }else if(products.length < 1) {
+            let text = document.createElement('p');
+            text.style.paddingLeft = '15px';
+            text.style.paddingRight = '15px';
+            text.style.marginBottom = '0px';
+            text.style.textAlign = 'center';
+            text.innerHTML = 'Je hebt nog geen producten toegevoegd aan deze lijst. <a>Bekijk de Pricewatch</a> of voeg producten toe vanuit Mijn Producten';
+            listContent.appendChild(text);
         }
     }
 }
