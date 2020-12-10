@@ -357,10 +357,11 @@ function computeMPOProducts() {
         //Eventlistener for adding the product to a list
         addListBtn.addEventListener('click', () => {
             if (addListBtn.className === 'option addList') {
-                selectProducts(id);
                 changeState(addListBtn)
+                selectProducts(id, addListBtn);
             } else {
                 changeState(addListBtn);
+                selectProducts(id, addListBtn);
             }
         })
         //Event listener for adding the product to a list
@@ -655,14 +656,27 @@ function createNewList() {
 }
 
 //Function to select products
-function selectProducts(id) {
+function selectProducts(id, addListBtn) {
     let product = productsMPO.filter(product => product.id === id)[0];
-    product.selected = true;
+    switch(addListBtn.className){
+        case 'option addList active': 
+            product.selected = true;
+            break;
+        default:
+            product.selected = false;
+    }
+    let selectedProducts = Array.from(productsMPO.filter(product => product.selected === true));
+    if(selectedProducts.length > 0){
     buttonTop.innerText = 'Selectie in lijst plaatsen';
     buttonTop.removeEventListener('click', createNewList);
+    buttonTop.addEventListener('click', addToList);
+    }else{
+    buttonTop.innerText = 'Nieuwe lijst maken';
+    buttonTop.addEventListener('click', createNewList);
+    buttonTop.removeEventListener('click', addToList);
+    }
     let scrollableBtn = popover.querySelector('.scrollPopUp').querySelector('.ctaButton');
     scrollableBtn.addEventListener('click', addToList);
-    buttonTop.addEventListener('click', addToList);
     updateCounter();
 } 
 
