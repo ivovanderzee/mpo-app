@@ -179,7 +179,11 @@ function switchContent() {
 }
 
 //Run all the essential functions once
+try{
 addCheckbox();
+}catch{
+    //error
+}
 computeMPOProducts();
 calcPriceAlerts();
 calcLists();
@@ -522,12 +526,12 @@ function createNotification(category, id = null) {
     function appendLists(){
         return `${lists.map(function (list) {
             return `<li>
+            <input type="checkbox" list-id="${list.id}" class="checkList"></input>
             <span style="font-weight: bolder; font-size: 14px">${list.name}</span>
             <br>
-            <span style="font-weight: lighter; font-size: 11px;">${list.products.length} producten in lijst</span>
-            <button class="addItem" list-id="${list.id}"></button>
+            <span style="font-weight: lighter; font-size: 11px; margin-left: 20px;">${list.products.length} producten in lijst</span>
             </li>`;
-        })}
+        }).join('')}
         ` 
     }
     }
@@ -541,7 +545,7 @@ function createNotification(category, id = null) {
     ${inputField}
     ${ul}
     ${newListMessage}
-    <a class="popup-closeBtn" style="bottom: 15px; right: 15px; position: absolute;">Sluiten(x)</a>
+    <a class="popup-closeBtn" style="bottom: 15px; right: 15px; position: absolute;">Cancel</a>
     <a style="margin-top: 15px;" class="ctaButton">${popUpBtnTitle}</a>
     </div>
     </div>
@@ -560,6 +564,18 @@ function createNotification(category, id = null) {
     }catch{
         //error
     }
+
+    try{
+    let checkboxes = popupNotification.querySelector('.lists-popup').querySelectorAll('input');
+    for(i = 0; i < checkboxes.length; i++){
+        let listID = checkboxes[i].getAttribute('list-id');
+        checkboxes[i].addEventListener('click', () =>{
+            selectList(listID);
+        })
+    }
+}catch{
+    //error
+}
 
     closeBtn.addEventListener('click', () =>{
         closePopup(popupNotification);
@@ -648,11 +664,17 @@ function createNewList() {
             id: id,
             name: listName,
             products: [],
+            selected: false,
         });
         closePopup(notification);
         calcLists();
         updateCounter();
     })
+}
+
+function selectList(listid){
+    let list = lists.filter(list => list.id = listid)[0];
+    list.selected = true;
 }
 
 //Function to select products
@@ -684,19 +706,22 @@ function selectProducts(id, addListBtn) {
 function addToList(productID) {
     //Create notification
     let notification = createNotification('addToList', productID)
-    let buttons = notification.querySelectorAll('.addItem');
-    for (i = 0; i < buttons.length; i++) {
-        let listID = buttons[i].getAttribute('list-id');
-        buttons[i].addEventListener('click', () => {
-            let selectedProducts = Array.from(productsMPO.filter(item => item.selected === true));
-            let selectedList = lists.filter(item => item.id == listID);
-            for (i = 0; i < selectedProducts.length; i++) {
-                selectedList[0].products.push(selectedProducts[i]);
-            }
-            closePopup(notification);
-            calcLists();
-        })
+    let button = notification.querySelector('.ctaButton');
+    let selectedLists = lists.filter(list => list.selected == true);
+    let selectedProducts = Array.from(productsMPO.filter(item => item.selected == true));
+
+button.addEventListener('click', () => {
+    console.log('toevoegen clicked');
+    for(i = 0; i < selectedLists.length; i++){
+        console.log('loop lijst');
+        for(h = 0; h < selectedProducts.length; h++){
+            console.log('loop producten');
+            selectedLists[i].push(selectedProducts[h]);
+        }
     }
+    closePopup(notification);
+    calcLists();
+})
 }
 
 contentWrapper.addEventListener('scroll', () => {
@@ -1041,6 +1066,7 @@ style.innerHTML = `
     margin-left: 15px;  
     font-weight: bolder; 
     font-size: 18px;
+    color: #9a0e36;
 }
 
 .bottom-info{
@@ -1216,7 +1242,6 @@ style.innerHTML = `
 
 }
 
-
 /* popup notifications */
 
 .popUpContent{
@@ -1240,20 +1265,13 @@ style.innerHTML = `
     margin-bottom: 0px;
 }
 .popup-notification ul li{
-    max-height: 50px;
-    background-color: white;
-    margin-bottom: 5px;
+    color: black;
     padding: 10px;
     border-radius: 2px;
-    position: relative
+    position: relative;
+    padding: 0px;
+    margin-bottom: 10px;
 
-}
-.popup-notification ul li button{
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 10px;
-    margin-top: 13px;
 }
 .popup-notification .bodyText{
     margin-bottom: 5px;
