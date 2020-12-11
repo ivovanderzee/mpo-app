@@ -675,6 +675,7 @@ function createNewList() {
 function selectList(listid){
     let list = lists.filter(list => list.id = listid)[0];
     list.selected = true;
+    console.log('list selected')
 }
 
 //Function to select products
@@ -707,16 +708,13 @@ function addToList(productID) {
     //Create notification
     let notification = createNotification('addToList', productID)
     let button = notification.querySelector('.ctaButton');
-    let selectedLists = lists.filter(list => list.selected == true);
-    let selectedProducts = Array.from(productsMPO.filter(item => item.selected == true));
-
 button.addEventListener('click', () => {
-    console.log('toevoegen clicked');
+    let selectedLists = Array.from(lists.filter(list => list.selected === true));
+    console.log(selectedLists)
+    let selectedProducts = Array.from(productsMPO.filter(item => item.selected === true));
     for(i = 0; i < selectedLists.length; i++){
-        console.log('loop lijst');
         for(h = 0; h < selectedProducts.length; h++){
-            console.log('loop producten');
-            selectedLists[i].push(selectedProducts[h]);
+            selectedLists[i].products.push(selectedProducts[h]);
         }
     }
     closePopup(notification);
