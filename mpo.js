@@ -82,6 +82,7 @@ function addCheckbox() {
 //HTML for the new popover element
 let popoverHTML = `
 <div class="wrapper">
+<div class="dragBar"><span class="close-popover">X</span></div>
 <ul class="tabbar">
 <li class="tab_select mijnProducten active"><span>Mijn Producten(<span class="counter mpo">${mpoCounter}</span>)</span></li>
 <li class="tab_select compare"><span>Vergelijk(<span class="counter compare">${compareCounter}</span>)</span></li>
@@ -143,6 +144,7 @@ let introText = popover.querySelector('.introText');
 let suggestionItemWrapper = popover.querySelector('.suggestion-item-wrapper');
 let compareProducts = popover.querySelector('.compareProducts');
 let popUpContent = popover.querySelector('.popUpContent');
+let closeButton = popover.querySelector('.close-popover');
 
 //Add event listener to the button in the popover
 buttonTop.addEventListener("click", createNewList);
@@ -157,6 +159,11 @@ compareTab.addEventListener('click', () => {
     changeState(compareTab);
     changeState(mpoTab);
     switchContent();
+});
+
+closeButton.addEventListener('click', () =>{
+    iconMPO.classList.remove('active');
+    popover.style.display = 'none';
 });
 
 //Function to switch the contentview in the popover
@@ -256,7 +263,6 @@ function generateItemHTML(product, category){
       //Return all the buttons and clickable parts
       return html;
 }
-
 
 //Function to add some suggestions to the view
 function appendSuggestions() {
@@ -849,6 +855,24 @@ style.innerHTML = `
     border-top: none;
 }
 
+.dragBar{
+    height: 15px;
+    width auto;
+    background-color: #9a0e36;
+    color: white;
+    text-align: right;
+    padding-right: 5px;
+    font-size: 11px;
+    border-top-color: white;
+    border-top-width: 0.2px;
+    border-top-style: solid;
+}
+
+.dragBar span{
+    line-height: 15px;
+}
+
+
 .all-lists{
     margin-top: 40px;
 }
@@ -1242,7 +1266,6 @@ style.innerHTML = `
 /* popup notifications */
 
 .popUpContent{
-    border-bottom: 1px #D9D9D9 solid;
     height: auto; 
     width: 100%; 
     background-color: #f2f2f2;
