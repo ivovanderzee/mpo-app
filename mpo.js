@@ -675,7 +675,6 @@ function createNewList() {
 function selectList(listid){
     let list = lists.filter(list => list.id = listid)[0];
     list.selected = true;
-    console.log('list selected')
 }
 
 //Function to select products
