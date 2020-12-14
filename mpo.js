@@ -1054,7 +1054,7 @@ style.innerHTML = `
 
 .delProduct{
     float: right; 
-    margin: 2px;
+    margin: 5px;
 }
 
 .productItem{
