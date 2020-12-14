@@ -612,8 +612,7 @@ function calcLists() {
         <div class='list-content active'>
         </div>
         <div class="list-options-bottom">
-        
-        <button class="ctaButton secondary">Verwijder lijst</button>
+        <a>Totaal berekenen <span class="counter price" style="color: black; float: right;">€ ${list.totalPrice}</span></a>
         </div>
         `
          //Create new element for the list, set the classname and append it to the view
@@ -649,6 +648,8 @@ function calcLists() {
                  productInList.style.marginTop = '10px';
                  listContent.appendChild(productInList);
                  listContent.firstElementChild.style.marginTop = '0px';
+                 
+                 console.log(products[i].price)
              }
          }else if(products.length < 1) {
              let text = document.createElement('p');
@@ -659,11 +660,25 @@ function calcLists() {
              text.innerHTML = 'Je hebt nog geen producten toegevoegd aan deze lijst. <a>Bekijk de Pricewatch</a> of voeg producten toe vanuit Mijn Producten';
              listContent.appendChild(text);
          }
+
+
+         totalPrice();
+         function totalPrice(){
+            let priceCount = listElement.querySelector('.counter.price');
+            priceCount.innerHTML = '';
+             let totalPrice = list.totalPrice;
+                products.forEach(product =>{
+                    let price = parseFloat(product.price.replace(",", ".").replace(/[^0-9\.-]+/g,""));
+                    totalPrice = totalPrice + price;
+                })
+                priceCount.innerHTML = `€ ${totalPrice.toFixed(2)}`;
+         }
+        
     })
 }
 
+//Function to delete a list
 function deleteList(listID){
-
       //Select the product that needs to be removed
       let list = lists.filter(list => list.id === listID)[0];
       //Search for the index of the product in the array
@@ -672,7 +687,6 @@ function deleteList(listID){
       lists.splice(index, 1)
       calcLists();
       updateCounter();
-
 }
 
 //Function for creating a new list
@@ -688,6 +702,7 @@ function createNewList() {
             id: id,
             name: listName,
             products: [],
+            totalPrice: 0,
             selected: false,
         });
         closePopup(notification);
@@ -697,7 +712,6 @@ function createNewList() {
 }
 
 function selectList(listid){
-    console.log(listid)
     let list = lists.filter(list => list.id == listid)[0];
     list.selected = true;
 }
