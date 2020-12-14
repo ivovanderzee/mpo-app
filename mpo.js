@@ -605,13 +605,14 @@ function calcLists() {
         let html = `
         <div class="list-options-top" style="width: auto;">
         <span class="list-title">${list.name}<span> (${list.products.length})</span></span>
-        <button class="option share" style="margin-right: 10px;"></button>
+        <button class="option delete" style="margin-right: 10px; color: white;">X</button>
+        <button class="option share" style="margin-right: 5px;"></button>
         <button class="option collapse" style="margin-right: 5px;"></button>
         </div>
         <div class='list-content active'>
         </div>
         <div class="list-options-bottom">
-        <button class="ctaButton secondary">Totaal berekenen</button>
+        
         <button class="ctaButton secondary">Verwijder lijst</button>
         </div>
         `
@@ -624,6 +625,7 @@ function calcLists() {
          //Grab buttons from the list
          let collapseBtn = listElement.querySelector('.collapse');
          let listContent = listElement.querySelector('.list-content.active');
+         let delBtn = listElement.querySelector('.option.delete');
          //Add eventlistener to the collapse button
          collapseBtn.addEventListener('click', () => {
              changeState(listContent)
@@ -633,6 +635,10 @@ function calcLists() {
                  collapseBtn.style.transform = 'rotate(0deg)';
              }
          })
+         delBtn.addEventListener('click', () =>{
+             deleteList(id);
+         })
+
          //Add all the products in that particular list to the view
          let products = list.products;
          if (products.length > 0) {
@@ -654,8 +660,18 @@ function calcLists() {
              listContent.appendChild(text);
          }
     })
-        
-        console.log('looped trhough the list');
+}
+
+function deleteList(listID){
+
+      //Select the product that needs to be removed
+      let list = lists.filter(list => list.id === listID)[0];
+      //Search for the index of the product in the array
+      let index = lists.indexOf(list)
+      //Remove product
+      lists.splice(index, 1)
+      calcLists();
+      updateCounter();
 
 }
 
