@@ -598,12 +598,13 @@ function calcLists() {
     //Empty the innerhtml of the listview
     allLists.innerHTML = '';
     //Append each list in the list array
-    for (i = 0; i < lists.length; i++) {
-        let id = lists[i].id;
+    lists.forEach(list => {
+        let id = list.id;
+
         //Html for the list
         let html = `
         <div class="list-options-top" style="width: auto;">
-        <span class="list-title">${lists[i].name}<span> (${lists[i].products.length})</span></span>
+        <span class="list-title">${list.name}<span> (${list.products.length})</span></span>
         <button class="option share" style="margin-right: 10px;"></button>
         <button class="option collapse" style="margin-right: 5px;"></button>
         </div>
@@ -614,45 +615,48 @@ function calcLists() {
         <button class="ctaButton secondary">Verwijder lijst</button>
         </div>
         `
-        //Create new element for the list, set the classname and append it to the view
-        let list = document.createElement('div');
-        list.className = 'list-wrapper';
-        list.setAttribute('list-id', id);
-        list.innerHTML = html;
-        allLists.appendChild(list);
-        //Grab buttons from the list
-        let collapseBtn = list.querySelector('.collapse');
-        let listContent = list.querySelector('.list-content.active');
-        //Add eventlistener to the collapse button
-        collapseBtn.addEventListener('click', () => {
-            changeState(listContent)
-            if (listContent.className === 'list-content') {
-                collapseBtn.style.transform = 'rotate(-180deg)';
-            } else {
-                collapseBtn.style.transform = 'rotate(0deg)';
-            }
-        })
-        //Add all the products in that particular list to the view
-        let products = lists[i].products;
-        if (products.length > 0) {
-            for (i = 0; i < products.length; i++) {
-                //Create a element for the product item
-                let productInList = document.createElement('div');
-                productInList.innerHTML = generateItemHTML(products[i], 'productInList');
-                productInList.style.marginTop = '10px';
-                listContent.appendChild(productInList);
-                listContent.firstElementChild.style.marginTop = '0px';
-            }
-        }else if(products.length < 1) {
-            let text = document.createElement('p');
-            text.style.paddingLeft = '15px';
-            text.style.paddingRight = '15px';
-            text.style.marginBottom = '0px';
-            text.style.textAlign = 'center';
-            text.innerHTML = 'Je hebt nog geen producten toegevoegd aan deze lijst. <a>Bekijk de Pricewatch</a> of voeg producten toe vanuit Mijn Producten';
-            listContent.appendChild(text);
-        }
-    }
+         //Create new element for the list, set the classname and append it to the view
+         let listElement = document.createElement('div');
+         listElement.className = 'list-wrapper';
+         listElement.setAttribute('list-id', id);
+         listElement.innerHTML = html;
+         allLists.appendChild(listElement);
+         //Grab buttons from the list
+         let collapseBtn = listElement.querySelector('.collapse');
+         let listContent = listElement.querySelector('.list-content.active');
+         //Add eventlistener to the collapse button
+         collapseBtn.addEventListener('click', () => {
+             changeState(listContent)
+             if (listContent.className === 'list-content') {
+                 collapseBtn.style.transform = 'rotate(-180deg)';
+             } else {
+                 collapseBtn.style.transform = 'rotate(0deg)';
+             }
+         })
+         //Add all the products in that particular list to the view
+         let products = list.products;
+         if (products.length > 0) {
+             for (i = 0; i < products.length; i++) {
+                 //Create a element for the product item
+                 let productInList = document.createElement('div');
+                 productInList.innerHTML = generateItemHTML(products[i], 'productInList');
+                 productInList.style.marginTop = '10px';
+                 listContent.appendChild(productInList);
+                 listContent.firstElementChild.style.marginTop = '0px';
+             }
+         }else if(products.length < 1) {
+             let text = document.createElement('p');
+             text.style.paddingLeft = '15px';
+             text.style.paddingRight = '15px';
+             text.style.marginBottom = '0px';
+             text.style.textAlign = 'center';
+             text.innerHTML = 'Je hebt nog geen producten toegevoegd aan deze lijst. <a>Bekijk de Pricewatch</a> of voeg producten toe vanuit Mijn Producten';
+             listContent.appendChild(text);
+         }
+    })
+        
+        console.log('looped trhough the list');
+
 }
 
 //Function for creating a new list
@@ -713,16 +717,16 @@ function addToList(productID) {
     let notification = createNotification('addToList', productID)
     let button = notification.querySelector('.ctaButton');
 button.addEventListener('click', () => {
-    let selectedLists = lists.filter(list => list.selected === true);
-    console.log(selectedLists)
+    let selectedLists = lists.filter(list => list.selected == true);
     let selectedProducts = Array.from(productsMPO.filter(item => item.selected === true));
-    for(i = 0; i < selectedLists.length; i++){
-        let list = selectedLists[i];
-        for(h = 0; h < selectedProducts.length; h++){
-            list.products.push(selectedProducts[h]);
-            deleteFromMPO(selectedProducts[h].id);
-        }
-    }
+    selectedLists.forEach(list => {
+        selectedProducts.forEach(product => {
+            list.products.push(product);
+            deleteFromMPO(product.id);
+        })
+            
+        
+    })
     closePopup(notification);
     calcLists();
 })
