@@ -73,7 +73,7 @@ function addCheckbox() {
             if (!checkbox.getAttribute('checked')) {
                 addToMPO(id, checkbox);
             } else {
-                deleteFromMPO(id, checkbox);
+                deleteFromMPO(id);
             }
         })
     }
@@ -299,7 +299,7 @@ function appendSuggestions() {
                 addToMPO(id, checkbox);
             } else {
                 changeState(addButton);
-                deleteFromMPO(id, checkbox);
+                deleteFromMPO(id);
             }
         })
     }
@@ -317,7 +317,7 @@ function addToMPO(id, checkbox) {
 }
 
 //Function that removes the product from the MPO array
-function deleteFromMPO(id, checkbox) {
+function deleteFromMPO(id) {
     //Select the product that needs to be removed
     let product = productsMPO.filter(item => item.id === id)[0];
     //Search for the index of the product in the array
@@ -326,8 +326,6 @@ function deleteFromMPO(id, checkbox) {
     productsMPO.splice(index, 1)
     computeMPOProducts();
     updateCounter();
-    //Remove the checked attribute on the checkbox
-    checkbox.removeAttribute('checked');
 }
 
 //Function to add all the products in the MPO array to the view
@@ -354,7 +352,7 @@ function computeMPOProducts() {
         let addCompare = productItem.querySelector('.compare');
         //Eventlistener for deleting a product from the list
         deleteBtn.addEventListener('click', () => {
-            deleteFromMPO(id, checkbox);
+            deleteFromMPO(id);
         })
         //Eventlistener for setting a price alert for the product
         priceAlertBtn.addEventListener('click', () => {
@@ -414,7 +412,7 @@ function calcCompareProducts() {
         let priceAlertBtn = productItem.querySelector('.setAlert');
         //Add eventlistener to the delete button
         deletebtn.addEventListener('click', () => {
-            deleteFromMPO(id, label);
+            deleteFromMPO(id);
         })
         //Eventlistener for setting a price alert for the product
         priceAlertBtn.addEventListener('click', () => {
@@ -714,12 +712,14 @@ function addToList(productID) {
     let notification = createNotification('addToList', productID)
     let button = notification.querySelector('.ctaButton');
 button.addEventListener('click', () => {
-    let selectedLists = Array.from(lists.filter(list => list.selected === true));
+    let selectedLists = lists.filter(list => list.selected === true);
     console.log(selectedLists)
     let selectedProducts = Array.from(productsMPO.filter(item => item.selected === true));
     for(i = 0; i < selectedLists.length; i++){
+        let list = selectedLists[i];
         for(h = 0; h < selectedProducts.length; h++){
-            selectedLists[i].products.push(selectedProducts[h]);
+            list.products.push(selectedProducts[h]);
+            deleteFromMPO(selectedProducts[h].id);
         }
     }
     closePopup(notification);
