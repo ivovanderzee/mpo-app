@@ -574,7 +574,7 @@ function createNotification(category, id = null) {
     for(i = 0; i < checkboxes.length; i++){
         let listID = checkboxes[i].getAttribute('list-id');
         checkboxes[i].addEventListener('click', () =>{
-            selectList(listID);
+        selectList(listID);
         })
     }
 }catch{
@@ -677,7 +677,8 @@ function createNewList() {
 }
 
 function selectList(listid){
-    let list = lists.filter(list => list.id = listid)[0];
+    console.log(listid)
+    let list = lists.filter(list => list.id == listid)[0];
     list.selected = true;
 }
 
