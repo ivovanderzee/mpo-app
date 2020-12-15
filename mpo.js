@@ -145,6 +145,7 @@ let suggestionItemWrapper = popover.querySelector('.suggestion-item-wrapper');
 let compareProducts = popover.querySelector('.compareProducts');
 let popUpContent = popover.querySelector('.popUpContent');
 let closeButton = popover.querySelector('.close-popover');
+let topInfo = popover.querySelector('.topInfo');
 
 //Add event listener to the button in the popover
 buttonTop.addEventListener("click", createNewList);
@@ -557,7 +558,7 @@ function createNotification(category, id = null) {
     popupNotification.innerHTML = html;
     popUpContent.appendChild(popupNotification);
     //Eventlistener for closing the button
-    contentWrapper.style.paddingTop = `${popupNotification.offsetHeight - 65}px`;
+    topInfo.style.marginTop = `${popupNotification.offsetHeight - 50}px`;
     let closeBtn = popupNotification.querySelector('.popup-closeBtn');
 
     try{
@@ -590,7 +591,7 @@ function createNotification(category, id = null) {
 //Function to close the popup
 function closePopup(popup){
     popUpContent.removeChild(popup);
-    contentWrapper.style.paddingTop = '0px';
+    topInfo.style.marginTop = '25px';
 }
 
 //Function to append the lists to the view
@@ -888,6 +889,9 @@ style.innerHTML = `
     border-style: solid;
     border-radius: 2px;
     border-top: none;
+    width: 375px;
+    height: auto;
+    max-height: 700px;
 }
 
 .dragBar{
@@ -952,12 +956,12 @@ style.innerHTML = `
 }
 
 .contentWrapper{
-    width: 375px;
-    height: 700px;
     background-color: #f2f2f2;
     border-radius: 2px;
     overflow-x: hidden;
     overflow-y: scroll;
+    width: 375px;
+    height: 700px;
 }
 
 .contentWrapper.singleProducts{
@@ -1306,9 +1310,12 @@ style.innerHTML = `
     background-color: #f2f2f2;
     border-radius: 2px;
     position: absolute;
-    top: 30px;
+    top: 45px;
     left: 0;
     right: 0;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #d9d9d9; 
 }
 .popup-notification ul{
     overflow-x: hidden;
