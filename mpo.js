@@ -525,20 +525,10 @@ function createNotification(category, id = null) {
     popUpBtnTitle = 'Toevoegen';
     popUpMessage = 'Selecteer de lijsten waaraan je deze producten wilt toevoegen of maak een nieuwe lijst aan';
     inputField = ``;
-    ul = `<ul class="lists-popup" style="list-style-type: none">${appendLists()}</ul>`;
+    ul = `<ul class="lists-popup" style="list-style-type: none"></ul>`;
+    
     newListMessage = `<a class="newListMessage" style="width: 80%;">+ Maak een nieuwe lijst aan</a><br>`;
-    //Function to append the lists to the popup notification
-    function appendLists(){
-        return `${lists.map(function (list) {
-            return `<li>
-            <input type="checkbox" list-id="${list.id}" class="checkList"></input>
-            <span style="font-weight: bolder; font-size: 14px">${list.name}</span>
-            <br>
-            <span style="font-weight: lighter; font-size: 11px; margin-left: 20px;">${list.products.length} producten in lijst</span>
-            </li>`;
-        }).join('')}
-        ` 
-    }
+    
     }
     //Set the html and append it to the item
     let html = `
@@ -562,10 +552,11 @@ function createNotification(category, id = null) {
     let closeBtn = popupNotification.querySelector('.popup-closeBtn');
 
     try{
+    appendListsToPopUp();
     let newListBtn = popupNotification.querySelector('.newListMessage');
     newListBtn.addEventListener('click', () =>{
         createNewList();
-    });
+        })
     }catch{
         //error
     }
@@ -585,6 +576,21 @@ function createNotification(category, id = null) {
         closePopup(popupNotification);
     });
     return popupNotification;
+}
+
+//Function to append the lists to the popup notification
+function appendListsToPopUp(){
+    let listsInPopUp = popUpContent.querySelector('.lists-popup');
+    listsInPopUp.innerHTML = '';
+    lists.forEach(list =>{
+    let html = `<input type="checkbox" list-id="${list.id}" class="checkList"></input>
+    <span style="font-weight: bolder; font-size: 14px">${list.name}</span>
+    <br>
+    <span style="font-weight: lighter; font-size: 11px; margin-left: 20px;">${list.products.length} producten in lijst</span>`;
+    let li = document.createElement('li');
+    li.innerHTML = html;
+    listsInPopUp.appendChild(li);
+})
 }
 
 //Function to close the popup
@@ -705,9 +711,15 @@ function createNewList() {
             totalPrice: 0,
             selected: false,
         });
+        try{
+            appendListsToPopUp();
+        }catch{
+            //error
+        }
         closePopup(notification);
         calcLists();
         updateCounter();
+        
     })
 }
 
