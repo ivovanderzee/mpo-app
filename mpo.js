@@ -499,7 +499,7 @@ function createNotification(category, id = null) {
     let ul;
     let newListMessage;
     //Create new element and set classname
-    let popupNotification = document.createElement('div');
+    let popupNotification = document.createElement('form');
     popupNotification.className = 'popup-notification';
     //Select the product 
     let product = productsOnPage.filter(product => product.id === id)[0];
@@ -511,6 +511,7 @@ function createNotification(category, id = null) {
     inputField = `<span style="width: 80%;" class="inputEuro"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
     ul = '';
     newListMessage = '';
+    popupNotification.classList.add('prijsAlert')
     }else if (category === 'newlist') {
     popUpTitle = 'Nieuwe lijst maken';
     inputFieldSize = '30';
@@ -519,6 +520,7 @@ function createNotification(category, id = null) {
     inputField = `<span style="width: 80%;"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
     ul = '';
     newListMessage = '';
+    popupNotification.classList.add('newList')
     }else if (category === 'addToList') {
     popUpTitle = 'Selecteer een lijst';
     inputFieldSize = '0';
@@ -526,8 +528,8 @@ function createNotification(category, id = null) {
     popUpMessage = 'Selecteer de lijsten waaraan je deze producten wilt toevoegen of maak een nieuwe lijst aan';
     inputField = ``;
     ul = `<ul class="lists-popup" style="list-style-type: none"></ul>`;
-    
     newListMessage = `<a class="newListMessage" style="width: 80%;">+ Maak een nieuwe lijst aan</a><br>`;
+    popupNotification.classList.add('addToList');
     
     }
     //Set the html and append it to the item
@@ -541,7 +543,7 @@ function createNotification(category, id = null) {
     ${ul}
     ${newListMessage}
     <a class="popup-closeBtn" style="bottom: 15px; right: 15px; position: absolute;">Cancel</a>
-    <a style="margin-top: 15px;" class="ctaButton">${popUpBtnTitle}</a>
+    <button type="submit" style="margin-top: 15px;" class="ctaButton">${popUpBtnTitle}</button>
     </div>
     </div>
     `;
@@ -560,18 +562,6 @@ function createNotification(category, id = null) {
     }catch{
         //error
     }
-
-    try{
-    let checkboxes = popupNotification.querySelector('.lists-popup').querySelectorAll('input');
-    for(i = 0; i < checkboxes.length; i++){
-        let listID = checkboxes[i].getAttribute('list-id');
-        checkboxes[i].addEventListener('click', () =>{
-        selectList(listID);
-        })
-    }
-}catch{
-    //error
-}
     closeBtn.addEventListener('click', () =>{
         closePopup(popupNotification);
     });
@@ -590,6 +580,14 @@ function appendListsToPopUp(){
     let li = document.createElement('li');
     li.innerHTML = html;
     listsInPopUp.appendChild(li);
+
+        let checkboxes = listsInPopUp.querySelectorAll('input');
+        for(i = 0; i < checkboxes.length; i++){
+            let listID = checkboxes[i].getAttribute('list-id');
+            checkboxes[i].addEventListener('click', () =>{
+            selectList(listID);
+            })
+        }
 })
 }
 
@@ -700,9 +698,8 @@ function createNewList() {
     //Create notification
     let notification = createNotification('newlist');
     //If the user submits the notification the list is being added to the list array
-    let submitButton = notification.querySelector('.ctaButton');
     let id = Math.floor((Math.random() * 11000) + 22000);
-    submitButton.addEventListener('click', () => {
+    notification.onsubmit = function () {
         let listName = notification.querySelector('input').value;
         lists.push({
             id: id,
@@ -719,8 +716,10 @@ function createNewList() {
         closePopup(notification);
         calcLists();
         updateCounter();
+    }
         
-    })
+        
+   
 }
 
 function selectList(listid){
@@ -754,24 +753,24 @@ function selectProducts(id, addListBtn) {
 } 
 
 //Function for adding products to a list
-function addToList(productID) {
+function addToList() {
     //Create notification
-    let notification = createNotification('addToList', productID)
-    let button = notification.querySelector('.ctaButton');
-button.addEventListener('click', () => {
-    let selectedLists = lists.filter(list => list.selected == true);
+    let notification = createNotification('addToList')
+    notification.onsubmit = function () {
+        console.log('now submitted')
+        let selectedLists = lists.filter(list => list.selected == true);
     let selectedProducts = Array.from(productsMPO.filter(item => item.selected === true));
+    console.log(selectedLists);
+    console.log(selectedProducts);
     selectedLists.forEach(list => {
         selectedProducts.forEach(product => {
             list.products.push(product);
             deleteFromMPO(product.id);
         })
-            
-        
     })
     closePopup(notification);
     calcLists();
-})
+    }
 }
 
 contentWrapper.addEventListener('scroll', () => {
