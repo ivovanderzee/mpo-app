@@ -581,7 +581,6 @@ function createNotification(category, id = null) {
 }catch{
     //error
 }
-
     closeBtn.addEventListener('click', () =>{
         closePopup(popupNotification);
     });
@@ -1052,10 +1051,6 @@ style.innerHTML = `
 
 .itemWrapper{
     height: auto;
-}
-
-.list-content :first-child{
-    margin-top: 0px;
 }
 
 .introText{
