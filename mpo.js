@@ -82,7 +82,7 @@ function addCheckbox() {
 //HTML for the new popover element
 let popoverHTML = `
 <div class="wrapper">
-<div id="dragBar"><span class="close-popover">X</span></div>
+<div id="dragBar"><span class="close-popover">X</span><span class="dragIcon"></span></div>
 <ul class="tabbar">
 <li class="tab_select mijnProducten active"><span>Mijn Producten(<span class="counter mpo">${mpoCounter}</span>)</span></li>
 <li class="tab_select compare"><span>Vergelijk(<span class="counter compare">${compareCounter}</span>)</span></li>
@@ -890,7 +890,7 @@ style.innerHTML = `
     z-index: 200;
     position: fixed;
     top: 50px;
-    cursor: move;
+    cursor: pointer;
     left: 550px;
     display: block;
     box-shadow:  8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rgba(0,0,0,0.1);
@@ -906,11 +906,13 @@ style.innerHTML = `
 
 #dragBar{
     height: 15px;
+    cursor: move;
     width auto;
     background-color: #9a0e36;
     color: white;
     text-align: right;
     padding-right: 5px;
+    padding-left: 5px;
     font-size: 11px;
     border-top-color: white;
     border-top-width: 0.2px;
@@ -919,8 +921,18 @@ style.innerHTML = `
 
 #dragBar span{
     line-height: 15px;
+    float: right;
 }
 
+.dragIcon{
+    margin-top: 2px;
+    margin-right: 5px;
+    height: 11px;
+    width: 11px;
+    background-size: fit;
+    background-position: center center;
+    background-image: url("data:image/svg+xml,%3Csvg width='11' height='11' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11.9227 5.81738L10.3575 4.25219C10.2829 4.17757 10.1702 4.15566 10.0732 4.19584C9.97564 4.23602 9.91198 4.3315 9.91198 4.43688V5.21948H6.78161V2.08908H7.56421C7.66959 2.08908 7.76506 2.02542 7.80524 1.92787C7.84542 1.83031 7.82297 1.71813 7.7489 1.64351L6.18372 0.0783175C6.08198 -0.0234203 5.91658 -0.0234203 5.81485 0.0783175L4.24966 1.64351C4.17505 1.71864 4.15262 1.83029 4.1928 1.92787C4.23299 2.02542 4.32846 2.08908 4.43384 2.08908H5.21643V5.21948H2.08607V4.43688C2.08607 4.3315 2.02241 4.23602 1.92486 4.19584C1.82887 4.15514 1.71564 4.17757 1.64051 4.25219L0.075326 5.81738C-0.0264108 5.91912 -0.0264108 6.08452 0.075326 6.18626L1.64051 7.75145C1.71564 7.82658 1.82833 7.84955 1.92486 7.8078C2.02241 7.76816 2.08607 7.67268 2.08607 7.56727V6.78467H5.21643V9.91507H4.43384C4.32846 9.91507 4.23299 9.97873 4.1928 10.0763C4.15262 10.1738 4.17507 10.286 4.24915 10.3606L5.81433 11.9258C5.86547 11.9764 5.93223 12.002 5.99902 12.002C6.06581 12.002 6.13258 11.9765 6.18372 11.9258L7.7489 10.3606C7.82351 10.286 7.84594 10.1739 7.80524 10.0763C7.76455 9.97873 7.66959 9.91507 7.56421 9.91507H6.78161V6.78467H9.91198V7.56727C9.91198 7.67265 9.97564 7.76813 10.0732 7.80831C10.1697 7.84952 10.2829 7.82658 10.3575 7.75197L11.9227 6.18677C12.0245 6.08452 12.0245 5.91966 11.9227 5.81738Z' fill='white'/%3E%3C/svg%3E%0A");
+}
 
 .all-lists{
     margin-top: 40px;
