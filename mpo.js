@@ -462,6 +462,23 @@ function deletePriceAlert(id) {
     calcPriceAlerts();
 }
 
+function deleteFromList(listID, productID){
+
+        console.log(productID)
+        //Select the list that needs to be removed
+        let list = lists.filter(list => list.id === listID)[0];
+        //Select the product
+        let product = list.products.filter(product => product.id === productID)[0];
+
+        console.log(product);
+        //Search for the index of the product in the array
+        let index = list.products.indexOf(product)
+        //Remove product
+        list.products.splice(index, 1)
+        calcLists();
+        updateCounter();
+}
+
 //Function the calculates all the price alerts in the price alert array
 function calcPriceAlerts() {
     // If/else for displaying the price alert wrapper in the popover
@@ -600,7 +617,7 @@ function calcLists() {
     allLists.innerHTML = '';
     //Append each list in the list array
     lists.forEach(list => {
-        let id = list.id;
+        let listID = list.id;
 
         //Html for the list
         let html = `
@@ -619,7 +636,7 @@ function calcLists() {
          //Create new element for the list, set the classname and append it to the view
          let listElement = document.createElement('div');
          listElement.className = 'list-wrapper';
-         listElement.setAttribute('list-id', id);
+         listElement.setAttribute('list-id', listID);
          listElement.innerHTML = html;
          allLists.appendChild(listElement);
          //Grab buttons from the list
@@ -636,7 +653,7 @@ function calcLists() {
              }
          })
          delBtn.addEventListener('click', () =>{
-             deleteList(id);
+             deleteList(listID);
          })
 
          //Add all the products in that particular list to the view
@@ -660,6 +677,11 @@ function calcLists() {
                         deletePriceAlert(productID)
                     }
                 })
+                let deleteProduct = productInList.querySelector('.delProduct');
+                deleteProduct.addEventListener('click', () =>{
+                    console.log('delete button clicked');
+                    deleteFromList(listID, productID);
+                })
              }
          }else if(products.length < 1) {
              let text = document.createElement('p');
@@ -670,9 +692,6 @@ function calcLists() {
              text.innerHTML = 'Je hebt nog geen producten toegevoegd aan deze lijst. <a>Bekijk de Pricewatch</a> of voeg producten toe vanuit Mijn Producten';
              listContent.appendChild(text);
          }
-
-        
-
 
          totalPrice();
          function totalPrice(){
@@ -725,9 +744,6 @@ function createNewList() {
         calcLists();
         updateCounter();
     }
-        
-        
-   
 }
 
 function selectList(listid){
