@@ -927,7 +927,6 @@ style.innerHTML = `
     border-radius: 2px;
     border-top: none;
     width: 375px;
-    height: auto;
     max-height: 700px;
 }
 
@@ -1010,7 +1009,7 @@ style.innerHTML = `
     overflow-x: hidden;
     overflow-y: scroll;
     width: 375px;
-    height: 700px;
+    height: 655px;
 }
 
 .contentWrapper.singleProducts{
