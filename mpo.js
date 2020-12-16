@@ -3,15 +3,15 @@ let iconCompare = document.querySelector('.icon.compare');
 let iconFlag = document.querySelector('.icon.display.flag');
 let userbar = document.querySelector('#userbar');
 
+//Create new icon and place it in the header, delete the old icon
 let iconMPO = document.createElement('li');
 iconMPO.className = 'iconMPO';
 let iconMPOHTML = `<a></a>`;
 iconMPO.innerHTML = iconMPOHTML;
-//Delete original icon
 userbar.removeChild(iconCompare);
 userbar.insertBefore(iconMPO, iconFlag);
 
-//Add event listener to the icon in the header
+//Add event listener to the icon in the header to display the popover based on the state of the icon
  iconMPO.addEventListener('click', () => {
     changeState(iconMPO);
     if(iconMPO.classList.contains('active')){
@@ -21,18 +21,19 @@ userbar.insertBefore(iconMPO, iconFlag);
     }
 });
 
-//JSON data that gets all the products when the page loads
+//JSON data arrays used in the code
 let productsOnPage = [];
-let productsMPO = [];
+let singleProducts = [];
 let productsCompare = [];
 let allPriceAlerts = [];
 let lists = [];
 
-//All the counters that are counting products
-let mpoCounter = productsMPO.length + allPriceAlerts.length;
+//Counting items/products in the different arrays
+let mpoCounter = singleProducts.length + allPriceAlerts.length;
 let compareCounter = productsCompare.length;
 let listCounter = lists.length;
-let selectedCounter = Array.from(productsMPO.filter(item => item.selected === true)).length
+let selectedCounter = Array.from(singleProducts.filter(item => item.selected === true)).length;
+let productsInListCounter = 0;
 
 //Function to add a checkbox to products on a Pricewatch page
 function addCheckbox() {
@@ -136,7 +137,7 @@ let compareTab = popover.querySelector('.tab_select.compare');
 let topTitle = popover.querySelector('.topTitle');
 let buttonTop = popover.querySelector('.ctaButton.top');
 let contentWrapper = popover.querySelector('.contentWrapper');
-let singleProducts = popover.querySelector('.singleProducts');
+let singleProductsContent = popover.querySelector('.singleProducts');
 let priceAlertContent = popover.querySelector('.priceAlertContent');
 let priceAlertList = popover.querySelector('.priceAlertsList');
 let allLists = popover.querySelector('.all-lists');
@@ -172,14 +173,14 @@ function switchContent() {
     if (mpoTab.className === 'tab_select mijnProducten active') {
         topTitle.innerText = 'Mijn Producten';
         buttonTop.innerText = 'Nieuwe lijst maken';
-        singleProducts.style.display = 'block';
+        singleProductsContent.style.display = 'block';
         allLists.style.display = 'block';
         compareProducts.style.display = 'none';
     } else if (compareTab.className === 'tab_select compare active') {
         topTitle.innerText = 'Vergelijking';
         buttonTop.innerText = 'Vergelijk';
         compareProducts.style.display = 'block';
-        singleProducts.style.display = 'none';
+        singleProductsContent.style.display = 'none';
         allLists.style.display = 'none';
     } else {
         //nothing
@@ -310,7 +311,7 @@ function appendSuggestions() {
 function addToMPO(id, checkbox) {
     //Select the product that needs to be added
     let product = productsOnPage.filter(product => product.id === id)[0];
-    productsMPO.push(product);
+    singleProducts.push(product);
     computeMPOProducts();
     updateCounter();
     //Set the label for that product to checked
@@ -320,11 +321,11 @@ function addToMPO(id, checkbox) {
 //Function that removes the product from the MPO array
 function deleteFromMPO(id) {
     //Select the product that needs to be removed
-    let product = productsMPO.filter(item => item.id === id)[0];
+    let product = singleProducts.filter(item => item.id === id)[0];
     //Search for the index of the product in the array
-    let index = productsMPO.indexOf(product)
+    let index = singleProducts.indexOf(product)
     //Remove product
-    productsMPO.splice(index, 1)
+    singleProducts.splice(index, 1)
     computeMPOProducts();
     updateCounter();
 }
@@ -332,11 +333,11 @@ function deleteFromMPO(id) {
 //Function to add all the products in the MPO array to the view
 function computeMPOProducts() {
     //Remove all the HTML from the single products view
-    singleProducts.innerHTML = '';
+    singleProductsContent.innerHTML = '';
     //Append all the items in the array to the view
-    for (i = 0; i < productsMPO.length; i++) {
+    for (i = 0; i < singleProducts.length; i++) {
         //Define the properties of the item
-        let id = productsMPO[i].id;
+        let id = singleProducts[i].id;
         let checkbox = productsOnPage[i].checkbox;
         //Create new item element
         let productItem = document.createElement('div');
@@ -344,8 +345,8 @@ function computeMPOProducts() {
         productItem.setAttribute('id', id);
         productItem.className = 'productItem';
         //Set the innerHTML for the item to the itemHTML and append it to the contentview
-        productItem.innerHTML = generateItemHTML(productsMPO[i], 'singleProduct');
-        singleProducts.appendChild(productItem);
+        productItem.innerHTML = generateItemHTML(singleProducts[i], 'singleProduct');
+        singleProductsContent.appendChild(productItem);
         //Define all the buttons of the product item
         let deleteBtn = productItem.querySelector('.delProduct');
         let priceAlertBtn = productItem.querySelector('.setAlert');
@@ -399,14 +400,14 @@ function calcCompareProducts() {
     compareProducts.innerHTML = '';
     for (i = 0; i < productsCompare.length; i++) {
         //Grab the id from the product
-        let id = productsMPO[i].id;
+        let id = singleProducts[i].id;
         //Create new div for the product item
         let productItem = document.createElement('div');
         //Set the attribute id to the id and give it a classname
         productItem.setAttribute('id', id);
         productItem.className = 'productItem';
         //Set the innerHTML for the item to the itemHTML and append it to the contentview
-        productItem.innerHTML = generateItemHTML(productsMPO[i], 'compareProduct');
+        productItem.innerHTML = generateItemHTML(singleProducts[i], 'compareProduct');
         compareProducts.appendChild(productItem);
         //Grab all the buttons in the product item
         let deletebtn = productItem.querySelector('.delProduct');
@@ -447,7 +448,7 @@ function setPriceAlert(id, alertBtn) {
 //Function to delete a price alert
 function deletePriceAlert(id) {
     //Search for the product 
-    let product = productsMPO.filter(product => product.id === id)[0];
+    let product = singleProducts.filter(product => product.id === id)[0];
     try {
         //Search for the alert button 
         let alertBtn = Array.from(popover.querySelectorAll('.setAlert')).filter(alert => alert.getAttribute('id') === id)[0];
@@ -615,6 +616,7 @@ function closePopup(popup){
 function calcLists() {
     //Empty the innerhtml of the listview
     allLists.innerHTML = '';
+    productsInListCounter = 0;
     //Append each list in the list array
     lists.forEach(list => {
         let listID = list.id;
@@ -704,7 +706,8 @@ function calcLists() {
                 })
                 priceCount.innerHTML = `€ ${totalPrice.toFixed(2)}`;
          }
-        
+        productsInListCounter = productsInListCounter + list.products.length;
+        updateCounter();
     })
 }
 
@@ -753,7 +756,7 @@ function selectList(listid){
 
 //Function to select products
 function selectProducts(id, addListBtn) {
-    let product = productsMPO.filter(product => product.id === id)[0];
+    let product = singleProducts.filter(product => product.id === id)[0];
     switch(addListBtn.className){
         case 'option addList active': 
             product.selected = true;
@@ -761,7 +764,7 @@ function selectProducts(id, addListBtn) {
         default:
             product.selected = false;
     }
-    let selectedProducts = Array.from(productsMPO.filter(product => product.selected === true));
+    let selectedProducts = Array.from(singleProducts.filter(product => product.selected === true));
     if(selectedProducts.length > 0){
     buttonTop.innerText = 'Selectie in lijst plaatsen';
     buttonTop.removeEventListener('click', createNewList);
@@ -783,7 +786,7 @@ function addToList() {
     notification.onsubmit = function () {
         console.log('now submitted')
         let selectedLists = lists.filter(list => list.selected == true);
-    let selectedProducts = Array.from(productsMPO.filter(item => item.selected === true));
+    let selectedProducts = Array.from(singleProducts.filter(item => item.selected === true));
     console.log(selectedLists);
     console.log(selectedProducts);
     selectedLists.forEach(list => {
@@ -792,6 +795,7 @@ function addToList() {
             deleteFromMPO(product.id);
             product.selected = false;
         })
+        list.selected = false;
     })
     closePopup(notification);
     calcLists();
@@ -818,10 +822,10 @@ contentWrapper.addEventListener('scroll', () => {
 
 //Function for updating the counter
 function updateCounter() {
-    mpoCounter = productsMPO.length + allPriceAlerts.length;
+    mpoCounter = singleProducts.length + allPriceAlerts.length + productsInListCounter;
     compareCounter = productsCompare.length;
     listCounter = lists.length;
-    selectedCounter = Array.from(productsMPO.filter(item => item.selected === true)).length;
+    selectedCounter = Array.from(singleProducts.filter(item => item.selected === true)).length;
     //Grab all the counters on the page
     let counters = popover.querySelectorAll('.counter');
     for (i = 0; i < counters.length; i++) {
