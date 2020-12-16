@@ -214,7 +214,7 @@ function generateItemHTML(product, category){
       let checkBtn1 = ``;
       let checkBtn2 = ``;
       let addToListBtn = `<div class='option addList' style="margin-right: 5px;"></div>`;
-      let setAlertBtn = `<div class='option setAlert'></div>`;
+      let setAlertBtn = `<div class='option setAlert' id="${product.id}"></div>`;
       let inputField = ``;
       let deleteBtn = `<img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">`;
       //Switch case for manipulating the HTML for the product item
@@ -428,8 +428,8 @@ function calcCompareProducts() {
 
 //Function for setting a price alert
 function setPriceAlert(id, alertBtn) {
-    let product = productsMPO.filter(product => product.id === id)[0];
-    let notification = createNotification('prijsalert', id);
+    let product = productsOnPage.filter(product => product.id === id)[0];
+    let notification = createNotification('prijsalert', product);
     //If the users submits, the price alert will be set
     let submitButton = notification.querySelector('.ctaButton');
     submitButton.addEventListener('click', () => {
@@ -450,8 +450,7 @@ function deletePriceAlert(id) {
     let product = productsMPO.filter(product => product.id === id)[0];
     try {
         //Search for the alert button 
-        let alertBtn = Array.from(singleProducts.querySelectorAll('.productItem')).filter(alert => alert.getAttribute('id') === id)[0];
-        alertBtn = alertBtn.querySelector('.setAlert');
+        let alertBtn = Array.from(popover.querySelectorAll('.setAlert')).filter(alert => alert.getAttribute('id') === id)[0];
         changeState(alertBtn);
         //Set price alert to false
         product.priceAlert = false;
@@ -489,7 +488,7 @@ function calcPriceAlerts() {
 }
 
 //Function to generate the pop up notification to the view
-function createNotification(category, id = null) {
+function createNotification(category, product = null) {
     //Variables in the popup notification
     let popUpTitle;
     let popUpMessage;
@@ -501,8 +500,6 @@ function createNotification(category, id = null) {
     //Create new element and set classname
     let popupNotification = document.createElement('form');
     popupNotification.className = 'popup-notification';
-    //Select the product 
-    let product = productsOnPage.filter(product => product.id === id)[0];
     if (category === 'prijsalert') {
     popUpTitle = 'Prijsalert instellen';
     inputFieldSize = '10';
@@ -646,14 +643,23 @@ function calcLists() {
          let products = list.products;
          if (products.length > 0) {
              for (i = 0; i < products.length; i++) {
+                 let productID = products[i].id;
                  //Create a element for the product item
                  let productInList = document.createElement('div');
                  productInList.innerHTML = generateItemHTML(products[i], 'productInList');
                  productInList.style.marginTop = '10px';
                  listContent.appendChild(productInList);
                  listContent.firstElementChild.style.marginTop = '0px';
-                 
-                 console.log(products[i].price)
+                 let priceAlertBtn = productInList.querySelector('.setAlert')
+                 //Eventlistener for setting a price alert for the product
+                 priceAlertBtn.addEventListener('click', () => {
+                    if (priceAlertBtn.className == 'option setAlert') {
+                        console.log(productID);
+                        setPriceAlert(productID, priceAlertBtn);
+                    } else {
+                        deletePriceAlert(productID)
+                    }
+                })
              }
          }else if(products.length < 1) {
              let text = document.createElement('p');
@@ -664,6 +670,8 @@ function calcLists() {
              text.innerHTML = 'Je hebt nog geen producten toegevoegd aan deze lijst. <a>Bekijk de Pricewatch</a> of voeg producten toe vanuit Mijn Producten';
              listContent.appendChild(text);
          }
+
+        
 
 
          totalPrice();
