@@ -22,7 +22,7 @@ userbar.insertBefore(iconMPO, iconFlag);
 });
 
 //JSON data arrays used in the code
-let productsOnPage = [];
+let allProducts = [];
 let singleProducts = [];
 let productsCompare = [];
 let allPriceAlerts = [];
@@ -35,19 +35,29 @@ let listCounter = lists.length;
 let selectedCounter = Array.from(singleProducts.filter(item => item.selected === true)).length;
 let productsInListCounter = 0;
 
-//Function to add a checkbox to products on a Pricewatch page
-function addCheckbox() {
+//Function to grab all the data and push it to the array
+function getData(){
     //Grab all the list items on a pricewatch page
     let pricewatchItems = document.querySelector('.listing.useVisitedState').querySelectorAll('.largethumb');
-    //Add the checkbox the to all the products in the list on a pricewatch page
-    for (i = 0; i < pricewatchItems.length; i++) {
+    for(i =0; i < pricewatchItems.length; i++){
         //Specify some properties from each product
         let id = pricewatchItems[i].querySelector('input').getAttribute('value');
         let title = pricewatchItems[i].querySelector('.itemname').querySelector('.ellipsis').querySelector('a').innerText;
         let specline = pricewatchItems[i].querySelector('.itemname').querySelector('.specline.ellipsis').querySelector('a').innerText;
         let price = pricewatchItems[i].querySelector('.price').querySelector('a').innerText;
         let imageUrl = pricewatchItems[i].querySelector('.pwimage').querySelector('a').querySelector('img').getAttribute('src');
-        let itemName = pricewatchItems[i].querySelector('.itemname');
+        //Push the properties to a JSON file
+        allProducts.push({id: id, title: title, specline: specline, price: price, imageUrl: imageUrl, priceAlert: false, alertPrice: 0, selected: false}); 
+    }
+}
+
+//Function to add a checkbox to all products on a Pricewatch page
+function addCheckbox() {
+    
+    //Add the checkbox the to all the products in the list on a pricewatch page
+    for (i = 0; i < pricewatchItems.length; i++) {
+        
+        let itemName = product.querySelector('.itemname');
         //Set the HTML for the checkbox
         let checkBoxhtml = `<input type="checkbox" name="products[] value="${id}"">
         <span>Mijn Producten</span>`;
@@ -57,18 +67,7 @@ function addCheckbox() {
         let checkbox = label.querySelector('input');
         //Append the label to the item
         itemName.appendChild(label);
-        //Push the properties to a JSON file
-        productsOnPage.push({
-            id: id,
-            title: title,
-            specline: specline,
-            price: price,
-            imageUrl: imageUrl,
-            priceAlert: false,
-            alertPrice: 0,
-            selected: false,
-            checkbox: checkbox,
-        });
+       
         //Add an eventlistener to the label button for adding and deleting products
         label.addEventListener('click', () => {
             if (!checkbox.getAttribute('checked')) {
@@ -188,17 +187,15 @@ function switchContent() {
 }
 
 //Run all the essential functions once
-try{
-addCheckbox();
-}catch{
-    //error
-}
+
+getData();
+
 computeMPOProducts();
 calcPriceAlerts();
 calcLists();
 switchContent();
 updateCounter();
-appendSuggestions();
+//appendSuggestions();
 
 //Function to change the state of an element to active or inactive
 function changeState(elem) {
@@ -276,22 +273,22 @@ function appendSuggestions() {
         let suggestionItem = document.createElement('div');
         suggestionItem.className = 'suggestion-item';
         //Get ID and label
-        let id = productsOnPage[randomNumber].id;
-        let checkbox = productsOnPage[randomNumber].checkbox;
+        let id = allProducts[randomNumber].id;
+        let checkbox = allProducts[randomNumber].checkbox;
         //HTML for the suggestion item
         let html = `
         <div class="suggestion-item-content">
         <button class="addItem"></button>
         <div class="suggestion-item-info">
-        <p style="max-width: 115px; margin-bottom: 5px; color: #1668AC">${productsOnPage[randomNumber].title}</p>
-        <p style="max-width: 100px; color: #666666; font-size: 12px;">${productsOnPage[randomNumber].specline}</p>
+        <p style="max-width: 115px; margin-bottom: 5px; color: #1668AC">${allProducts[randomNumber].title}</p>
+        <p style="max-width: 100px; color: #666666; font-size: 12px;">${allProducts[randomNumber].specline}</p>
         </div>
         </div>
         `;
         //Set the HTML as innerHTML
         suggestionItem.innerHTML = html;
         //Set a background image for the item
-        suggestionItem.style.backgroundImage = `url("${productsOnPage[randomNumber].imageUrl}")`;
+        suggestionItem.style.backgroundImage = `url("${allProducts[randomNumber].imageUrl}")`;
         suggestionItemWrapper.appendChild(suggestionItem);
         //Eventlistener for the add button in the item
         let addButton = suggestionItem.querySelector('.addItem');
@@ -310,7 +307,7 @@ function appendSuggestions() {
 //Function that adds products to the MPO array
 function addToMPO(id, checkbox) {
     //Select the product that needs to be added
-    let product = productsOnPage.filter(product => product.id === id)[0];
+    let product = allProducts.filter(product => product.id === id)[0];
     singleProducts.push(product);
     computeMPOProducts();
     updateCounter();
@@ -338,7 +335,7 @@ function computeMPOProducts() {
     for (i = 0; i < singleProducts.length; i++) {
         //Define the properties of the item
         let id = singleProducts[i].id;
-        let checkbox = productsOnPage[i].checkbox;
+        let checkbox = allProducts[i].checkbox;
         //Create new item element
         let productItem = document.createElement('div');
         //Set the attribute id to the productID and style the element
@@ -388,7 +385,7 @@ function computeMPOProducts() {
 //Function for adding products to the content listview
 function addToCompare(id) {
     //Select the product that needs to be added
-    let product = productsOnPage.filter(product => product.id === id)[0];
+    let product = allProducts.filter(product => product.id === id)[0];
     //Push to the array and append all the products in that array to the view
     productsCompare.push(product);
     calcCompareProducts();
@@ -429,7 +426,7 @@ function calcCompareProducts() {
 
 //Function for setting a price alert
 function setPriceAlert(id, alertBtn) {
-    let product = productsOnPage.filter(product => product.id === id)[0];
+    let product = allProducts.filter(product => product.id === id)[0];
     let notification = createNotification('prijsalert', product);
     //If the users submits, the price alert will be set
     let submitButton = notification.querySelector('.ctaButton');
