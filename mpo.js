@@ -890,7 +890,6 @@ style.innerHTML = `
     z-index: 200;
     position: fixed;
     top: 50px;
-    cursor: pointer;
     left: 550px;
     display: block;
     box-shadow:  8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rgba(0,0,0,0.1);
