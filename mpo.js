@@ -82,7 +82,7 @@ function addCheckbox() {
 //HTML for the new popover element
 let popoverHTML = `
 <div class="wrapper">
-<div class="dragBar"><span class="close-popover">X</span></div>
+<div id="dragBar"><span class="close-popover">X</span></div>
 <ul class="tabbar">
 <li class="tab_select mijnProducten active"><span>Mijn Producten(<span class="counter mpo">${mpoCounter}</span>)</span></li>
 <li class="tab_select compare"><span>Vergelijk(<span class="counter compare">${compareCounter}</span>)</span></li>
@@ -828,9 +828,9 @@ function updateCounter() {
 dragElement(document.querySelector(".pop-over"));
 function dragElement(elmnt) {
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    if (document.getElementById(elmnt.id + "header")) {
+    if (document.getElementById(elmnt.id + "dragBar")) {
         // if present, the header is where you move the DIV from:
-        document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+        document.getElementById(elmnt.id + "dragBar").onmousedown = dragMouseDown;
     } else {
         // otherwise, move the DIV from anywhere inside the DIV: 
         elmnt.onmousedown = dragMouseDown;
@@ -904,7 +904,7 @@ style.innerHTML = `
     max-height: 700px;
 }
 
-.dragBar{
+#dragBar{
     height: 15px;
     width auto;
     background-color: #9a0e36;
@@ -917,7 +917,7 @@ style.innerHTML = `
     border-top-style: solid;
 }
 
-.dragBar span{
+#dragBar span{
     line-height: 15px;
 }
 
