@@ -766,10 +766,14 @@ function addToList() {
         selectedProducts.forEach(product => {
             list.products.push(product);
             deleteFromMPO(product.id);
+            product.selected = false;
         })
     })
     closePopup(notification);
     calcLists();
+    buttonTop.innerText = 'Nieuwe lijst maken';
+    buttonTop.addEventListener('click', createNewList);
+    buttonTop.removeEventListener('click', addToList);
     }
 }
 
