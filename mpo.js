@@ -941,13 +941,16 @@ style.innerHTML = `
 
 .list-content{
     display: none;
-    border-top: 1px;
-    border-bottom: 1px;
+    border-top: 1px #E5E5E5 solid;
+    border-bottom: 1px #E5E5E5 solid;
     max-width: 95%; 
     height: auto; 
     margin: 0 auto; 
     margin-top: 15px; 
     padding-bottom: 10px; 
+}
+.list-content .itemContentWrapper{
+    width: 100%;
 }
 
 .list-content.active{
