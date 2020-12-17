@@ -211,7 +211,7 @@ function generateItemHTML(product, category){
       let checkBtn1 = ``;
       let checkBtn2 = ``;
       let addToListBtn = `<div class='option addList' style="margin-right: 5px;"></div>`;
-      let setAlertBtn = `<div class='option setAlert' id="${product.id}"></div>`;
+      let setAlertBtn = `<div class='${product.priceAlert ? 'option setAlert active' : 'option setAlert'}' id="${product.id}"></div>`;
       let inputField = ``;
       let deleteBtn = `<img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">`;
       //Switch case for manipulating the HTML for the product item
@@ -647,7 +647,6 @@ function calcLists() {
          }else if(products.length < 1) {
              noListsText.style.display = 'block';
          }
-
          //Function to calculate the totalprice of all the products in the list
          totalPrice();
          function totalPrice(){
