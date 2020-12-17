@@ -807,6 +807,7 @@ function dragElement(elmnt) {
 let head = document.querySelector('head');
 let style = document.createElement('style');
 style.innerHTML = `
+/*Icon in header */
 .iconMPO a{
     display: block;
     height: 44px;
@@ -822,6 +823,8 @@ style.innerHTML = `
     background-image: url("data:image/svg+xml,%3Csvg width='17' height='17' viewBox='0 0 17 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0H16.4138V17H0V0ZM2.05172 2.34483H5.12931V4.10345H2.05172V2.34483ZM14.3621 2.34483H7.18103V4.10345H14.3621V2.34483ZM2.05172 5.86207H5.12931V7.62069H2.05172V5.86207ZM14.3621 5.86207H7.18103V7.62069H14.3621V5.86207ZM2.05172 9.37931H5.12931V11.1379H2.05172V9.37931ZM14.3621 9.37931H7.18103V11.1379H14.3621V9.37931ZM2.05172 12.8966H5.12931V14.6552H2.05172V12.8966ZM14.3621 12.8966H7.18103V14.6552H14.3621V12.8966Z' fill='black'/%3E%3C/svg%3E%0A");
 }
 
+
+/*General styling of the popover*/
 .pop-over{
     z-index: 200;
     position: fixed;
@@ -838,6 +841,25 @@ style.innerHTML = `
     max-height: 700px;
 }
 
+.contentWrapper{
+    background-color: #f2f2f2;
+    border-radius: 2px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    width: 375px;
+    height: 655px;
+}
+
+
+.introText{
+    display: block;
+    width: 77%;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 40px;
+}
+
+/*Dragbar to drag the element over the page*/
 #dragBar{
     height: 15px;
     cursor: move;
@@ -868,8 +890,13 @@ style.innerHTML = `
     background-image: url("data:image/svg+xml,%3Csvg width='11' height='11' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11.9227 5.81738L10.3575 4.25219C10.2829 4.17757 10.1702 4.15566 10.0732 4.19584C9.97564 4.23602 9.91198 4.3315 9.91198 4.43688V5.21948H6.78161V2.08908H7.56421C7.66959 2.08908 7.76506 2.02542 7.80524 1.92787C7.84542 1.83031 7.82297 1.71813 7.7489 1.64351L6.18372 0.0783175C6.08198 -0.0234203 5.91658 -0.0234203 5.81485 0.0783175L4.24966 1.64351C4.17505 1.71864 4.15262 1.83029 4.1928 1.92787C4.23299 2.02542 4.32846 2.08908 4.43384 2.08908H5.21643V5.21948H2.08607V4.43688C2.08607 4.3315 2.02241 4.23602 1.92486 4.19584C1.82887 4.15514 1.71564 4.17757 1.64051 4.25219L0.075326 5.81738C-0.0264108 5.91912 -0.0264108 6.08452 0.075326 6.18626L1.64051 7.75145C1.71564 7.82658 1.82833 7.84955 1.92486 7.8078C2.02241 7.76816 2.08607 7.67268 2.08607 7.56727V6.78467H5.21643V9.91507H4.43384C4.32846 9.91507 4.23299 9.97873 4.1928 10.0763C4.15262 10.1738 4.17507 10.286 4.24915 10.3606L5.81433 11.9258C5.86547 11.9764 5.93223 12.002 5.99902 12.002C6.06581 12.002 6.13258 11.9765 6.18372 11.9258L7.7489 10.3606C7.82351 10.286 7.84594 10.1739 7.80524 10.0763C7.76455 9.97873 7.66959 9.91507 7.56421 9.91507H6.78161V6.78467H9.91198V7.56727C9.91198 7.67265 9.97564 7.76813 10.0732 7.80831C10.1697 7.84952 10.2829 7.82658 10.3575 7.75197L11.9227 6.18677C12.0245 6.08452 12.0245 5.91966 11.9227 5.81738Z' fill='white'/%3E%3C/svg%3E%0A");
 }
 
-.all-lists{
-    margin-top: 40px;
+/*Styling of the tabbar*/
+.tabbar{
+    list-style-type: none;
+    height: 30px;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
 }
 
 .tabbar li{
@@ -889,15 +916,6 @@ style.innerHTML = `
     line-height: 30px;
 }
 
-.tabbar{
-    list-style-type: none;
-    height: 30px;
-    width: 100%;
-    margin: 0px;
-    padding: 0px;
-
-}
-
 .tabbar :last-child{
     border-left: none;
     border-right: none;
@@ -911,13 +929,53 @@ style.innerHTML = `
     color: #b9133d;
 }
 
-.contentWrapper{
-    background-color: #f2f2f2;
+
+/*Lists & product elements*/
+.all-lists{
+    margin-top: 40px;
+}
+
+.list-wrapper{
+    margin-bottom: 40px;
+}
+
+.list-content{
+    display: none;
+    background-color: #D9D9D9; 
+    max-width: 95%; 
+    height: auto; 
+    margin: 0 auto; 
+    margin-top: 15px; 
+    padding-bottom: 10px; 
+    padding-top: 10px;
+
+}
+
+.list-content.active{
+    display: block;
+}
+
+.list-options-top button{
+    background-color: #1668AC;
     border-radius: 2px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    width: 375px;
-    height: 655px;
+    border: none;
+    background-size: 11px;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.list-options-bottom{
+    width: 95%; 
+    margin: 0 auto; 
+    margin-top: 10px;
+}
+
+.collapse{
+    background-image: url('data:image/svg+xml, %3Csvg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M5.53176 0.666452L0.191706 6.0066C0.068097 6.13011 0 6.29499 0 6.4708C0 6.6466 0.068097 6.81148 0.191706 6.93499L0.584873 7.32825C0.841066 7.58415 1.25745 7.58415 1.51326 7.32825L5.99751 2.844L10.4867 7.33323C10.6104 7.45674 10.7751 7.52493 10.9508 7.52493C11.1267 7.52493 11.2915 7.45674 11.4152 7.33323L11.8083 6.93996C11.9319 6.81635 12 6.65157 12 6.47577C12 6.29997 11.9319 6.13509 11.8083 6.01158L6.46336 0.666452C6.33936 0.542648 6.1738 0.474648 5.99781 0.475039C5.82112 0.474648 5.65566 0.542648 5.53176 0.666452Z" fill="white"/%3E%3C/svg%3E');
+}
+.share{
+    background-image: url('data:image/svg+xml, %3Csvg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M4.44473 3.00859C3.03077 4.47153 3.33933 6.89934 4.95899 7.97483C5.01236 8.01028 5.08336 8.00325 5.1292 7.95846C5.47018 7.62529 5.75864 7.30257 6.01122 6.89214C6.04987 6.82935 6.02583 6.74786 5.961 6.71274C5.71395 6.5789 5.46812 6.32793 5.32973 6.06283L5.32957 6.06293C5.16379 5.73282 5.10735 5.36279 5.19512 4.98064C5.19521 4.98066 5.1953 4.98068 5.1954 4.98068C5.29639 4.49142 5.82165 4.03629 6.22282 3.61538C6.22197 3.6151 6.22115 3.61479 6.22031 3.61451L7.7234 2.0804C8.3224 1.46904 9.30768 1.464 9.9129 2.06922C10.5242 2.6682 10.5343 3.65845 9.93536 4.26979L9.02492 5.20602C8.98279 5.24935 8.96912 5.31257 8.98884 5.36971C9.19846 5.9776 9.25002 6.83474 9.10955 7.48233C9.10561 7.50045 9.12798 7.51232 9.14094 7.49907L11.0786 5.52137C12.3165 4.25799 12.306 2.20104 11.0553 0.950372C9.77896 -0.325972 7.70112 -0.31535 6.43788 0.973937L4.4525 3.00029C4.44987 3.00306 4.44738 3.00587 4.44473 3.00859Z" fill="white"/%3E%3Cpath d="M8.06699 8.25341C8.06697 8.25348 8.06692 8.25355 8.0669 8.25362C8.06814 8.25311 8.06929 8.25261 8.07053 8.25207C8.46598 7.52896 8.54383 6.69963 8.35849 5.89117L8.35765 5.89203L8.35674 5.89164C8.18076 5.17157 7.6979 4.45655 7.0421 4.01631C6.98569 3.97844 6.89558 3.98283 6.84275 4.02555C6.51056 4.29415 6.18541 4.63857 5.97086 5.07811C5.93716 5.14711 5.96239 5.23 6.0288 5.26855C6.27779 5.41311 6.50266 5.62475 6.65322 5.90573L6.65345 5.90556C6.77078 6.10405 6.88641 6.48067 6.81151 6.88534C6.81147 6.88534 6.8114 6.88534 6.81135 6.88534C6.74148 7.42185 6.19969 7.91398 5.76899 8.35743L5.7692 8.35764C5.44135 8.6929 4.60794 9.54251 4.27423 9.88344C3.67525 10.4948 2.685 10.5049 2.07366 9.90591C1.46232 9.30693 1.45222 8.31667 2.0512 7.70534L2.96433 6.76629C3.00572 6.72373 3.01979 6.66188 3.00138 6.60544C2.79863 5.98334 2.74308 5.14552 2.87106 4.49866C2.87462 4.48063 2.85244 4.46912 2.83957 4.48225L0.931017 6.43019C-0.319512 7.70653 -0.308913 9.78459 0.954605 11.0481C2.23088 12.2986 4.29822 12.2774 5.5487 11.0012C5.98312 10.5152 7.84273 8.79346 8.06699 8.25341Z" fill="white"/%3E%3C/svg%3E');
+
 }
 
 .contentWrapper.singleProducts{
@@ -986,6 +1044,13 @@ style.innerHTML = `
     background-color: #9FBF22;
     background-image: url('data:image/svg+xml, %3Csvg width="5" height="3" viewBox="0 0 5 3" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M4.45426 2.4104H0.468172V0.760742H4.45426V2.4104Z" fill="white"/%3E%3C/svg%3E');
 }
+.productItem{
+    margin-bottom: 20px;
+}
+
+.itemWrapper{
+    height: auto;
+}
 
 .itemContentWrapper{
     height: 80px;
@@ -1006,17 +1071,6 @@ style.innerHTML = `
     margin-top: 0px;
 }
 
-.itemWrapper{
-    height: auto;
-}
-
-.introText{
-    display: block;
-    width: 77%;
-    text-align: center;
-    margin: 0 auto;
-    margin-top: 40px;
-}
 
 .titleProduct{
     max-width: 200px;
@@ -1045,10 +1099,6 @@ style.innerHTML = `
 .delProduct{
     float: right; 
     margin: 5px;
-}
-
-.productItem{
-    margin-bottom: 20px;
 }
 
 .imageProduct{
@@ -1094,12 +1144,12 @@ style.innerHTML = `
     width: auto;
 }
 
-.priceAlertContent{
-    margin-top: 15px;
+.priceAlertsList{
+    margin-top: 40px;
 }
 
-.priceAlertsBlock{
-    display: none;
+.priceAlertContent{
+    margin-top: 15px;
 }
 
 .price-alert-item .inputEuro{
@@ -1108,39 +1158,11 @@ style.innerHTML = `
     position: absolute;
 }
 
-/* width */
-.contentWrapper::-webkit-scrollbar {
-  width: 4px;
-  overflow: overlay;
-  position: absolute;
-  z-index: 100;
-}
-
-/* Track */
-.contentWrapper::-webkit-scrollbar-track {
-  background: #f1f1f1; 
-  overflow: overlay;
-  position: absolute;
-}
- 
-/* Handle */
-.contentWrapper::-webkit-scrollbar-thumb {
-  background: #888; 
-  overflow: overlay;
-  position: absolute;
-}
-
-/* Handle on hover */
-.contentWrapper::-webkit-scrollbar-thumb:hover {
-  background: #555; 
-}
-
 .list-wrapper .option{
     height: 20px; 
     width: 20px;
     float:right;
 }
-
 
 .itemOptions{
     right: 5px;
@@ -1150,6 +1172,7 @@ style.innerHTML = `
     margin-right: 0px;
 }
 
+/*Item options active state and background SVG*/
 .itemOptions .option{
     background-color: #D9D9D9;
     background-position: center center;
@@ -1161,14 +1184,6 @@ style.innerHTML = `
     width: 35px;
     float: left;
 }
-
-
-.item-options-bottom{
-    text-align: right; 
-    margin-right: 10px; 
-    margin-top: 5px;
-}
-
 
 .option.active{
     background-color: #9FBF22;
@@ -1190,6 +1205,13 @@ style.innerHTML = `
     background-image: url('data:image/svg+xml, %3Csvg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Crect y="3.63312" width="13.3333" height="1.45326" fill="white"/%3E%3Crect width="13.3333" height="1.45326" fill="white"/%3E%3Crect y="7.2663" width="8" height="1.45326" fill="white"/%3E%3Crect y="10.8994" width="8" height="1.45326" fill="white"/%3E%3Cpath d="M15.3216 11.281H11.9857V10.2488H15.3216V11.281Z" fill="white"/%3E%3C/svg%3E');
 }
 
+.item-options-bottom{
+    text-align: right; 
+    margin-right: 10px; 
+    margin-top: 5px;
+}
+
+/*Popup notification styling*/
 .popup-notificationWrapper{
     height: auto;
     width: 100%;
@@ -1206,55 +1228,6 @@ style.innerHTML = `
     height: auto;
     padding: 15px;
 }
-
-.list-wrapper{
-    margin-bottom: 40px;
-}
-
-.list-content{
-    display: none;
-    background-color: #D9D9D9; 
-    max-width: 95%; 
-    height: auto; 
-    margin: 0 auto; 
-    margin-top: 15px; 
-    padding-bottom: 10px; 
-    padding-top: 10px;
-
-}
-
-.list-content.active{
-    display: block;
-}
-
-.list-options-top button{
-    background-color: #1668AC;
-    border-radius: 2px;
-    border: none;
-    background-size: 11px;
-    background-position: center center;
-    background-repeat: no-repeat;
-}
-
-.list-options-bottom{
-    width: 95%; 
-    margin: 0 auto; 
-    margin-top: 10px;
-}
-
-.list-options-bottom button{
-    float: right;
-}
-
-.collapse{
-    background-image: url('data:image/svg+xml, %3Csvg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M5.53176 0.666452L0.191706 6.0066C0.068097 6.13011 0 6.29499 0 6.4708C0 6.6466 0.068097 6.81148 0.191706 6.93499L0.584873 7.32825C0.841066 7.58415 1.25745 7.58415 1.51326 7.32825L5.99751 2.844L10.4867 7.33323C10.6104 7.45674 10.7751 7.52493 10.9508 7.52493C11.1267 7.52493 11.2915 7.45674 11.4152 7.33323L11.8083 6.93996C11.9319 6.81635 12 6.65157 12 6.47577C12 6.29997 11.9319 6.13509 11.8083 6.01158L6.46336 0.666452C6.33936 0.542648 6.1738 0.474648 5.99781 0.475039C5.82112 0.474648 5.65566 0.542648 5.53176 0.666452Z" fill="white"/%3E%3C/svg%3E');
-}
-.share{
-    background-image: url('data:image/svg+xml, %3Csvg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M4.44473 3.00859C3.03077 4.47153 3.33933 6.89934 4.95899 7.97483C5.01236 8.01028 5.08336 8.00325 5.1292 7.95846C5.47018 7.62529 5.75864 7.30257 6.01122 6.89214C6.04987 6.82935 6.02583 6.74786 5.961 6.71274C5.71395 6.5789 5.46812 6.32793 5.32973 6.06283L5.32957 6.06293C5.16379 5.73282 5.10735 5.36279 5.19512 4.98064C5.19521 4.98066 5.1953 4.98068 5.1954 4.98068C5.29639 4.49142 5.82165 4.03629 6.22282 3.61538C6.22197 3.6151 6.22115 3.61479 6.22031 3.61451L7.7234 2.0804C8.3224 1.46904 9.30768 1.464 9.9129 2.06922C10.5242 2.6682 10.5343 3.65845 9.93536 4.26979L9.02492 5.20602C8.98279 5.24935 8.96912 5.31257 8.98884 5.36971C9.19846 5.9776 9.25002 6.83474 9.10955 7.48233C9.10561 7.50045 9.12798 7.51232 9.14094 7.49907L11.0786 5.52137C12.3165 4.25799 12.306 2.20104 11.0553 0.950372C9.77896 -0.325972 7.70112 -0.31535 6.43788 0.973937L4.4525 3.00029C4.44987 3.00306 4.44738 3.00587 4.44473 3.00859Z" fill="white"/%3E%3Cpath d="M8.06699 8.25341C8.06697 8.25348 8.06692 8.25355 8.0669 8.25362C8.06814 8.25311 8.06929 8.25261 8.07053 8.25207C8.46598 7.52896 8.54383 6.69963 8.35849 5.89117L8.35765 5.89203L8.35674 5.89164C8.18076 5.17157 7.6979 4.45655 7.0421 4.01631C6.98569 3.97844 6.89558 3.98283 6.84275 4.02555C6.51056 4.29415 6.18541 4.63857 5.97086 5.07811C5.93716 5.14711 5.96239 5.23 6.0288 5.26855C6.27779 5.41311 6.50266 5.62475 6.65322 5.90573L6.65345 5.90556C6.77078 6.10405 6.88641 6.48067 6.81151 6.88534C6.81147 6.88534 6.8114 6.88534 6.81135 6.88534C6.74148 7.42185 6.19969 7.91398 5.76899 8.35743L5.7692 8.35764C5.44135 8.6929 4.60794 9.54251 4.27423 9.88344C3.67525 10.4948 2.685 10.5049 2.07366 9.90591C1.46232 9.30693 1.45222 8.31667 2.0512 7.70534L2.96433 6.76629C3.00572 6.72373 3.01979 6.66188 3.00138 6.60544C2.79863 5.98334 2.74308 5.14552 2.87106 4.49866C2.87462 4.48063 2.85244 4.46912 2.83957 4.48225L0.931017 6.43019C-0.319512 7.70653 -0.308913 9.78459 0.954605 11.0481C2.23088 12.2986 4.29822 12.2774 5.5487 11.0012C5.98312 10.5152 7.84273 8.79346 8.06699 8.25341Z" fill="white"/%3E%3C/svg%3E');
-
-}
-
-/* popup notifications */
 
 .popUpContent{
     height: auto; 
@@ -1297,8 +1270,31 @@ style.innerHTML = `
     line-height: 60px;
 }
 
-.priceAlertsList{
-    margin-top: 40px;
+/* scrollbar styling */
+.contentWrapper::-webkit-scrollbar {
+  width: 4px;
+  overflow: overlay;
+  position: absolute;
+  z-index: 100;
+}
+
+/* Track */
+.contentWrapper::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+  overflow: overlay;
+  position: absolute;
+}
+ 
+/* Handle */
+.contentWrapper::-webkit-scrollbar-thumb {
+  background: #888; 
+  overflow: overlay;
+  position: absolute;
+}
+
+/* Handle on hover */
+.contentWrapper::-webkit-scrollbar-thumb:hover {
+  background: #555; 
 }
 
 /*Responsive css*/
@@ -1308,6 +1304,7 @@ style.innerHTML = `
         width: 100vw;
     }
     .pop-over{
+        position: abosulute
         left: 0px;
         right: 0px;
         bottom: 0;
