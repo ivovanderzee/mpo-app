@@ -48,7 +48,7 @@ function getData(){
         let price = pricewatchItems[i].querySelector('.price').querySelector('a').innerText;
         let imageUrl = pricewatchItems[i].querySelector('.pwimage').querySelector('a').querySelector('img').getAttribute('src');
         //Push the properties to a JSON file
-        allProducts.push({id: id, title: title, specline: specline, price: price, imageUrl: imageUrl, priceAlert: false, alertPrice: 0, selected: false}); 
+        allProducts.push({id: id, title: title, specline: specline, price: price, imageUrl: imageUrl, priceAlert: false, alertPrice: 0, selected: false, compared: false}); 
     }
 }
 
@@ -210,7 +210,7 @@ function generateItemHTML(product, category){
       //define buttons and parts of the product item
       let addToListBtn = `<div class='option addList' style="margin-right: 5px;"></div>`;
       let setAlertBtn = `<div class='${product.priceAlert ? 'option setAlert active' : 'option setAlert'}' id="${product.id}"></div>`;
-      let addCompareBtn = `<div class='option addCompare' style="margin-right: 5px;" id="${product.id}"></div>`;
+      let addCompareBtn = `<div class='${product.compared ? 'option addCompare active' : 'option addCompare'}' style="margin-right: 5px;" id="${product.id}"></div>`;
       let inputField = ``;
       let deleteBtn = `<img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">`;
       //Switch case for manipulating the HTML for the product item
@@ -374,12 +374,15 @@ function selectProducts(product, addToListBtn) {
 //Function for adding products to the compare list
 function addToCompare(product) {
     productsCompare.push(product);
+    product.compared = true;
     calcCompareProducts();
     updateCounter();
 }
 
 //Function to remove items from the compare array
 function deleteFromCompare(product){
+    let addCompareBtn = Array.from(popover.querySelectorAll('.addCompare')).filter(compareBtn => compareBtn.getAttribute('id') === product.id)[0];
+    changeState(addCompareBtn);
     //Search for the index of the product in the array
     let index = productsCompare.indexOf(product)
     //Remove product
@@ -406,7 +409,7 @@ function calcCompareProducts() {
     let deletebtn = productItem.querySelector('.delProduct');
     let priceAlertBtn = productItem.querySelector('.setAlert');
     //Add eventlistener to the delete button
-    deletebtn.addEventListener('click', () => {deleteFromMPO(product);})
+    deletebtn.addEventListener('click', () => {deleteFromCompare(product);})
      //Eventlistener for setting a price alert for the product
     priceAlertBtn.addEventListener('click', () => {
         if (priceAlertBtn.className == 'option setAlert') {
