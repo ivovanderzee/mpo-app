@@ -208,10 +208,9 @@ function changeState(elem) {
 //Function that generates the HTML for the product items
 function generateItemHTML(product, category){
       //define buttons and parts of the product item
-      let checkBtn1 = ``;
-      let checkBtn2 = ``;
       let addToListBtn = `<div class='option addList' style="margin-right: 5px;"></div>`;
       let setAlertBtn = `<div class='${product.priceAlert ? 'option setAlert active' : 'option setAlert'}' id="${product.id}"></div>`;
+      let addCompareBtn = `<div class='option addCompare' style="margin-right: 5px;" id="${product.id}"></div>`;
       let inputField = ``;
       let deleteBtn = `<img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">`;
       //Switch case for manipulating the HTML for the product item
@@ -224,10 +223,10 @@ function generateItemHTML(product, category){
             inputField = `<span class="inputEuro"><input class="text" type="text" size="8" name="" id="" value="${product.alertPrice}"></span>`;
             setAlertBtn = '';
             addToListBtn = '';
+            addCompareBtn = '';
             break;
-          case 'productCompare':
-            checkBtn1 = `<label class="compare ctaButton unselected checkbox"><input type="checkbox" name="products[]" value="${product.id}"><span>Mijn Producten</span></label>`;
-            addToListBtn = '';
+          case 'compareProduct':
+            addCompareBtn = '';
             break;
           case 'productInList':
             checkBtn1 = `<label class="compare ctaButton unselected checkbox"><input type="checkbox" name="products[]" value="${product.id}"><span>Gekocht</span></label>`;
@@ -240,6 +239,7 @@ function generateItemHTML(product, category){
       ${deleteBtn}
       ${inputField}
       <div class="itemOptions">
+      ${addCompareBtn}
       ${addToListBtn}
       ${setAlertBtn}
       </div>
@@ -251,10 +251,6 @@ function generateItemHTML(product, category){
       <li  class='priceProduct'><span><a>${product.price}</a></span></li>
       </ul>
       </div>
-      </div>
-      <div class="item-options-bottom" style="text-align: right; margin-right: 10px; margin-top: 5px;">
-      ${checkBtn1}
-      ${checkBtn2}
       </div>
       </div>
       `;
@@ -329,7 +325,7 @@ function computeMPOProducts() {
         let deleteBtn = productItem.querySelector('.delProduct');
         let priceAlertBtn = productItem.querySelector('.setAlert');
         let addToListBtn = productItem.querySelector('.addList');
-        let addCompare = productItem.querySelector('.compare');
+        let addCompare = productItem.querySelector('.addCompare');
         //Eventlistener for deleting a product from the list
         deleteBtn.addEventListener('click', () => {deleteFromMPO(product)})
         //Eventlistener for setting a price alert for the product
@@ -344,11 +340,12 @@ function computeMPOProducts() {
         addToListBtn.addEventListener('click', () => {selectProducts(product, addToListBtn)});
         //Event listener for adding the product to a list
         addCompare.addEventListener('click', () => {
-            if (addCompare.className === 'compare ctaButton unselected checkbox') {
+            if (addCompare.className === 'option addCompare') {
                 addToCompare(product);
-                addCompare.className = 'compare ctaButton selected checkbox'
+                changeState(addCompare);
             } else {
-                addCompare.className = 'compare ctaButton unselected checkbox'
+                deleteFromCompare(product);
+                changeState(addCompare);
             }
         })
     })
@@ -377,6 +374,16 @@ function selectProducts(product, addToListBtn) {
 //Function for adding products to the compare list
 function addToCompare(product) {
     productsCompare.push(product);
+    calcCompareProducts();
+    updateCounter();
+}
+
+//Function to remove items from the compare array
+function deleteFromCompare(product){
+    //Search for the index of the product in the array
+    let index = productsCompare.indexOf(product)
+    //Remove product
+    productsCompare.splice(index, 1)
     calcCompareProducts();
     updateCounter();
 }
@@ -773,7 +780,6 @@ function dragElement(elmnt) {
     }
     function dragMouseDown(e) {
         e = e || window.event;
-
         // get the mouse cursor position at startup:
         pos3 = e.clientX;
         pos4 = e.clientY;
@@ -799,9 +805,6 @@ function dragElement(elmnt) {
         document.onmousemove = null;
     }
 }
-//}else{
-    //nothing
-//}
 
 //Adding css to the javascript code
 let head = document.querySelector('head');
@@ -822,7 +825,6 @@ style.innerHTML = `
     background-color: white;
     background-image: url("data:image/svg+xml,%3Csvg width='17' height='17' viewBox='0 0 17 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0H16.4138V17H0V0ZM2.05172 2.34483H5.12931V4.10345H2.05172V2.34483ZM14.3621 2.34483H7.18103V4.10345H14.3621V2.34483ZM2.05172 5.86207H5.12931V7.62069H2.05172V5.86207ZM14.3621 5.86207H7.18103V7.62069H14.3621V5.86207ZM2.05172 9.37931H5.12931V11.1379H2.05172V9.37931ZM14.3621 9.37931H7.18103V11.1379H14.3621V9.37931ZM2.05172 12.8966H5.12931V14.6552H2.05172V12.8966ZM14.3621 12.8966H7.18103V14.6552H14.3621V12.8966Z' fill='black'/%3E%3C/svg%3E%0A");
 }
-
 
 /*General styling of the popover*/
 .pop-over{
@@ -849,7 +851,6 @@ style.innerHTML = `
     width: 375px;
     height: 655px;
 }
-
 
 .introText{
     display: block;
@@ -929,7 +930,6 @@ style.innerHTML = `
     color: #b9133d;
 }
 
-
 /*Lists & product elements*/
 .all-lists{
     margin-top: 40px;
@@ -941,14 +941,13 @@ style.innerHTML = `
 
 .list-content{
     display: none;
-    background-color: #D9D9D9; 
+    border-top: 1px;
+    border-bottom: 1px;
     max-width: 95%; 
     height: auto; 
     margin: 0 auto; 
     margin-top: 15px; 
     padding-bottom: 10px; 
-    padding-top: 10px;
-
 }
 
 .list-content.active{
@@ -1045,7 +1044,7 @@ style.innerHTML = `
     background-image: url('data:image/svg+xml, %3Csvg width="5" height="3" viewBox="0 0 5 3" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M4.45426 2.4104H0.468172V0.760742H4.45426V2.4104Z" fill="white"/%3E%3C/svg%3E');
 }
 .productItem{
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .itemWrapper{
@@ -1070,7 +1069,6 @@ style.innerHTML = `
     padding-top: 10px;
     margin-top: 0px;
 }
-
 
 .titleProduct{
     max-width: 200px;
@@ -1172,7 +1170,7 @@ style.innerHTML = `
     margin-right: 0px;
 }
 
-/*Item options active state and background SVG*/
+/*Product options active state and background SVG*/
 .itemOptions .option{
     background-color: #D9D9D9;
     background-position: center center;
@@ -1180,8 +1178,8 @@ style.innerHTML = `
     background-repeat: no-repeat;
     background-size: 16px;
     border-radius: 2px;
-    height: 35px;
-    width: 35px;
+    height: 30px;
+    width: 30px;
     float: left;
 }
 
@@ -1189,26 +1187,25 @@ style.innerHTML = `
     background-color: #9FBF22;
 }
 
+.option.addCompare{
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='12' viewBox='0 0 10 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.97656 0.703125H5.56477C5.41966 0.293883 5.02866 0 4.57031 0C4.11197 0 3.72096 0.293883 3.57586 0.703125H3.16406C2.96991 0.703125 2.8125 0.860531 2.8125 1.05469V1.40625H0.351562C0.157406 1.40625 0 1.56366 0 1.75781V11.6484C0 11.8426 0.157406 12 0.351562 12H8.78906C8.98322 12 9.14062 11.8426 9.14062 11.6484V1.75781C9.14062 1.56366 8.98322 1.40625 8.78906 1.40625H6.32812V1.05469C6.32812 0.860531 6.17072 0.703125 5.97656 0.703125ZM3.51562 1.40625H3.86719C4.06134 1.40625 4.21875 1.24884 4.21875 1.05469C4.21875 0.860836 4.37646 0.703125 4.57031 0.703125C4.76416 0.703125 4.92188 0.860836 4.92188 1.05469C4.92188 1.24884 5.07928 1.40625 5.27344 1.40625H5.625V2.10938H3.51562V1.40625ZM8.4375 2.10938V11.2969H0.703125V2.10938H2.8125V2.46094C2.8125 2.65509 2.96991 2.8125 3.16406 2.8125H5.97656C6.17072 2.8125 6.32812 2.65509 6.32812 2.46094V2.10938H8.4375Z' fill='%231668AC'/%3E%3Cpath d='M2.8125 3.86719C2.8125 4.06134 2.96991 4.21875 3.16406 4.21875H7.38281C7.57697 4.21875 7.73438 4.06134 7.73438 3.86719C7.73438 3.67303 7.57697 3.51562 7.38281 3.51562H3.16406C2.96991 3.51562 2.8125 3.67303 2.8125 3.86719Z' fill='%231668AC'/%3E%3Cpath d='M1.75781 4.21875C1.95198 4.21875 2.10938 4.06135 2.10938 3.86719C2.10938 3.67302 1.95198 3.51562 1.75781 3.51562C1.56365 3.51562 1.40625 3.67302 1.40625 3.86719C1.40625 4.06135 1.56365 4.21875 1.75781 4.21875Z' fill='%231668AC'/%3E%3Cpath d='M7.38281 4.92188H3.16406C2.96991 4.92188 2.8125 5.07928 2.8125 5.27344C2.8125 5.46759 2.96991 5.625 3.16406 5.625H7.38281C7.57697 5.625 7.73438 5.46759 7.73438 5.27344C7.73438 5.07928 7.57697 4.92188 7.38281 4.92188Z' fill='%231668AC'/%3E%3Cpath d='M1.75781 5.625C1.95198 5.625 2.10938 5.4676 2.10938 5.27344C2.10938 5.07927 1.95198 4.92188 1.75781 4.92188C1.56365 4.92188 1.40625 5.07927 1.40625 5.27344C1.40625 5.4676 1.56365 5.625 1.75781 5.625Z' fill='%231668AC'/%3E%3Cpath d='M7.38281 6.32812H3.16406C2.96991 6.32812 2.8125 6.48553 2.8125 6.67969C2.8125 6.87384 2.96991 7.03125 3.16406 7.03125H7.38281C7.57697 7.03125 7.73438 6.87384 7.73438 6.67969C7.73438 6.48553 7.57697 6.32812 7.38281 6.32812Z' fill='%231668AC'/%3E%3Cpath d='M1.75781 7.03125C1.95198 7.03125 2.10938 6.87385 2.10938 6.67969C2.10938 6.48552 1.95198 6.32812 1.75781 6.32812C1.56365 6.32812 1.40625 6.48552 1.40625 6.67969C1.40625 6.87385 1.56365 7.03125 1.75781 7.03125Z' fill='%231668AC'/%3E%3Cpath d='M7.38281 7.73438H1.75781C1.56366 7.73438 1.40625 7.89178 1.40625 8.08594V10.2422C1.40625 10.4363 1.56366 10.5937 1.75781 10.5937H7.38281C7.57697 10.5937 7.73437 10.4363 7.73437 10.2422V8.08594C7.73437 7.89178 7.57697 7.73438 7.38281 7.73438ZM7.03125 9.89062H2.10937V8.4375H7.03125V9.89062Z' fill='%231668AC'/%3E%3C/svg%3E%0A");
+}
+.option.addCompare.active{
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='12' viewBox='0 0 10 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.97656 0.703125H5.56477C5.41966 0.293883 5.02866 0 4.57031 0C4.11197 0 3.72096 0.293883 3.57586 0.703125H3.16406C2.96991 0.703125 2.8125 0.860531 2.8125 1.05469V1.40625H0.351562C0.157406 1.40625 0 1.56366 0 1.75781V11.6484C0 11.8426 0.157406 12 0.351562 12H8.78906C8.98322 12 9.14062 11.8426 9.14062 11.6484V1.75781C9.14062 1.56366 8.98322 1.40625 8.78906 1.40625H6.32812V1.05469C6.32812 0.860531 6.17072 0.703125 5.97656 0.703125ZM3.51562 1.40625H3.86719C4.06134 1.40625 4.21875 1.24884 4.21875 1.05469C4.21875 0.860836 4.37646 0.703125 4.57031 0.703125C4.76416 0.703125 4.92188 0.860836 4.92188 1.05469C4.92188 1.24884 5.07928 1.40625 5.27344 1.40625H5.625V2.10938H3.51562V1.40625ZM8.4375 2.10938V11.2969H0.703125V2.10938H2.8125V2.46094C2.8125 2.65509 2.96991 2.8125 3.16406 2.8125H5.97656C6.17072 2.8125 6.32812 2.65509 6.32812 2.46094V2.10938H8.4375Z' fill='white'/%3E%3Cpath d='M2.8125 3.86719C2.8125 4.06134 2.96991 4.21875 3.16406 4.21875H7.38281C7.57697 4.21875 7.73438 4.06134 7.73438 3.86719C7.73438 3.67303 7.57697 3.51562 7.38281 3.51562H3.16406C2.96991 3.51562 2.8125 3.67303 2.8125 3.86719Z' fill='white'/%3E%3Cpath d='M1.75781 4.21875C1.95198 4.21875 2.10938 4.06135 2.10938 3.86719C2.10938 3.67302 1.95198 3.51562 1.75781 3.51562C1.56365 3.51562 1.40625 3.67302 1.40625 3.86719C1.40625 4.06135 1.56365 4.21875 1.75781 4.21875Z' fill='white'/%3E%3Cpath d='M7.38281 4.92188H3.16406C2.96991 4.92188 2.8125 5.07928 2.8125 5.27344C2.8125 5.46759 2.96991 5.625 3.16406 5.625H7.38281C7.57697 5.625 7.73438 5.46759 7.73438 5.27344C7.73438 5.07928 7.57697 4.92188 7.38281 4.92188Z' fill='white'/%3E%3Cpath d='M1.75781 5.625C1.95198 5.625 2.10938 5.4676 2.10938 5.27344C2.10938 5.07927 1.95198 4.92188 1.75781 4.92188C1.56365 4.92188 1.40625 5.07927 1.40625 5.27344C1.40625 5.4676 1.56365 5.625 1.75781 5.625Z' fill='white'/%3E%3Cpath d='M7.38281 6.32812H3.16406C2.96991 6.32812 2.8125 6.48553 2.8125 6.67969C2.8125 6.87384 2.96991 7.03125 3.16406 7.03125H7.38281C7.57697 7.03125 7.73438 6.87384 7.73438 6.67969C7.73438 6.48553 7.57697 6.32812 7.38281 6.32812Z' fill='white'/%3E%3Cpath d='M1.75781 7.03125C1.95198 7.03125 2.10938 6.87385 2.10938 6.67969C2.10938 6.48552 1.95198 6.32812 1.75781 6.32812C1.56365 6.32812 1.40625 6.48552 1.40625 6.67969C1.40625 6.87385 1.56365 7.03125 1.75781 7.03125Z' fill='white'/%3E%3Cpath d='M7.38281 7.73438H1.75781C1.56366 7.73438 1.40625 7.89178 1.40625 8.08594V10.2422C1.40625 10.4363 1.56366 10.5937 1.75781 10.5937H7.38281C7.57697 10.5937 7.73437 10.4363 7.73437 10.2422V8.08594C7.73437 7.89178 7.57697 7.73438 7.38281 7.73438ZM7.03125 9.89062H2.10937V8.4375H7.03125V9.89062Z' fill='white'/%3E%3C/svg%3E%0A");
+}
+
 .option.addList{
     background-image: url("data:image/svg+xml,%3Csvg width='18' height='14' viewBox='0 0 14 14' xmlns='http://www.w3.org/2000/svg'%3E%3Crect y='3.63312' width='13.3333' height='1.45326' fill='%231668AC'/%3E%3Crect width='13.3333' height='1.45326' fill='%231668AC'/%3E%3Crect y='7.2663' width='8' height='1.45326' fill='%231668AC'/%3E%3Crect y='10.8994' width='8' height='1.45326' fill='%231668AC'/%3E%3Cpath d='M14.2757 9.65405H17.0511V10.8503H14.2757V13.9949H13.0042V10.8503H10.2288V9.65405H13.0042V6.74878H14.2757V9.65405Z' fill='%231668AC'/%3E%3C/svg%3E");
+}
+.option.addList.active{
+    background-image: url('data:image/svg+xml, %3Csvg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Crect y="3.63312" width="13.3333" height="1.45326" fill="white"/%3E%3Crect width="13.3333" height="1.45326" fill="white"/%3E%3Crect y="7.2663" width="8" height="1.45326" fill="white"/%3E%3Crect y="10.8994" width="8" height="1.45326" fill="white"/%3E%3Cpath d="M15.3216 11.281H11.9857V10.2488H15.3216V11.281Z" fill="white"/%3E%3C/svg%3E');
 }
 
 .option.setAlert{
     background-image: url("data:image/svg+xml,%3Csvg width='19' height='19' viewBox='0 0 19 19' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0)'%3E%3Cpath d='M16.9896 8.58849C16.6885 8.58849 16.4442 8.34349 16.4442 8.04161C16.4442 5.94744 15.6312 3.97944 14.1549 2.4985C13.9419 2.28487 13.9419 1.93854 14.1549 1.72491C14.368 1.51129 14.7134 1.51129 14.9266 1.72491C16.6086 3.41214 17.535 5.65585 17.535 8.04161C17.535 8.34349 17.2906 8.58849 16.9896 8.58849Z' fill='%231668AC'/%3E%3Cpath d='M2.08155 8.58855C1.78048 8.58855 1.53613 8.34356 1.53613 8.04168C1.53613 5.65591 2.46265 3.4122 4.14537 1.72565C4.35842 1.51202 4.70397 1.51202 4.91702 1.72565C5.13008 1.93927 5.13008 2.28574 4.91702 2.49936C3.44003 3.9795 2.62697 5.94751 2.62697 8.04168C2.62697 8.34356 2.38262 8.58855 2.08155 8.58855Z' fill='%231668AC'/%3E%3Cpath d='M9.53568 18.25C8.03179 18.25 6.80859 17.0235 6.80859 15.5156C6.80859 15.2137 7.05294 14.9688 7.35401 14.9688C7.65508 14.9688 7.89943 15.2137 7.89943 15.5156C7.89943 16.4206 8.63313 17.1562 9.53568 17.1562C10.4381 17.1562 11.1719 16.4206 11.1719 15.5156C11.1719 15.2137 11.4163 14.9688 11.7173 14.9688C12.0184 14.9688 12.2628 15.2137 12.2628 15.5156C12.2628 17.0235 11.0396 18.25 9.53568 18.25Z' fill='%231668AC'/%3E%3Cpath d='M15.5356 16.0625H3.5364C2.83452 16.0625 2.26367 15.4901 2.26367 14.7865C2.26367 14.4131 2.42586 14.0595 2.70882 13.8167C3.81483 12.8797 4.44534 11.5177 4.44534 10.0746V8.04162C4.44534 5.22714 6.72887 2.9375 9.53598 2.9375C12.343 2.9375 14.6265 5.22714 14.6265 8.04162V10.0746C14.6265 11.5177 15.257 12.8797 16.3558 13.8116C16.646 14.0595 16.8082 14.4131 16.8082 14.7865C16.8082 15.4901 16.2373 16.0625 15.5356 16.0625ZM9.53598 4.03125C7.33021 4.03125 5.53617 5.83009 5.53617 8.04162V10.0746C5.53617 11.8398 4.76465 13.5068 3.42002 14.6464C3.39459 14.6683 3.35451 14.7136 3.35451 14.7865C3.35451 14.8856 3.43746 14.9688 3.5364 14.9688H15.5356C15.6344 14.9688 15.7173 14.8856 15.7173 14.7865C15.7173 14.7136 15.6774 14.6683 15.6533 14.6479C14.3072 13.5068 13.5357 11.8398 13.5357 10.0746V8.04162C13.5357 5.83009 11.7416 4.03125 9.53598 4.03125Z' fill='%231668AC'/%3E%3Cpath d='M9.53565 4.03125C9.23458 4.03125 8.99023 3.78625 8.99023 3.48438V1.29688C8.99023 0.994999 9.23458 0.75 9.53565 0.75C9.83672 0.75 10.0811 0.994999 10.0811 1.29688V3.48438C10.0811 3.78625 9.83672 4.03125 9.53565 4.03125Z' fill='%231668AC'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0'%3E%3Crect width='17.4533' height='17.5' fill='white' transform='translate(0.820312 0.75)'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
 }
-
 .option.setAlert.active{
     background-image: url("data:image/svg+xml,%3Csvg width='19' height='19' viewBox='0 0 19 19' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0)'%3E%3Cpath d='M16.9896 8.58846C16.6885 8.58846 16.4442 8.34346 16.4442 8.04158C16.4442 5.94741 15.6312 3.97941 14.1549 2.49847C13.9419 2.28484 13.9419 1.93851 14.1549 1.72488C14.368 1.51126 14.7134 1.51126 14.9266 1.72488C16.6086 3.41211 17.535 5.65582 17.535 8.04158C17.535 8.34346 17.2906 8.58846 16.9896 8.58846Z' fill='white'/%3E%3Cpath d='M2.08155 8.58852C1.78048 8.58852 1.53613 8.34352 1.53613 8.04165C1.53613 5.65588 2.46265 3.41217 4.14537 1.72562C4.35842 1.51199 4.70397 1.51199 4.91702 1.72562C5.13008 1.93924 5.13008 2.28571 4.91702 2.49933C3.44003 3.97947 2.62697 5.94748 2.62697 8.04165C2.62697 8.34352 2.38262 8.58852 2.08155 8.58852Z' fill='white'/%3E%3Cpath d='M9.53568 18.25C8.03179 18.25 6.80859 17.0235 6.80859 15.5156C6.80859 15.2137 7.05294 14.9688 7.35401 14.9688C7.65508 14.9688 7.89943 15.2137 7.89943 15.5156C7.89943 16.4206 8.63313 17.1562 9.53568 17.1562C10.4381 17.1562 11.1719 16.4206 11.1719 15.5156C11.1719 15.2137 11.4163 14.9688 11.7173 14.9688C12.0184 14.9688 12.2628 15.2137 12.2628 15.5156C12.2628 17.0235 11.0396 18.25 9.53568 18.25Z' fill='white'/%3E%3Cpath d='M15.5356 16.0625H3.5364C2.83452 16.0625 2.26367 15.4901 2.26367 14.7865C2.26367 14.4131 2.42586 14.0595 2.70882 13.8167C3.81483 12.8797 4.44534 11.5177 4.44534 10.0746V8.04162C4.44534 5.22714 6.72887 2.9375 9.53598 2.9375C12.343 2.9375 14.6265 5.22714 14.6265 8.04162V10.0746C14.6265 11.5177 15.257 12.8797 16.3558 13.8116C16.646 14.0595 16.8082 14.4131 16.8082 14.7865C16.8082 15.4901 16.2373 16.0625 15.5356 16.0625ZM9.53598 4.03125C7.33021 4.03125 5.53617 5.83009 5.53617 8.04162V10.0746C5.53617 11.8398 4.76465 13.5068 3.42002 14.6464C3.39459 14.6683 3.35451 14.7136 3.35451 14.7865C3.35451 14.8856 3.43746 14.9688 3.5364 14.9688H15.5356C15.6344 14.9688 15.7173 14.8856 15.7173 14.7865C15.7173 14.7136 15.6774 14.6683 15.6533 14.6479C14.3072 13.5068 13.5357 11.8398 13.5357 10.0746V8.04162C13.5357 5.83009 11.7416 4.03125 9.53598 4.03125Z' fill='white'/%3E%3Cpath d='M9.53565 4.03125C9.23458 4.03125 8.99023 3.78625 8.99023 3.48438V1.29688C8.99023 0.994999 9.23458 0.75 9.53565 0.75C9.83672 0.75 10.0811 0.994999 10.0811 1.29688V3.48438C10.0811 3.78625 9.83672 4.03125 9.53565 4.03125Z' fill='white'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0'%3E%3Crect width='17.4533' height='17.5' fill='white' transform='translate(0.820312 0.75)'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E%0A");
-}
-
-.option.addList.active{
-    background-image: url('data:image/svg+xml, %3Csvg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Crect y="3.63312" width="13.3333" height="1.45326" fill="white"/%3E%3Crect width="13.3333" height="1.45326" fill="white"/%3E%3Crect y="7.2663" width="8" height="1.45326" fill="white"/%3E%3Crect y="10.8994" width="8" height="1.45326" fill="white"/%3E%3Cpath d="M15.3216 11.281H11.9857V10.2488H15.3216V11.281Z" fill="white"/%3E%3C/svg%3E');
-}
-
-.item-options-bottom{
-    text-align: right; 
-    margin-right: 10px; 
-    margin-top: 5px;
 }
 
 /*Popup notification styling*/
