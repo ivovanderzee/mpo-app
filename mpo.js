@@ -200,7 +200,7 @@ addCheckbox();
 function changeState(elem) {
     if (elem.classList.contains('active')) {
         elem.classList.remove('active');
-    } else {
+    } else if(!elem.classList.contains('active')){
         elem.classList.add('active');
     }
 }
@@ -293,6 +293,7 @@ function addToMPO(product) {
     singleProducts.push(product);
     computeMPOProducts();
     updateCounter();
+    tooltips();
 }
 
 //Function that removes the product from the MPO array
@@ -383,6 +384,8 @@ function addToCompare(product) {
 function deleteFromCompare(product){
     let addCompareBtn = Array.from(popover.querySelectorAll('.addCompare')).filter(compareBtn => compareBtn.getAttribute('id') === product.id)[0];
     changeState(addCompareBtn);
+    console.log(addCompareBtn)
+    product.compared = false;
     //Search for the index of the product in the array
     let index = productsCompare.indexOf(product)
     //Remove product
@@ -809,6 +812,40 @@ function dragElement(elmnt) {
     }
 }
 
+//create and append a tooltip element to the body
+let tooltip = document.createElement('span');
+body.appendChild(tooltip);
+tooltip.className = 'tooltip'
+function tooltips(){
+        let itemOptions = popover.querySelectorAll('.option');
+        itemOptions.forEach(option =>{
+            option.addEventListener('mouseover', () =>{
+                let mousePositionX = event.clientX + 10;
+                let mousePositionY = event.clientY;
+                setTimeout(function() {
+                    switch(option.className){
+                        case 'option addCompare':
+                            tooltip.innerText = 'Voeg product toe aan vergelijken'; 
+                            break;
+                        case 'option addList':
+                            tooltip.innerText = 'Voeg toe aan een lijst';
+                            break;
+                        case 'option setAlert':
+                            tooltip.innerText = 'Stel een prijsalert in';
+                            break;
+                    }
+                tooltip.style.top = mousePositionY + 'px';
+                tooltip.style.left = mousePositionX + 'px';
+                tooltip.style.display = 'block';
+                }, 1000)
+                
+            })
+            option.addEventListener('mouseout', () =>{
+                tooltip.style.display = 'none';
+            })
+        })
+}
+
 //Adding css to the javascript code
 let head = document.querySelector('head');
 let style = document.createElement('style');
@@ -867,7 +904,6 @@ style.innerHTML = `
 .contentWrapper{
     background-color: #f2f2f2;
     border-radius: 2px;
-    overflow-x: hidden;
     overflow-y: scroll;
     width: 375px;
     height: 655px;
@@ -1300,6 +1336,21 @@ style.innerHTML = `
 .contentWrapper::-webkit-scrollbar-thumb:hover {
   background: #555; 
 }
+
+/*Tooltip*/
+.tooltip{
+    display: none;
+    width: auto;
+    background-color: grey;
+    color: #fff;
+    border-radius: 1px;
+    font-size: 11px;
+    /* Position the tooltip */
+    position: fixed;
+    border: 1px white solid;
+    padding: 3px;
+    z-index: 999;
+  }
 
 /*Responsive css*/
 @media only screen and (max-width: 767px) {
