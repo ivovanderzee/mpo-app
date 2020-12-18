@@ -293,7 +293,6 @@ function addToMPO(product) {
     singleProducts.push(product);
     computeMPOProducts();
     updateCounter();
-    tooltips();
 }
 
 //Function that removes the product from the MPO array
@@ -350,6 +349,7 @@ function computeMPOProducts() {
             }
         })
     })
+    tooltips();
 }
 
 //Function to select products
@@ -422,6 +422,7 @@ function calcCompareProducts() {
         }
     })
     })
+    tooltips();
 }
 
 //Function for setting a price alert
@@ -484,6 +485,7 @@ function calcPriceAlerts() {
             deleteBtn.addEventListener('click', () => {deletePriceAlert(product);});
             });   
         }
+    tooltips();
     }
 
 //Function to generate the pop up notification to the view
@@ -676,6 +678,7 @@ function calcLists() {
         productsInListCounter = productsInListCounter + list.products.length;
         updateCounter();
     })
+    tooltips();
 }
 
 //Function to delete a list
@@ -815,7 +818,9 @@ function dragElement(elmnt) {
 //create and append a tooltip element to the body
 let tooltip = document.createElement('span');
 body.appendChild(tooltip);
-tooltip.className = 'tooltip'
+tooltip.className = 'tooltip';
+
+//function to append the tooltip to the icon/button based on the position of the mouse
 function tooltips(){
         let itemOptions = popover.querySelectorAll('.option');
         itemOptions.forEach(option =>{
@@ -837,8 +842,7 @@ function tooltips(){
                 tooltip.style.top = mousePositionY + 'px';
                 tooltip.style.left = mousePositionX + 'px';
                 tooltip.style.display = 'block';
-                }, 1000)
-                
+                }, 2000)     
             })
             option.addEventListener('mouseout', () =>{
                 tooltip.style.display = 'none';
