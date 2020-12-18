@@ -208,7 +208,7 @@ function changeState(elem) {
 //Function that generates the HTML for the product items
 function generateItemHTML(product, category){
       //define buttons and parts of the product item
-      let addToListBtn = `<div class='option addList' style="margin-right: 5px;"></div>`;
+      let addToListBtn = `<div class='${product.selected ? 'option addList active' : 'option addList'}' style="margin-right: 5px;"></div>`;
       let setAlertBtn = `<div class='${product.priceAlert ? 'option setAlert active' : 'option setAlert'}' id="${product.id}"></div>`;
       let addCompareBtn = `<div class='${product.compared ? 'option addCompare active' : 'option addCompare'}' style="margin-right: 5px;" id="${product.id}">Vergelijk</div>`;
       let inputField = ``;
