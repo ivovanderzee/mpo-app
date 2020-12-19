@@ -69,11 +69,11 @@ function addCheckbox() {
         let checkbox = label.querySelector('input');
         //Append the label to the productitem
         itemName.appendChild(label);
-       
         //Add an eventlistener to the label button for adding and deleting products
         label.addEventListener('click', () => {
             if (!checkbox.getAttribute('checked')) {
                 addToMPO(product);
+                topNotification(product);
             } else {
                 deleteFromMPO(product);
             }
@@ -205,6 +205,16 @@ function changeState(elem) {
     } else if(!elem.classList.contains('active')){
         elem.classList.add('active');
     }
+}
+
+function topNotification(product){
+    let notification = document.createElement('div');
+    notification.className = 'top-notification';
+    notification.innerHTML = `<span>Je hebt <a style="font-weight: bolder">${product.title}</a> toegevoegd aan Mijn Producten</span>`;
+    body.appendChild(notification);
+    setTimeout(function() {
+        body.removeChild(notification);     
+    }, 2500)  
 }
 
 //Function that generates the HTML for the product items
@@ -1409,20 +1419,33 @@ style.innerHTML = `
   background: #555; 
 }
 
-/*Tooltip*/
-.tooltip{
-    display: none;
-    width: auto;
-    background-color: grey;
-    color: #fff;
-    border-radius: 1px;
-    font-size: 11px;
-    /* Position the tooltip */
+/*top notification styling*/
+.top-notification{
+    width: 700px;
+    top: 100px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px #9FBF22 solid;
+    background-color: rgba(159, 191, 34, 0.7);
+    height: 50px;
     position: fixed;
-    border: 1px white solid;
-    padding: 3px;
-    z-index: 999;
-  }
+    right: 1;
+    margin: 0 auto;
+    z-index: 10;
+    text-align: center;
+    font-size: 12px;
+    border-radius: 2px;
+    display: table-cell;
+    vertical-align: middle;
+    display: table;
+   
+}
+.top-notification span{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
 
 /*Responsive css*/
 @media only screen and (max-width: 767px) {
@@ -1431,7 +1454,7 @@ style.innerHTML = `
         width: 100vw;
     }
     .pop-over{
-        position: abosulute
+        position: abosulute;
         left: 0px;
         right: 0px;
         bottom: 0;
