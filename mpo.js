@@ -1,26 +1,3 @@
-//Search compare icon content and add a eventlistener to it
-let iconCompare = document.querySelector('.icon.compare');
-let iconFlag = document.querySelector('.icon.display.flag');
-let userbar = document.querySelector('#userbar');
-
-//Create new icon and place it in the header, delete the old icon
-let iconMPO = document.createElement('li');
-iconMPO.className = 'iconMPO';
-let iconMPOHTML = `<a></a>`;
-iconMPO.innerHTML = iconMPOHTML;
-userbar.removeChild(iconCompare);
-userbar.insertBefore(iconMPO, iconFlag);
-
-//Add event listener to the icon in the header to display the popover based on the state of the icon
- iconMPO.addEventListener('click', () => {
-    changeState(iconMPO);
-    if(iconMPO.classList.contains('active')){
-        popover.style.display = 'block';
-    }else{
-        popover.style.display = 'none';
-    }
-});
-
 //Grab all the list items on a pricewatch page
 let pricewatchItems = document.querySelector('.listing.useVisitedState').querySelectorAll('.largethumb');
 
@@ -37,6 +14,29 @@ let compareCounter = productsCompare.length;
 let listCounter = lists.length;
 let selectedCounter = Array.from(singleProducts.filter(item => item.selected === true)).length;
 let productsInListCounter = 0;
+
+//Search compare icon content and add a eventlistener to it
+let iconCompare = document.querySelector('.icon.compare');
+let iconFlag = document.querySelector('.icon.display.flag');
+let userbar = document.querySelector('#userbar');
+
+//Create new icon and place it in the header, delete the old icon
+let iconMPO = document.createElement('li');
+iconMPO.className = 'iconMPO';
+let iconMPOHTML = `<a></a><span class="counter mpo">${mpoCounter}</span>`;
+iconMPO.innerHTML = iconMPOHTML;
+userbar.removeChild(iconCompare);
+userbar.insertBefore(iconMPO, iconFlag);
+
+//Add event listener to the icon in the header to display the popover based on the state of the icon
+ iconMPO.addEventListener('click', () => {
+    changeState(iconMPO);
+    if(iconMPO.classList.contains('active')){
+        popover.style.display = 'block';
+    }else{
+        popover.style.display = 'none';
+    }
+});
 
 //Function to grab all the data and push it to the array
 function getData(){
@@ -815,7 +815,7 @@ function updateCounter() {
     listCounter = lists.length;
     selectedCounter = Array.from(singleProducts.filter(item => item.selected === true)).length;
     //Grab all the counters on the page
-    let counters = popover.querySelectorAll('.counter');
+    let counters = document.querySelectorAll('.counter');
     for (i = 0; i < counters.length; i++) {
         let className = counters[i].className;
         if (className === 'counter mpo') {
@@ -939,6 +939,24 @@ style.innerHTML = `
 .iconMPO.active a{
     background-color: white;
     background-image: url("data:image/svg+xml,%3Csvg width='17' height='17' viewBox='0 0 17 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0H16.4138V17H0V0ZM2.05172 2.34483H5.12931V4.10345H2.05172V2.34483ZM14.3621 2.34483H7.18103V4.10345H14.3621V2.34483ZM2.05172 5.86207H5.12931V7.62069H2.05172V5.86207ZM14.3621 5.86207H7.18103V7.62069H14.3621V5.86207ZM2.05172 9.37931H5.12931V11.1379H2.05172V9.37931ZM14.3621 9.37931H7.18103V11.1379H14.3621V9.37931ZM2.05172 12.8966H5.12931V14.6552H2.05172V12.8966ZM14.3621 12.8966H7.18103V14.6552H14.3621V12.8966Z' fill='black'/%3E%3C/svg%3E%0A");
+}
+.iconMPO span{
+    z-index: 10;
+    background-color: #eafd6c;
+    border-radius: 2px;
+    color: black;
+    text-align: center;
+    max-width: 15px;
+    max-height: 15px;
+    font-size: 11px;
+    position: absolute;
+    display: inline-block;
+    white-space: nowrap;
+    list-style-position: outside;
+    display: table-cell;
+    top: 4px;
+    right: 47px;
+    
 }
 
 /*General styling of the popover*/
@@ -1426,8 +1444,8 @@ style.innerHTML = `
     left: 0;
     right: 0;
     bottom: 0;
-    border: 1px #9FBF22 solid;
-    background-color: rgba(159, 191, 34, 0.7);
+    border: 1px #eafd6c solid;
+    background-color: rgba(234, 253, 108, 0.7);
     height: 50px;
     position: fixed;
     right: 1;
