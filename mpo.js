@@ -665,7 +665,11 @@ function calcLists() {
                 //Eventlistener to set a boughtprice for the product
                 let boughtBtn = productItem.querySelector('.setBought');
                 boughtBtn.addEventListener('click', () =>{
-                    setBought(productInList, boughtBtn);
+                    if (boughtBtn.classList.contains('active')){
+                        deleteBought(productInList, boughtBtn)
+                    }else{
+                        setBought(productInList, boughtBtn);
+                    }
                 });
             })
             //Display the no list text into the listcontentview
@@ -735,13 +739,24 @@ function setBought(product, boughtBtn){
         let value = notification.querySelector('input').value;
         product.boughtPrice = value;
         boughtPrice.innerHTML = `€ ${product.boughtPrice}`;
-        itemWrapper.style.backgroundColor = 'rgba(159, 191, 34, 0.1)';
         itemWrapper.style.border = '1px #9FBF22 solid';
         boughtPrice.style.display = 'block';
         changeState(boughtBtn);
         closePopup(notification);
 }
 }
+//Function to delete a boughtprice
+function deleteBought(product, boughtBtn){
+    let itemWrapper = Array.from(popover.querySelectorAll('.itemWrapper')).filter(elem => elem.getAttribute('id') === product.id)[0];
+    let boughtPrice = itemWrapper.querySelector('.boughtPrice');
+        product.bought = false;
+        product.boughtPrice = 0;
+        boughtPrice.innerHTML = `€ ${product.boughtPrice}`;
+        itemWrapper.style.border = 'none';
+        boughtPrice.style.display = 'none';
+        changeState(boughtBtn);
+}
+
 //Function to select a list
 function selectList(listid){
     let list = lists.filter(list => list.id == listid)[0];
