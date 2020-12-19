@@ -58,6 +58,8 @@ function addCheckbox() {
     for (i = 0; i < pricewatchItems.length; i++) {
         //Define some properties and variables
         let itemName = pricewatchItems[i].querySelector('.itemname');
+        let compareLabel = pricewatchItems[i].querySelector('label');
+        itemName.removeChild(compareLabel);
         let product = allProducts.filter(product => product.id === allProducts[i].id)[0]
         //Set the HTML for the checkbox
         let checkBoxhtml = `<input type="checkbox" name="products[] value="${product.id}""><span>Mijn Producten</span>`;
