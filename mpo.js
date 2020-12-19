@@ -214,6 +214,7 @@ function generateItemHTML(product, category){
       let setBoughtBtn = ``;
       let inputField = ``;
       let deleteBtn = `<img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">`;
+      let boughtPrice = ``;
       //Switch case for manipulating the HTML for the product item
       switch(category){
           case 'singleProduct':
@@ -232,6 +233,7 @@ function generateItemHTML(product, category){
           case 'productInList':
             setBoughtBtn = `<div class='${product.bought ? 'option setBought active' : 'option setBought'}' style="margin-right: 5px;"></div>`;
             addToListBtn = '';
+            boughtPrice = `<span class="boughtPrice" style="display: ${product.bought ? 'block' : 'none'}; float: left; margin-right: 40px; margin-top: 5px;">€ ${product.boughtPrice}</span>`
       }
       //Html for the product in the list 
       let html = `
@@ -240,6 +242,7 @@ function generateItemHTML(product, category){
       ${deleteBtn}
       ${inputField}
       <div class="itemOptions">
+      ${boughtPrice}
       ${addCompareBtn}
       ${addToListBtn}
       ${setBoughtBtn}
@@ -680,7 +683,7 @@ function calcLists() {
                     let price = parseFloat(product.price.replace(",", ".").replace(/[^0-9\.-]+/g,""));
                     totalPrice = totalPrice + price;
                 })
-                priceCount.innerHTML = `€ ${totalPrice}`;
+                priceCount.innerHTML = `€ ${totalPrice.toFixed(2)}`;
          }
         productsInListCounter = productsInListCounter + list.products.length;
         updateCounter();
@@ -722,25 +725,19 @@ function createNewList() {
 
 //Function to set a boughtprice
 function setBought(product, boughtBtn){
+    let itemWrapper = Array.from(popover.querySelectorAll('.itemWrapper')).filter(elem => elem.getAttribute('id') === product.id)[0];
+    let boughtPrice = itemWrapper.querySelector('.boughtPrice');
+    
     let notification = createNotification('prijsalert', product);
     //If the users submits, the price alert will be set
     notification.onsubmit = function (){
         product.bought = true;
         let value = notification.querySelector('input').value;
         product.boughtPrice = value;
-
-        let inputfield = document.createElement('span');
-        inputfield.innerText =`€ ${product.boughtPrice}`;
-        inputfield.style.float = 'left';
-        inputfield.style.marginRight = '40px';
-        inputfield.style.marginTop = '7px';
-        let itemOptions = Array.from(popover.querySelectorAll('.itemWrapper')).filter(product => product.getAttribute('id') === product.id)[0].querySelector('.itemOptions');
-        let itemWrapper = Array.from(popover.querySelectorAll('.itemWrapper')).filter(product => product.getAttribute('id') === product.id)[0];
+        boughtPrice.innerHTML = `€ ${product.boughtPrice}`;
         itemWrapper.style.backgroundColor = 'rgba(159, 191, 34, 0.1)';
         itemWrapper.style.border = '1px #9FBF22 solid';
-        let firstBtn = itemOptions.firstElementChild;
-
-        itemOptions.insertBefore(inputfield, firstBtn);
+        boughtPrice.style.display = 'block';
         changeState(boughtBtn);
         closePopup(notification);
 }
