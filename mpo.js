@@ -208,12 +208,12 @@ function changeState(elem) {
 //Function that generates the HTML for the product items
 function generateItemHTML(product, category){
       //define buttons and parts of the product item
-      let addToListBtn = `<div class='${product.selected ? 'option addList active' : 'option addList'}' style="margin-right: 5px;"></div>`;
-      let setAlertBtn = `<div class='${product.priceAlert ? 'option setAlert active' : 'option setAlert'}' id="${product.id}"></div>`;
-      let addCompareBtn = `<div class='${product.compared ? 'option addCompare active' : 'option addCompare'}' style="margin-right: 5px;" id="${product.id}">Vergelijk</div>`;
+      let addToListBtn = `<div title="Product aan lijst toevoegen" class='${product.selected ? 'option addList active' : 'option addList'}' style="margin-right: 5px;"></div>`;
+      let setAlertBtn = `<div title="Prijsalert instellen" class='${product.priceAlert ? 'option setAlert active' : 'option setAlert'}' id="${product.id}"></div>`;
+      let addCompareBtn = `<div title="Aan vergelijking toevoegen" class='${product.compared ? 'option addCompare active' : 'option addCompare'}' style="margin-right: 5px;" id="${product.id}">Vergelijk</div>`;
       let setBoughtBtn = ``;
       let inputField = ``;
-      let deleteBtn = `<img src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">`;
+      let deleteBtn = `<img title="Product verwijderen" src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">`;
       let boughtPrice = ``;
       //Switch case for manipulating the HTML for the product item
       switch(category){
@@ -229,6 +229,7 @@ function generateItemHTML(product, category){
             break;
           case 'compareProduct':
             addCompareBtn = '';
+            addToListBtn = '';
             break;
           case 'productInList':
             setBoughtBtn = `<div class='${product.bought ? 'option setBought active' : 'option setBought'}' style="margin-right: 5px;"></div>`;
@@ -271,7 +272,6 @@ function appendSuggestions() {
         let suggestionItem = document.createElement('div');
         suggestionItem.className = 'suggestion-item';
         let product = allProducts.filter(product => product.id === allProducts[i].id)[0];
-        console.log(product)
         //HTML for the suggestion item
         let html = `
         <div class="suggestion-item-content">
@@ -343,7 +343,7 @@ function computeMPOProducts() {
         })
         //Eventlistener for adding the product to a list
         addToListBtn.addEventListener('click', () => {selectProducts(product, addToListBtn)});
-        //Event listener for adding the product to a list
+        //Event listener for adding the product to the compare tab
         addCompare.addEventListener('click', () => {
             if (addCompare.className === 'option addCompare') {
                 addToCompare(product);
@@ -353,7 +353,7 @@ function computeMPOProducts() {
             }
         })
     })
-    tooltips();
+    //tooltips();
 }
 
 //Function to select products
@@ -425,7 +425,7 @@ function calcCompareProducts() {
         }
     })
     })
-    tooltips();
+    //tooltips();
 }
 
 //Function for setting a price alert
@@ -488,7 +488,7 @@ function calcPriceAlerts() {
             deleteBtn.addEventListener('click', () => {deletePriceAlert(product);});
             });   
         }
-    tooltips();
+    //tooltips();
     }
 
 //Function to generate the pop up notification to the view
@@ -512,7 +512,6 @@ function createNotification(category, product = null) {
     inputField = `<span style="width: 80%;" class="inputEuro"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
     ul = '';
     newListMessage = '';
-    popupNotification.classList.add('prijsAlert')
     }else if (category === 'newlist') {
     popUpTitle = 'Nieuwe lijst maken';
     inputFieldSize = '30';
@@ -521,7 +520,6 @@ function createNotification(category, product = null) {
     inputField = `<span style="width: 80%;"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
     ul = '';
     newListMessage = '';
-    popupNotification.classList.add('newList')
     }else if (category === 'addToList') {
     popUpTitle = 'Selecteer een lijst';
     inputFieldSize = '0';
@@ -530,8 +528,14 @@ function createNotification(category, product = null) {
     inputField = ``;
     ul = `<ul class="lists-popup" style="list-style-type: none"></ul>`;
     newListMessage = `<a class="newListMessage" style="width: 80%;">+ Maak een nieuwe lijst aan</a><br>`;
-    popupNotification.classList.add('addToList');
-    
+    }else if (category === 'setBought') {
+    popUpTitle = 'Stel een aanschafprijs in';
+    inputFieldSize = '10';
+    ul = '';
+    popUpBtnTitle = 'Aanschafprijs instellen';
+    popUpMessage = `Voor welk bedrag heb je de <span style="font-weight: bolder">${product.title}</span> aangeschaft?`;
+    inputField = `<span style="width: 80%;" class="inputEuro"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
+    newListMessage = '';
     }
     //Set the html and append it to the item
     let html = `
@@ -647,6 +651,7 @@ function calcLists() {
                 listContent.appendChild(productItem);
                 listContent.firstElementChild.style.marginTop = '0px';
                 let priceAlertBtn = productItem.querySelector('.setAlert');
+                let addCompare = productItem.querySelector('.addCompare');
                  //Eventlistener for setting a price alert for the product
                  priceAlertBtn.addEventListener('click', () => {
                     if (priceAlertBtn.className == 'option setAlert') {
@@ -669,7 +674,16 @@ function calcLists() {
                         setBought(productInList, boughtBtn);
                     }
                 });
-            })
+                //Event listener for adding the product to the compare tab
+                addCompare.addEventListener('click', () => {
+                    if (addCompare.className === 'option addCompare') {
+                        addToCompare(product);
+                        changeState(addCompare);
+                    } else {
+                        deleteFromCompare(product);
+                    }
+                });
+            });
             //Display the no list text into the listcontentview
          }else if(products.length < 1) {
              noListsText.style.display = 'block';
@@ -690,7 +704,7 @@ function calcLists() {
         productsInListCounter = productsInListCounter + list.products.length;
         updateCounter();
     })
-    tooltips();
+    //tooltips();
 }
 
 //Function to delete a list
@@ -727,10 +741,10 @@ function createNewList() {
 
 //Function to set a boughtprice
 function setBought(product, boughtBtn){
-    let itemWrapper = Array.from(popover.querySelectorAll('.itemWrapper')).filter(elem => elem.getAttribute('id') === product.id)[0];
-    let boughtPrice = itemWrapper.querySelector('.boughtPrice');
+    let itemWrapper = Array.from(allLists.querySelectorAll('.itemWrapper')).filter(elem => elem.getAttribute('id') === product.id)[0];
+    let boughtPrice = Array.from(allLists.querySelectorAll('.itemWrapper')).filter(elem => elem.getAttribute('id') === product.id)[0].querySelector('.boughtPrice');
     
-    let notification = createNotification('prijsalert', product);
+    let notification = createNotification('setBought', product);
     //If the users submits, the price alert will be set
     notification.onsubmit = function (){
         product.bought = true;
@@ -745,8 +759,8 @@ function setBought(product, boughtBtn){
 }
 //Function to delete a boughtprice
 function deleteBought(product, boughtBtn){
-    let itemWrapper = Array.from(popover.querySelectorAll('.itemWrapper')).filter(elem => elem.getAttribute('id') === product.id)[0];
-    let boughtPrice = itemWrapper.querySelector('.boughtPrice');
+    let itemWrapper = Array.from(allLists.querySelectorAll('.itemWrapper')).filter(elem => elem.getAttribute('id') === product.id)[0];
+    let boughtPrice = allLists.querySelector('.boughtPrice');
         product.bought = false;
         product.boughtPrice = 0;
         boughtPrice.innerHTML = `€ ${product.boughtPrice}`;
@@ -862,38 +876,38 @@ let tooltip = document.createElement('span');
 body.appendChild(tooltip);
 tooltip.className = 'tooltip';
 
-//function to append the tooltip to the icon/button based on the position of the mouse
-function tooltips(){
-        let itemOptions = popover.querySelectorAll('.option');
-        itemOptions.forEach(option =>{
-            option.addEventListener('mouseover', () =>{
-                let mousePositionX = event.clientX + 10;
-                let mousePositionY = event.clientY;
-                setTimeout(function() {
-                    switch(option.className){
-                        case 'option addCompare':
-                            tooltip.innerText = 'Voeg product toe aan vergelijken'; 
-                            break;
-                        case 'option addList':
-                            tooltip.innerText = 'Voeg toe aan een lijst';
-                            break;
-                        case 'option setAlert':
-                            tooltip.innerText = 'Stel een prijsalert in';
-                            break;
-                        case 'option setBought':
-                            tooltip.innerText = 'Stel in voor hoeveel je het product gekocht hebt';
-                            break;
-                    }
-                tooltip.style.top = mousePositionY + 'px';
-                tooltip.style.left = mousePositionX + 'px';
-                tooltip.style.display = 'block';
-                }, 2000)     
-            })
-            option.addEventListener('mouseout', () =>{
-                tooltip.style.display = 'none';
-            })
-        })
-}
+// //function to append the tooltip to the icon/button based on the position of the mouse
+// function tooltips(){
+//         let itemOptions = popover.querySelectorAll('.option');
+//         itemOptions.forEach(option =>{
+//             option.addEventListener('mouseover', () =>{
+//                 let mousePositionX = event.clientX + 10;
+//                 let mousePositionY = event.clientY;
+//                 setTimeout(function() {
+//                     switch(option.className){
+//                         case 'option addCompare':
+//                             tooltip.innerText = 'Voeg product toe aan vergelijken'; 
+//                             break;
+//                         case 'option addList':
+//                             tooltip.innerText = 'Voeg toe aan een lijst';
+//                             break;
+//                         case 'option setAlert':
+//                             tooltip.innerText = 'Stel een prijsalert in';
+//                             break;
+//                         case 'option setBought':
+//                             tooltip.innerText = 'Stel in voor hoeveel je het product gekocht hebt';
+//                             break;
+//                     }
+//                 tooltip.style.top = mousePositionY + 'px';
+//                 tooltip.style.left = mousePositionX + 'px';
+//                 tooltip.style.display = 'block';
+//                 }, 2000)     
+//             })
+//             option.addEventListener('mouseout', () =>{
+//                 tooltip.style.display = 'none';
+//             })
+//         })
+// }
 
 //Adding css to the javascript code
 let head = document.querySelector('head');
