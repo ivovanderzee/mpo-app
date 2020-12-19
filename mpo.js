@@ -350,7 +350,6 @@ function computeMPOProducts() {
                 changeState(addCompare);
             } else {
                 deleteFromCompare(product);
-                changeState(addCompare);
             }
         })
     })
@@ -389,7 +388,6 @@ function addToCompare(product) {
 function deleteFromCompare(product){
     let addCompareBtn = Array.from(popover.querySelectorAll('.addCompare')).filter(compareBtn => compareBtn.getAttribute('id') === product.id)[0];
     changeState(addCompareBtn);
-    console.log(addCompareBtn)
     product.compared = false;
     //Search for the index of the product in the array
     let index = productsCompare.indexOf(product)
