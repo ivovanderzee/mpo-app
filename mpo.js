@@ -23,7 +23,7 @@ let userbar = document.querySelector('#userbar');
 //Create new icon and place it in the header, delete the old icon
 let iconMPO = document.createElement('li');
 iconMPO.className = 'iconMPO';
-let iconMPOHTML = `<a></a><span class="counter mpo">${mpoCounter}</span>`;
+let iconMPOHTML = `<span class="counter mpo">${mpoCounter}</span><a></a>`;
 iconMPO.innerHTML = iconMPOHTML;
 userbar.removeChild(iconCompare);
 userbar.insertBefore(iconMPO, iconFlag);
@@ -955,7 +955,11 @@ style.innerHTML = `
     list-style-position: outside;
     display: table-cell;
     top: 4px;
-    right: 47px;
+    right: 41px;
+    line-height: normal;
+    min-height: 14px;
+    min-width: 14px;
+    font-weight: bolder;
     
 }
 
