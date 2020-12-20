@@ -512,7 +512,7 @@ function createNotification(category, product = null) {
     let popUpBtnTitle;
     let inputField;
     let ul;
-    let newListMessage;
+    let newListInput;
     //Create new element and set classname
     let popupNotification = document.createElement('form');
     popupNotification.className = 'popup-notification';
@@ -523,7 +523,7 @@ function createNotification(category, product = null) {
     popUpMessage = `Je gaat een prijsalert instellen voor <span style="font-weight: bolder">${product.title}</span>`;
     inputField = `<span style="width: 80%;" class="inputEuro"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
     ul = '';
-    newListMessage = '';
+    newListInput = '';
     }else if (category === 'newlist') {
     popUpTitle = 'Nieuwe lijst maken';
     inputFieldSize = '30';
@@ -531,15 +531,28 @@ function createNotification(category, product = null) {
     popUpMessage = 'Typ de naam van de nieuwe lijst';
     inputField = `<span style="width: 80%;"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
     ul = '';
-    newListMessage = '';
+    newListInput = '';
     }else if (category === 'addToList') {
     popUpTitle = 'Selecteer een lijst';
     inputFieldSize = '0';
     popUpBtnTitle = 'Toevoegen';
     popUpMessage = 'Selecteer de lijsten waaraan je deze producten wilt toevoegen of maak een nieuwe lijst aan';
     inputField = ``;
-    ul = `<ul class="lists-popup" style="list-style-type: none"></ul>`;
-    newListMessage = `<a class="newListMessage" style="width: 80%;">+ Maak een nieuwe lijst aan</a><br>`;
+    ul = `<ul class="lists-popup" style="list-style-type: none">${appendLists()}</ul>`;
+    newListInput = `<input type="checkbox" class="checkList newList"><span style="width: 90%;"><input class="text newListName" type="text" size="${inputFieldSize}" name="product" id="" value=""></span></input><br>`;
+     //Function to append the lists to the popup notification
+     function appendLists(){
+        return `${lists.map(function (list) {
+            return `<li>
+            <input type="checkbox" list-id="${list.id}" class="checkList"></input>
+            <span style="font-weight: bolder; font-size: 14px">${list.name}</span>
+            <br>
+            <span style="font-weight: lighter; font-size: 11px; margin-left: 20px;">${list.products.length} producten in lijst</span>
+            </li>`;
+        }).join('')}
+        ` 
+    }
+
     }else if (category === 'setBought') {
     popUpTitle = 'Stel een aanschafprijs in';
     inputFieldSize = '10';
@@ -547,7 +560,7 @@ function createNotification(category, product = null) {
     popUpBtnTitle = 'Aanschafprijs instellen';
     popUpMessage = `Voor welk bedrag heb je de <span style="font-weight: bolder">${product.title}</span> aangeschaft?`;
     inputField = `<span style="width: 80%;" class="inputEuro"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
-    newListMessage = '';
+    newListInput = '';
     }
     //Set the html and append it to the item
     let html = `
@@ -558,7 +571,7 @@ function createNotification(category, product = null) {
     <br>
     ${inputField}
     ${ul}
-    ${newListMessage}
+    ${newListInput}
     <a class="popup-closeBtn" style="bottom: 15px; right: 15px; position: absolute;">Cancel</a>
     <button type="submit" style="margin-top: 15px;" class="ctaButton">${popUpBtnTitle}</button>
     </div>
@@ -569,35 +582,27 @@ function createNotification(category, product = null) {
     //Eventlistener for closing the button
     topInfo.style.marginTop = `${popupNotification.offsetHeight - 50}px`;
     let closeBtn = popupNotification.querySelector('.popup-closeBtn');
-    try{
-    appendListsToPopUp();
-    let newListBtn = popupNotification.querySelector('.newListMessage');
-    newListBtn.addEventListener('click', () =>{createNewList();})
+    closeBtn.addEventListener('click', () =>{closePopup(popupNotification);});
+    try{   
+        let checkboxNewList = popupNotification.querySelector('.checkList.newList');
+        checkboxNewList.addEventListener('click', () =>{
+            checkboxNewList.classList.add('selected');
+        });
     }catch{
         //error
     }
-    closeBtn.addEventListener('click', () =>{closePopup(popupNotification);});
-    return popupNotification;
-}
-
-//Function to append the lists to the popup notification
-function appendListsToPopUp(){
-    let listsInPopUp = popUpContent.querySelector('.lists-popup');
-    listsInPopUp.innerHTML = '';
-    lists.forEach(list =>{
-    let html = `<input type="checkbox" list-id="${list.id}" class="checkList"></input>
-    <span style="font-weight: bolder; font-size: 14px">${list.name}</span>
-    <br>
-    <span style="font-weight: lighter; font-size: 11px; margin-left: 20px;">${list.products.length} producten in lijst</span>`;
-    let li = document.createElement('li');
-    li.innerHTML = html;
-    listsInPopUp.appendChild(li);
-//Eventlistener to the checkboxes of each list
+    try{
+        let listsInPopUp = popUpContent.querySelector('.lists-popup');
         let checkboxes = listsInPopUp.querySelectorAll('input');
         checkboxes.forEach(checkbox =>{
             checkbox.addEventListener('click', () =>{selectList(checkbox.getAttribute('list-id'));})
-        })        
-    });
+        }); 
+    }catch{
+        //error
+    }
+
+
+    return popupNotification;
 }
 
 //Function for closing the popup
@@ -740,11 +745,6 @@ function createNewList() {
     notification.onsubmit = function () {
         let listName = notification.querySelector('input').value;
         lists.push({id: id, name: listName, products: [], totalPrice: 0, selected: false});
-        try{
-            appendListsToPopUp();
-        }catch{
-            //error
-        }
         closePopup(notification);
         calcLists();
         updateCounter();
@@ -790,8 +790,16 @@ function selectList(listid){
 //Function for adding products to a list
 function addToList() {
     //Create notification
-    let notification = createNotification('addToList')
+    let notification = createNotification('addToList');
+    let checkboxNewList = notification.querySelector('.checkList.newList');
     notification.onsubmit = function () {
+    if(checkboxNewList.classList.contains('selected')){
+        let id = Math.floor((Math.random() * 11000) + 22000);
+        let listName = notification.querySelector('.newListName').value;
+        lists.push({id: id, name: listName, products: [], totalPrice: 0, selected: true});
+    }else{
+         //nothing
+    }
     let selectedLists = lists.filter(list => list.selected == true);
     let selectedProducts = Array.from(singleProducts.filter(item => item.selected === true));
     selectedLists.forEach(list => {
@@ -962,8 +970,7 @@ style.innerHTML = `
     line-height: normal;
     min-height: 14px;
     min-width: 14px;
-    font-weight: bolder;
-    
+    font-weight: bolder;    
 }
 
 /*General styling of the popover*/
