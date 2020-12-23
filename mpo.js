@@ -127,6 +127,7 @@ let popoverHTML = `
 let popover = document.createElement('div');
 popover.className = 'pop-over';
 popover.innerHTML = popoverHTML;
+popover.style.display = 'none';
 
 //Append the new popover to the body
 let body = document.querySelector('body');
@@ -966,7 +967,7 @@ style.innerHTML = `
     list-style-position: outside;
     display: table-cell;
     top: 4px;
-    right: 41px;
+    left: 10px;
     line-height: normal;
     min-height: 14px;
     min-width: 14px;
@@ -974,6 +975,7 @@ style.innerHTML = `
 }
 
 /*General styling of the popover*/
+
 .pop-over{
     z-index: 200;
     position: fixed;
