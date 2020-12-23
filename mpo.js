@@ -967,7 +967,7 @@ style.innerHTML = `
     list-style-position: outside;
     display: table-cell;
     top: 4px;
-    left: 10px;
+    left: 30px;
     line-height: normal;
     min-height: 14px;
     min-width: 14px;
