@@ -1,4 +1,4 @@
-# HOW TO RUN MIJN PRODUCT OMGEVING
+# How to run Mijn Product omgeving
 
 ## Install inststructions
 
