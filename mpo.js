@@ -366,7 +366,6 @@ function computeMPOProducts() {
             }
         })
     })
-    //tooltips();
 }
 
 //Function to select products
@@ -438,7 +437,6 @@ function calcCompareProducts() {
         }
     })
     })
-    //tooltips();
 }
 
 //Function for setting a price alert
@@ -501,7 +499,6 @@ function calcPriceAlerts() {
             deleteBtn.addEventListener('click', () => {deletePriceAlert(product);});
             });   
         }
-    //tooltips();
     }
 
 //Function to generate the pop up notification to the view
@@ -722,7 +719,6 @@ function calcLists() {
         productsInListCounter = productsInListCounter + list.products.length;
         updateCounter();
     })
-    //tooltips();
 }
 
 //Function to delete a list
@@ -851,9 +847,7 @@ function updateCounter() {
     }
 }
 
-//Make the element draggable only on desktop
-//if(window.innerWidth > 767){
-    // Make the DIV element draggable:
+    // Make the DIV element draggable
 dragElement(document.querySelector(".pop-over"));
 function dragElement(elmnt) {
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -891,44 +885,6 @@ function dragElement(elmnt) {
         document.onmousemove = null;
     }
 }
-
-//create and append a tooltip element to the body
-let tooltip = document.createElement('span');
-body.appendChild(tooltip);
-tooltip.className = 'tooltip';
-
-// //function to append the tooltip to the icon/button based on the position of the mouse
-// function tooltips(){
-//         let itemOptions = popover.querySelectorAll('.option');
-//         itemOptions.forEach(option =>{
-//             option.addEventListener('mouseover', () =>{
-//                 let mousePositionX = event.clientX + 10;
-//                 let mousePositionY = event.clientY;
-//                 setTimeout(function() {
-//                     switch(option.className){
-//                         case 'option addCompare':
-//                             tooltip.innerText = 'Voeg product toe aan vergelijken'; 
-//                             break;
-//                         case 'option addList':
-//                             tooltip.innerText = 'Voeg toe aan een lijst';
-//                             break;
-//                         case 'option setAlert':
-//                             tooltip.innerText = 'Stel een prijsalert in';
-//                             break;
-//                         case 'option setBought':
-//                             tooltip.innerText = 'Stel in voor hoeveel je het product gekocht hebt';
-//                             break;
-//                     }
-//                 tooltip.style.top = mousePositionY + 'px';
-//                 tooltip.style.left = mousePositionX + 'px';
-//                 tooltip.style.display = 'block';
-//                 }, 2000)     
-//             })
-//             option.addEventListener('mouseout', () =>{
-//                 tooltip.style.display = 'none';
-//             })
-//         })
-// }
 
 //Adding css to the javascript code
 let head = document.querySelector('head');
