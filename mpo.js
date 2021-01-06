@@ -183,6 +183,7 @@ function switchContent(tab) {
     if(tab.classList.contains('mijnProducten')){
         compareTab.classList.remove('active');
         topTitle.innerText = 'Mijn Producten';
+        calcPriceAlerts();
         buttonTop.innerText = 'Nieuwe lijst maken';
         singleProductsContent.style.display = 'block';
         allLists.style.display = 'block';
@@ -194,6 +195,7 @@ function switchContent(tab) {
         compareProducts.style.display = 'block';
         singleProductsContent.style.display = 'none';
         allLists.style.display = 'none';
+        priceAlertList.style.display = 'none';
     }else{
         //nothing
     }
@@ -495,12 +497,7 @@ function deleteFromList(list, product){
 
 //Function the calculates all the price alerts in the price alert array
 function calcPriceAlerts() {
-    // If/else for displaying the price alert wrapper in the popover
-    if (allPriceAlerts.length < 1) {
-        priceAlertList.style.display = 'none';
-    }else {
-        priceAlertList.style.display = 'block';
-        priceAlertContent.innerHTML = '';
+    priceAlertContent.innerHTML = '';
         allPriceAlerts.forEach(priceAlertProduct => {
             let product = allPriceAlerts.filter(product => product.id === priceAlertProduct.id)[0]
             //Create new element for the price alert item and append classname
@@ -512,8 +509,12 @@ function calcPriceAlerts() {
             //Eventlistener for the delete button
             let deleteBtn = priceAlertItem.querySelector('.delProduct');
             deleteBtn.addEventListener('click', () => {deletePriceAlert(product);});
-            });   
-        }
+            }); 
+    if(mpoTab.classList.contains('active') && allPriceAlerts.length > 0){
+        priceAlertList.style.display = 'block';
+    }else{
+        priceAlertList.style.display = 'none';
+    }
     }
 
 //Function to generate the pop up notification to the view
@@ -856,7 +857,7 @@ function updateCounter() {
     }
     }
     //Toggle the introtext and the suggestion items
-    if (mpoCounter > 0 || listCounter > 0) {
+    if (mpoCounter > 0 || listCounter > 0 || compareCounter > 0) {
         introText.style.display = 'none';
         suggestionItemWrapper.style.display = 'none';
     }else{
@@ -1273,6 +1274,10 @@ style.innerHTML = `
 
 .priceAlertContent{
     margin-top: 15px;
+}
+
+.price-alert-item{
+    margin-bottom: 10px;
 }
 
 .price-alert-item .inputEuro{
