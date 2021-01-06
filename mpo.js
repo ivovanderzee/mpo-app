@@ -23,7 +23,7 @@ let userbar = document.querySelector('#userbar');
 //Create new icon and place it in the header, delete the old icon
 let iconMPO = document.createElement('li');
 iconMPO.className = 'iconMPO';
-let iconMPOHTML = `<span class="counter mpo">${mpoCounter}</span><a></a>`;
+let iconMPOHTML = `<span class="counter mpo compare">${mpoCounter + compareCounter}</span><a></a>`;
 iconMPO.innerHTML = iconMPOHTML;
 userbar.removeChild(iconCompare);
 userbar.insertBefore(iconMPO, iconFlag);
@@ -61,17 +61,27 @@ function addCheckbox() {
         let compareLabel = pricewatchItems[i].querySelector('label');
         itemName.removeChild(compareLabel);
         let product = allProducts.filter(product => product.id === allProducts[i].id)[0]
-        //Set the HTML for the checkbox
-        let checkBoxhtml = `<input type="checkbox" name="products[] value="${product.id}""><span>Mijn Producten</span>`;
         //Create a new label and set the innerHTML to the checkbox HTML
-        let label = document.createElement('label');
-        label.innerHTML = checkBoxhtml;
-        let checkbox = label.querySelector('input');
+        let mijnProductenLabel = document.createElement('label');
+        let vergelijkLabel = document.createElement('label');
+        vergelijkLabel.style.marginLeft = '5px';
+        mijnProductenLabel.innerHTML = `<input type="checkbox" name="products[] value="${product.id}""><span>Mijn Producten</span>`;
+        vergelijkLabel.innerHTML = `<input type="checkbox" name="products[] value="${product.id}""><span>Vergelijk</span>`;
+        let checkbox1 = mijnProductenLabel.querySelector('input');
+        let checkbox2 = vergelijkLabel.querySelector('input');
         //Append the label to the productitem
-        itemName.appendChild(label);
+        itemName.appendChild(mijnProductenLabel);
+        itemName.appendChild(vergelijkLabel);
         //Add an eventlistener to the label button for adding and deleting products
-        label.addEventListener('click', () => {
-            if (!checkbox.getAttribute('checked')) {
+        vergelijkLabel.addEventListener('click', () => {
+            if (!checkbox2.getAttribute('checked')) {
+                addToCompare(product);
+            } else {
+                deleteFromCompare(product);
+            }
+        })
+        mijnProductenLabel.addEventListener('click', () => {
+            if (!checkbox1.getAttribute('checked')) {
                 addToMPO(product);
                 topNotification(product);
             } else {
@@ -835,7 +845,10 @@ function updateCounter() {
         } else if (className === 'counter compare') {
             counters[i].innerHTML = '';
             counters[i].innerHTML = compareCounter;
-        }
+        } else if (className === 'counter mpo compare') {
+        counters[i].innerHTML = '';
+        counters[i].innerHTML = mpoCounter + compareCounter;
+    }
     }
     //Toggle the introtext and the suggestion items
     if (mpoCounter > 0 || listCounter > 0) {
