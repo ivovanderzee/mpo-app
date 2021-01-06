@@ -23,13 +23,14 @@ let userbar = document.querySelector('#userbar');
 //Create new icon and place it in the header, delete the old icon
 let iconMPO = document.createElement('li');
 iconMPO.className = 'iconMPO';
-let iconMPOHTML = `<span class="counter mpo compare">${mpoCounter + compareCounter}</span><a></a>`;
+let iconMPOHTML = `<a></a><span class="counter mpo compare">${mpoCounter + compareCounter}</span>`;
 iconMPO.innerHTML = iconMPOHTML;
 userbar.removeChild(iconCompare);
 userbar.insertBefore(iconMPO, iconFlag);
 
 //Add event listener to the icon in the header to display the popover based on the state of the icon
  iconMPO.addEventListener('click', () => {
+    iconMPO.classList.remove('new');
     changeState(iconMPO);
     if(iconMPO.classList.contains('active')){
         popover.style.display = 'block';
@@ -320,6 +321,7 @@ function appendSuggestions() {
 
 //Function that adds products to the MPO array
 function addToMPO(product) {
+    iconMPO.classList.add('new');
     singleProducts.push(product);
     computeMPOProducts();
     updateCounter();
@@ -402,6 +404,7 @@ function selectProducts(product, addToListBtn) {
 
 //Function for adding products to the compare list
 function addToCompare(product) {
+    iconMPO.classList.add('new');
     productsCompare.push(product);
     product.compared = true;
     calcCompareProducts();
@@ -913,40 +916,47 @@ style.innerHTML = `
 .iconMPO a{
     display: block;
     height: 44px;
-    position: relative;
     width: 31px;
     background-image: url("data:image/svg+xml,%3Csvg width='17' height='17' viewBox='0 0 17 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0H16.4138V17H0V0ZM2.05172 2.34483H5.12931V4.10345H2.05172V2.34483ZM14.3621 2.34483H7.18103V4.10345H14.3621V2.34483ZM2.05172 5.86207H5.12931V7.62069H2.05172V5.86207ZM14.3621 5.86207H7.18103V7.62069H14.3621V5.86207ZM2.05172 9.37931H5.12931V11.1379H2.05172V9.37931ZM14.3621 9.37931H7.18103V11.1379H14.3621V9.37931ZM2.05172 12.8966H5.12931V14.6552H2.05172V12.8966ZM14.3621 12.8966H7.18103V14.6552H14.3621V12.8966Z' fill='%23D9D9D9'/%3E%3C/svg%3E%0A");
     background-position: center center;
     background-size: fit;
-    background-repeat: no-repeat
+    background-repeat: no-repeat;
 }
 .iconMPO.active a{
     background-color: white;
     background-image: url("data:image/svg+xml,%3Csvg width='17' height='17' viewBox='0 0 17 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0H16.4138V17H0V0ZM2.05172 2.34483H5.12931V4.10345H2.05172V2.34483ZM14.3621 2.34483H7.18103V4.10345H14.3621V2.34483ZM2.05172 5.86207H5.12931V7.62069H2.05172V5.86207ZM14.3621 5.86207H7.18103V7.62069H14.3621V5.86207ZM2.05172 9.37931H5.12931V11.1379H2.05172V9.37931ZM14.3621 9.37931H7.18103V11.1379H14.3621V9.37931ZM2.05172 12.8966H5.12931V14.6552H2.05172V12.8966ZM14.3621 12.8966H7.18103V14.6552H14.3621V12.8966Z' fill='black'/%3E%3C/svg%3E%0A");
 }
+
+.iconMPO.new a{
+    background-image: url("data:image/svg+xml,%3Csvg width='17' height='17' viewBox='0 0 17 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0H16.4138V17H0V0ZM2.05172 2.34483H5.12931V4.10345H2.05172V2.34483ZM14.3621 2.34483H7.18103V4.10345H14.3621V2.34483ZM2.05172 5.86207H5.12931V7.62069H2.05172V5.86207ZM14.3621 5.86207H7.18103V7.62069H14.3621V5.86207ZM2.05172 9.37931H5.12931V11.1379H2.05172V9.37931ZM14.3621 9.37931H7.18103V11.1379H14.3621V9.37931ZM2.05172 12.8966H5.12931V14.6552H2.05172V12.8966ZM14.3621 12.8966H7.18103V14.6552H14.3621V12.8966Z' fill='%23DAE74B'/%3E%3C/svg%3E%0A");
+}
+.iconMPO.new span{
+    background-color: #eafd6c;
+}
+
 .iconMPO.active span{
     display: none;
 }
 .iconMPO span{
-    z-index: 10;
-    background-color: #eafd6c;
+    z-index: 999;
+    background-color: #e6e6e6;
     border-radius: 2px;
     color: black;
     text-align: center;
     max-width: 15px;
     max-height: 15px;
     font-size: 11px;
-    position: absolute;
-    display: inline-block;
-    white-space: nowrap;
-    list-style-position: outside;
-    display: table-cell;
-    top: 4px;
-    left: 30px;
+    display: inline;
+    margin-top: 5px;
     line-height: normal;
-    min-height: 14px;
-    min-width: 14px;
+    position: absolute;
+    top: 0;
+    float: right;
+    min-height: 15px;
+    margin-left: 25px;
+    min-width: 15px;
     font-weight: bolder;    
+    vertical-align: top;
 }
 
 /*General styling of the popover*/
