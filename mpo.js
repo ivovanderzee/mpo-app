@@ -408,8 +408,13 @@ function addToCompare(product) {
 
 //Function to remove items from the compare array
 function deleteFromCompare(product){
+    try{
     let addCompareBtn = Array.from(popover.querySelectorAll('.addCompare')).filter(compareBtn => compareBtn.getAttribute('id') === product.id)[0];
+    console.log(addCompareBtn)
     changeState(addCompareBtn);
+    }catch{
+        //error
+    }
     product.compared = false;
     //Search for the index of the product in the array
     let index = productsCompare.indexOf(product)
