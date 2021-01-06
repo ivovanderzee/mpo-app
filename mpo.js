@@ -957,6 +957,7 @@ style.innerHTML = `
     min-width: 15px;
     font-weight: bolder;    
     vertical-align: top;
+    box-shadow: 0 1px 0 1px rgba(0,0,0,0.2);
 }
 
 /*General styling of the popover*/
