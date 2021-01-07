@@ -929,6 +929,7 @@ function shareList(list){
         height: 105px;
         border-bottom: 1px #e6e6e6 solid;
         margin: 0 auto;
+        position: relative;
     }
     .share-product-info{
         margin-left: 20px;
@@ -954,7 +955,9 @@ function shareList(list){
         border-radius: 2px;
         line-height: 30px;
         font-size: 12px;
-        margin-top: 40px;
+        top: 40%;
+        right: 0;
+
     }
     </style>
     <div class="share-wrapper">
@@ -965,14 +968,14 @@ function shareList(list){
     <br>
     <span class="share-list-subtitle">Een lijst van <a>IvoZee</a></span>
     <br><br><br>
-    <span class="share-list-text">Onderstaande producten staan in de lijst <a>Monitoren</a>. Onderaan de lijst kunnen de totale kosten worden berekend.</span> 
+    <span class="share-list-text">Onderstaande producten staan in de lijst <a>${list.name}</a>. Onderaan de lijst kunnen de totale kosten worden berekend.</span> 
     <br><br><br><br>
     <span class="share-list-info"><span class="bold-info">${list.products.length} producten</span>, met een totaalprijs van <span class="bold-info">€ ${list.totalPrice.toFixed(2)}</span></span>
     <div style="width: 100%; margin-top: 10px;" class="line"></div> 
     <div class="shared-list">
     ${appendProducts()}
     </div>
-    <a class="button" style="color: white; float: left;">Totale kosten berekenen</a>
+    <a class="button" style="color: white; float: left; margin-top: 40px;">Totale kosten berekenen</a>
     <span style="float: left; width: 100%; margin-top: 30px" class="share-list-text">Zelf ook een lijst aanmaken? <a>Bekijk de pricewatch</a> en sla jouw favoriete producten op in Mijn Producten.</span>
     <div style="width: 100%; margin-top: 10px; float: left; margin-top: 30px;" class="line"></div> 
     </div>
@@ -992,7 +995,7 @@ function shareList(list){
             <br>
             <span class="share-product-title">${product.price}</span>
             </div>
-            <a class="button" style="color: white;">Bekijk product</a>
+            <a class="button" style="color: white; position: absolute;">Bekijk product</a>
             </div>
             `           
         }).join("")}
