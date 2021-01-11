@@ -1,6 +1,10 @@
 //Grab all the list items on a pricewatch page
 let pricewatchItems = document.querySelector('.listing.useVisitedState').querySelectorAll('.largethumb');
 
+//Toggle to turn off/on the checkboxes in the pricewatch listing
+let vergelijkCheckboxes = true;
+let mijnProductenCheckboxes = true;
+
 //JSON data arrays used in the code
 let allProducts = [];
 let singleProducts = [];
@@ -28,7 +32,7 @@ iconMPO.innerHTML = iconMPOHTML;
 userbar.removeChild(iconCompare);
 userbar.insertBefore(iconMPO, iconFlag);
 
-//Add event listener to the icon in the header to display the popover based on the state of the icon
+//Add event listener for the icon in the header to display the popover based on the state of the icon
  iconMPO.addEventListener('click', () => {
     iconMPO.classList.remove('new');
     changeState(iconMPO);
@@ -42,12 +46,14 @@ userbar.insertBefore(iconMPO, iconFlag);
 //Function to grab all the data and push it to the array
 function getData(){
     for(i =0; i < pricewatchItems.length; i++){
+
         //Specify some properties from each product
         let id = pricewatchItems[i].querySelector('input').getAttribute('value');
         let title = pricewatchItems[i].querySelector('.itemname').querySelector('.ellipsis').querySelector('a').innerText;
         let specline = pricewatchItems[i].querySelector('.itemname').querySelector('.specline.ellipsis').querySelector('a').innerText;
         let price = pricewatchItems[i].querySelector('.price').querySelector('a').innerText;
         let imageUrl = pricewatchItems[i].querySelector('.pwimage').querySelector('a').querySelector('img').getAttribute('src');
+
         //Push the properties to a JSON file
         allProducts.push({id: id, title: title, specline: specline, price: price, imageUrl: imageUrl, priceAlert: false, alertPrice: 0, selected: false, compared: false, bought: false, boughtPrice: 0}); 
     }
@@ -57,30 +63,21 @@ function getData(){
 function addCheckbox() {
     //Add the checkbox the to all the products in the list on a pricewatch page
     for (i = 0; i < pricewatchItems.length; i++) {
-        //Define some properties and variables
+
+        //Define some properties and variables and remove old label
         let itemName = pricewatchItems[i].querySelector('.itemname');
         let compareLabel = pricewatchItems[i].querySelector('label');
+        let product = allProducts.filter(product => product.id === allProducts[i].id)[0];
         itemName.removeChild(compareLabel);
-        let product = allProducts.filter(product => product.id === allProducts[i].id)[0]
-        //Create a new label and set the innerHTML to the checkbox HTML
+
+        //Add checkboxes Mijn Producten
+        if(mijnProductenCheckboxes){
+        //Create a new label and set the innerHTML of the checkbox(es)
         let mijnProductenLabel = document.createElement('label');
-        let vergelijkLabel = document.createElement('label');
-        vergelijkLabel.style.marginLeft = '5px';
         mijnProductenLabel.innerHTML = `<input type="checkbox" name="products[] value="${product.id}""><span>Mijn Producten</span>`;
-        vergelijkLabel.innerHTML = `<input type="checkbox" name="products[] value="${product.id}""><span>Vergelijk</span>`;
-        let checkbox1 = mijnProductenLabel.querySelector('input');
-        let checkbox2 = vergelijkLabel.querySelector('input');
-        //Append the label to the productitem
+        let checkbox1 = mijnProductenLabel.querySelector('input')
         itemName.appendChild(mijnProductenLabel);
-        itemName.appendChild(vergelijkLabel);
-        //Add an eventlistener to the label button for adding and deleting products
-        vergelijkLabel.addEventListener('click', () => {
-            if (!checkbox2.getAttribute('checked')) {
-                addToCompare(product);
-            } else {
-                deleteFromCompare(product);
-            }
-        })
+        //Add an eventlistener to the label button
         mijnProductenLabel.addEventListener('click', () => {
             if (!checkbox1.getAttribute('checked')) {
                 addToMPO(product);
@@ -89,6 +86,27 @@ function addCheckbox() {
                 deleteFromMPO(product);
             }
         })
+        }
+       
+        //Add checkbox vergelijk
+        if(vergelijkCheckboxes){
+            let vergelijkLabel = document.createElement('label');
+            vergelijkLabel.style.marginLeft = '5px';
+            vergelijkLabel.innerHTML = `<input type="checkbox" name="products[] value="${product.id}""><span>Vergelijk</span>`;
+            let checkbox2 = vergelijkLabel.querySelector('input');
+            itemName.appendChild(vergelijkLabel);
+
+            //Add an eventlistener to the label button
+            vergelijkLabel.addEventListener('click', () => {
+                if (!checkbox2.getAttribute('checked')) {
+                    addToCompare(product);
+                } else {
+                    deleteFromCompare(product);
+            }
+        });
+               }else{
+                    //nothing
+            }
     }
 }
 
@@ -872,137 +890,6 @@ function updateCounter() {
     }
 }
 
-//Share the list function
-function shareList(list){
-    let win = window.open("", "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
-    win.document.body.innerHTML = `
-    <style>
-    .share-wrapper{
-
-    }
-    .share-top-logo{
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 282.34 76.97'%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill:%23dae64a;%7D.cls-2%7Bfill:%23fff;%7D%3C/style%3E%3C/defs%3E%3Cg id='Laag_2' data-name='Laag 2'%3E%3Cg id='Layer_1' data-name='Layer 1'%3E%3Cpath class='cls-1' d='M74.71,25.48a.78.78,0,0,1,0,.09l-21,28.33a5.3,5.3,0,0,1-4.54,2.43H28.63c-2.74,0-3.89-.76-5.05-3.64L17.35,32.58a5.58,5.58,0,0,1,.44-5.35L38.66,0h-.17A38.47,38.47,0,1,0,74.71,25.48Z'/%3E%3Cpath d='M17.35,32.58l6.23,20.11c1.16,2.88,2.31,3.64,5.05,3.64h20.6a5.3,5.3,0,0,0,4.54-2.43l21-28.33a.78.78,0,0,0,0-.09A38.5,38.5,0,0,0,38.66,0L17.79,27.23A5.58,5.58,0,0,0,17.35,32.58Zm8.52-6.88H51.39V34H42.82V48.09H34.54V34H25.87Z'/%3E%3Cpolygon class='cls-2' points='34.53 48.09 42.82 48.09 42.82 33.98 51.39 33.98 51.39 25.7 25.87 25.7 25.87 33.98 34.53 33.98 34.53 48.09'/%3E%3Cpath d='M144,48.07h-7.11L132.71,34l-4.09,14.11h-7.13l-7.12-22.33H121l4.42,13.74,3.62-13.71h7.49l3.63,13.71,4.28-13.74h6.61Z'/%3E%3Cpath d='M169.55,47.64a19.63,19.63,0,0,1-5.88.63c-7.22,0-11-5.23-11-11.22,0-5,2.31-11.65,10.71-11.65,8.21,0,11.08,5,10.09,14.19H159.37c0,2.09,2.43,3.45,4.65,3.45a12.41,12.41,0,0,0,3.8-.47Zm-5.9-17c-1.33,0-4.27.09-4.23,4.23h8.3C167.67,31,165.66,30.63,163.65,30.6Z'/%3E%3Cpath d='M239.79,47.68a19.63,19.63,0,0,1-5.88.63c-7.22,0-11-5.23-11-11.23,0-5,2.31-11.65,10.71-11.65,8.2,0,11.08,5.05,10.09,14.2H229.61c0,2.09,2.43,3.45,4.65,3.45a12.14,12.14,0,0,0,3.8-.48Zm-5.9-17c-1.33,0-4.27.09-4.23,4.23H238C237.91,31,235.9,30.66,233.89,30.64Z'/%3E%3Cpath d='M180.1,26.45a28.93,28.93,0,0,1,7.15-1.05c5,0,8.36,2.2,8.36,7V48h-5.53c-.05,0-.23-1-.32-1a12.72,12.72,0,0,1-5.6,1.27c-6.13,0-7.81-4-7.81-6.65,0-4.45,3.1-7.75,11.28-7.69h1.68v-.72c0-1,.1-2.63-2.39-2.63a19.77,19.77,0,0,0-5.07.73Zm9.25,12.21h-1c-4.31,0-6.19.68-6.19,2.84,0,1.58,1.23,2.21,2.66,2.21s3.77-.46,4.58-1.37Z'/%3E%3Cpath d='M214.61,48l-7-10.55V48h-6.83V21.52h6.83V33.64l5.75-7.93h7.75l-7.16,9.74L222.27,48Z'/%3E%3Cpath d='M263,26.19c-.27.8-1.84,5.19-1.84,5.19-2.3-1.24-6.57-.13-6.64,4.85V48h-6.61V25.71H253l.75,1.18a8.46,8.46,0,0,1,5.2-1.46,10.64,10.64,0,0,1,4,.71'/%3E%3Cpath d='M111,42.16a5.94,5.94,0,0,1-4-1c-1.32-1-1.23-2.86-1.25-4.6v0c0-1.54,0-3.24,0-4.67H111V25.79h-5.28V21.52H99.5v4.27H93.83v6.08h5.64c0,1.45,0,3.18,0,4.74v0c0,2.59.07,6.51,2.84,9.2,1.77,1.73,5.12,2.46,8.36,2.46h.3Z'/%3E%3Cpath d='M280.65,46.18c-1.2,1.3-2.38,2.14-6,2.14a23.2,23.2,0,0,1-4.78-.62,37,37,0,0,1-4.17-1.25l1.94-5.55,2.69.79c2.83.84,4.77,1.42,5.23.06a1.42,1.42,0,0,0-.25-1.53,5.93,5.93,0,0,0-1.47-.94c-.71-.35-5.4-2.31-6.52-3.25a4.78,4.78,0,0,1-1.71-3.86,7,7,0,0,1,3.34-6c3-1.74,8.77-.22,9.86.05a15.34,15.34,0,0,1,3.12,1.15l-1.75,4.88c.31.18-6.33-2.71-7.21-1a1.24,1.24,0,0,0,.31,1.79c.35.31,4.47,2.14,5.59,2.69C284.56,38.62,281.82,44.91,280.65,46.18Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        width: 197px;
-        height: 54px;
-        width: 100%;
-        background-position: center center;
-        background-size: fit;
-        margin-top: 45px;
-    }
-    .line{
-        height: 1px;
-        background-color: #e6e6e6;
-        width: 50%;
-        margin: 0 auto;
-        margin-top: 45px;
-    }
-    .share-list-title{
-        font-size: 26px;
-        font-family: Arial;
-        font-weight: bolder;
-        color: #9a0e36;
-    }
-    .share-content{
-        margin: 0 auto;
-        width: 50%;
-        margin-top: 30px;
-        font-family: arial;
-    }
-    .share-content a{
-        color: #1668AC;
-    }
-    .bold-info{
-        font-weight: bolder;
-    }
-    .share-product-image{
-        width: 90px;
-        height: 90px;
-        float: left;
-        background-size: fit;
-        background-repeat: no-repeat;
-        height: 100%;
-        background-position: center;
-    }
-    .share-product{
-        width: 100%;
-        height: 105px;
-        border-bottom: 1px #e6e6e6 solid;
-        margin: 0 auto;
-        position: relative;
-    }
-    .share-product-info{
-        margin-left: 20px;
-        float: left;
-        margin-top: 23px;
-    }
-    .share-product-title{
-        color: #1668AC;
-        font-size: 15px;
-    }
-    .share-product-specs{
-        color: #e6e6e6;
-        font-size: 12px;
-    }
-    .button{
-        background-color: #1668AC;
-        height: 30px;
-        width: auto;
-        padding-right: 10px;
-        padding-left: 10px;
-        color: white;
-        float: right;
-        border-radius: 2px;
-        line-height: 30px;
-        font-size: 12px;
-        top: 40%;
-        right: 0;
-
-    }
-    </style>
-    <div class="share-wrapper">
-    <div class="share-top-logo"></div>
-    <div class="line"></div>
-    <div class="share-content">
-    <span class="share-list-title">${list.name}</span>
-    <br>
-    <span class="share-list-subtitle">Een lijst van <a>IvoZee</a></span>
-    <br><br><br>
-    <span class="share-list-text">Onderstaande producten staan in de lijst <a>${list.name}</a>. Onderaan de lijst kunnen de totale kosten worden berekend.</span> 
-    <br><br><br><br>
-    <span class="share-list-info"><span class="bold-info">${list.products.length} producten</span>, met een totaalprijs van <span class="bold-info">€ ${list.totalPrice.toFixed(2)}</span></span>
-    <div style="width: 100%; margin-top: 10px;" class="line"></div> 
-    <div class="shared-list">
-    ${appendProducts()}
-    </div>
-    <a class="button" style="color: white; float: left; margin-top: 40px;">Totale kosten berekenen</a>
-    <span style="float: left; width: 100%; margin-top: 30px" class="share-list-text">Zelf ook een lijst aanmaken? <a>Bekijk de pricewatch</a> en sla jouw favoriete producten op in Mijn Producten.</span>
-    <div style="width: 100%; margin-top: 10px; float: left; margin-top: 30px;" class="line"></div> 
-    </div>
-    <span style="font-size: 13px; color: grey; text-align: center; width: 100%; float: left; font-family: arial; margin-top: 10px; margin-bottom: 30px">Deze lijst is gedeeld door IvoZee</span>
-    </div>    
-    `
-    function appendProducts(){
-        return `
-        ${list.products.map(product => {
-            return `
-            <div class="share-product">
-            <div class="share-product-image" style="background-image: url('${product.imageUrl}');"></div>
-            <div class="share-product-info">
-            <span class="share-product-title">${product.title}</span>
-            <br>
-            <span class"share-product-specs">${product.specline}</span> 
-            <br>
-            <span class="share-product-title">${product.price}</span>
-            </div>
-            <a class="button" style="color: white; position: absolute;">Bekijk product</a>
-            </div>
-            `           
-        }).join("")}
-        `
-    } 
-}
-
     // Make the DIV element draggable
 dragElement(document.querySelector(".pop-over"));
 function dragElement(elmnt) {
@@ -1630,3 +1517,134 @@ style.innerHTML = `
 
 `
 head.appendChild(style);
+
+//Share the list function
+function shareList(list){
+    let win = window.open("", "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
+    win.document.body.innerHTML = `
+    <style>
+    .share-wrapper{
+
+    }
+    .share-top-logo{
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 282.34 76.97'%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill:%23dae64a;%7D.cls-2%7Bfill:%23fff;%7D%3C/style%3E%3C/defs%3E%3Cg id='Laag_2' data-name='Laag 2'%3E%3Cg id='Layer_1' data-name='Layer 1'%3E%3Cpath class='cls-1' d='M74.71,25.48a.78.78,0,0,1,0,.09l-21,28.33a5.3,5.3,0,0,1-4.54,2.43H28.63c-2.74,0-3.89-.76-5.05-3.64L17.35,32.58a5.58,5.58,0,0,1,.44-5.35L38.66,0h-.17A38.47,38.47,0,1,0,74.71,25.48Z'/%3E%3Cpath d='M17.35,32.58l6.23,20.11c1.16,2.88,2.31,3.64,5.05,3.64h20.6a5.3,5.3,0,0,0,4.54-2.43l21-28.33a.78.78,0,0,0,0-.09A38.5,38.5,0,0,0,38.66,0L17.79,27.23A5.58,5.58,0,0,0,17.35,32.58Zm8.52-6.88H51.39V34H42.82V48.09H34.54V34H25.87Z'/%3E%3Cpolygon class='cls-2' points='34.53 48.09 42.82 48.09 42.82 33.98 51.39 33.98 51.39 25.7 25.87 25.7 25.87 33.98 34.53 33.98 34.53 48.09'/%3E%3Cpath d='M144,48.07h-7.11L132.71,34l-4.09,14.11h-7.13l-7.12-22.33H121l4.42,13.74,3.62-13.71h7.49l3.63,13.71,4.28-13.74h6.61Z'/%3E%3Cpath d='M169.55,47.64a19.63,19.63,0,0,1-5.88.63c-7.22,0-11-5.23-11-11.22,0-5,2.31-11.65,10.71-11.65,8.21,0,11.08,5,10.09,14.19H159.37c0,2.09,2.43,3.45,4.65,3.45a12.41,12.41,0,0,0,3.8-.47Zm-5.9-17c-1.33,0-4.27.09-4.23,4.23h8.3C167.67,31,165.66,30.63,163.65,30.6Z'/%3E%3Cpath d='M239.79,47.68a19.63,19.63,0,0,1-5.88.63c-7.22,0-11-5.23-11-11.23,0-5,2.31-11.65,10.71-11.65,8.2,0,11.08,5.05,10.09,14.2H229.61c0,2.09,2.43,3.45,4.65,3.45a12.14,12.14,0,0,0,3.8-.48Zm-5.9-17c-1.33,0-4.27.09-4.23,4.23H238C237.91,31,235.9,30.66,233.89,30.64Z'/%3E%3Cpath d='M180.1,26.45a28.93,28.93,0,0,1,7.15-1.05c5,0,8.36,2.2,8.36,7V48h-5.53c-.05,0-.23-1-.32-1a12.72,12.72,0,0,1-5.6,1.27c-6.13,0-7.81-4-7.81-6.65,0-4.45,3.1-7.75,11.28-7.69h1.68v-.72c0-1,.1-2.63-2.39-2.63a19.77,19.77,0,0,0-5.07.73Zm9.25,12.21h-1c-4.31,0-6.19.68-6.19,2.84,0,1.58,1.23,2.21,2.66,2.21s3.77-.46,4.58-1.37Z'/%3E%3Cpath d='M214.61,48l-7-10.55V48h-6.83V21.52h6.83V33.64l5.75-7.93h7.75l-7.16,9.74L222.27,48Z'/%3E%3Cpath d='M263,26.19c-.27.8-1.84,5.19-1.84,5.19-2.3-1.24-6.57-.13-6.64,4.85V48h-6.61V25.71H253l.75,1.18a8.46,8.46,0,0,1,5.2-1.46,10.64,10.64,0,0,1,4,.71'/%3E%3Cpath d='M111,42.16a5.94,5.94,0,0,1-4-1c-1.32-1-1.23-2.86-1.25-4.6v0c0-1.54,0-3.24,0-4.67H111V25.79h-5.28V21.52H99.5v4.27H93.83v6.08h5.64c0,1.45,0,3.18,0,4.74v0c0,2.59.07,6.51,2.84,9.2,1.77,1.73,5.12,2.46,8.36,2.46h.3Z'/%3E%3Cpath d='M280.65,46.18c-1.2,1.3-2.38,2.14-6,2.14a23.2,23.2,0,0,1-4.78-.62,37,37,0,0,1-4.17-1.25l1.94-5.55,2.69.79c2.83.84,4.77,1.42,5.23.06a1.42,1.42,0,0,0-.25-1.53,5.93,5.93,0,0,0-1.47-.94c-.71-.35-5.4-2.31-6.52-3.25a4.78,4.78,0,0,1-1.71-3.86,7,7,0,0,1,3.34-6c3-1.74,8.77-.22,9.86.05a15.34,15.34,0,0,1,3.12,1.15l-1.75,4.88c.31.18-6.33-2.71-7.21-1a1.24,1.24,0,0,0,.31,1.79c.35.31,4.47,2.14,5.59,2.69C284.56,38.62,281.82,44.91,280.65,46.18Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        width: 197px;
+        height: 54px;
+        width: 100%;
+        background-position: center center;
+        background-size: fit;
+        margin-top: 45px;
+    }
+    .line{
+        height: 1px;
+        background-color: #e6e6e6;
+        width: 50%;
+        margin: 0 auto;
+        margin-top: 45px;
+    }
+    .share-list-title{
+        font-size: 26px;
+        font-family: Arial;
+        font-weight: bolder;
+        color: #9a0e36;
+    }
+    .share-content{
+        margin: 0 auto;
+        width: 50%;
+        margin-top: 30px;
+        font-family: arial;
+    }
+    .share-content a{
+        color: #1668AC;
+    }
+    .bold-info{
+        font-weight: bolder;
+    }
+    .share-product-image{
+        width: 90px;
+        height: 90px;
+        float: left;
+        background-size: fit;
+        background-repeat: no-repeat;
+        height: 100%;
+        background-position: center;
+    }
+    .share-product{
+        width: 100%;
+        height: 105px;
+        border-bottom: 1px #e6e6e6 solid;
+        margin: 0 auto;
+        position: relative;
+    }
+    .share-product-info{
+        margin-left: 20px;
+        float: left;
+        margin-top: 23px;
+    }
+    .share-product-title{
+        color: #1668AC;
+        font-size: 15px;
+    }
+    .share-product-specs{
+        color: #e6e6e6;
+        font-size: 12px;
+    }
+    .button{
+        background-color: #1668AC;
+        height: 30px;
+        width: auto;
+        padding-right: 10px;
+        padding-left: 10px;
+        color: white;
+        float: right;
+        border-radius: 2px;
+        line-height: 30px;
+        font-size: 12px;
+        top: 35%;
+        right: 0;
+
+    }
+    </style>
+    <div class="share-wrapper">
+    <div class="share-top-logo"></div>
+    <div class="line"></div>
+    <div class="share-content">
+    <span class="share-list-title">${list.name}</span>
+    <br>
+    <span class="share-list-subtitle">Een lijst van <a>IvoZee</a></span>
+    <br><br><br>
+    <span class="share-list-text">Onderstaande producten staan in de lijst <a>${list.name}</a>. Onderaan de lijst kunnen de totale kosten worden berekend.</span> 
+    <br><br><br><br>
+    <span class="share-list-info"><span class="bold-info">${list.products.length} producten</span>, met een totaalprijs van <span class="bold-info">€ ${list.totalPrice.toFixed(2)}</span></span>
+    <div style="width: 100%; margin-top: 10px;" class="line"></div> 
+    <div class="shared-list">
+    ${appendProducts()}
+    </div>
+    <a class="button" style="color: white; float: left; margin-top: 40px;">Totale kosten berekenen</a>
+    <span style="float: left; width: 100%; margin-top: 30px" class="share-list-text">Zelf ook een lijst aanmaken? <a>Bekijk de pricewatch</a> en sla jouw favoriete producten op in Mijn Producten.</span>
+    <div style="width: 100%; margin-top: 10px; float: left; margin-top: 30px;" class="line"></div> 
+    </div>
+    <span style="font-size: 13px; color: grey; text-align: center; width: 100%; float: left; font-family: arial; margin-top: 10px; margin-bottom: 30px">Deze lijst is gedeeld door IvoZee</span>
+    </div>    
+    `
+    function appendProducts(){
+        return `
+        ${list.products.map(product => {
+            return `
+            <div class="share-product">
+            <div class="share-product-image" style="background-image: url('${product.imageUrl}');"></div>
+            <div class="share-product-info">
+            <span class="share-product-title">${product.title}</span>
+            <br>
+            <span class"share-product-specs">${product.specline}</span> 
+            <br>
+            <span class="share-product-title">${product.price}</span>
+            </div>
+            <a class="button" style="color: white; position: absolute;">Bekijk product</a>
+            </div>
+            `           
+        }).join("")}
+        `
+    } 
+}
