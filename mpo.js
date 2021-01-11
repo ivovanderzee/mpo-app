@@ -33,19 +33,19 @@ userbar.removeChild(iconCompare);
 userbar.insertBefore(iconMPO, iconFlag);
 
 //Add event listener for the icon in the header to display the popover based on the state of the icon
- iconMPO.addEventListener('click', () => {
+iconMPO.addEventListener('click', () => {
     iconMPO.classList.remove('new');
     changeState(iconMPO);
-    if(iconMPO.classList.contains('active')){
+    if (iconMPO.classList.contains('active')) {
         popover.style.display = 'block';
-    }else{
+    } else {
         popover.style.display = 'none';
     }
 });
 
 //Function to grab all the data and push it to the array
-function getData(){
-    for(i =0; i < pricewatchItems.length; i++){
+function getData() {
+    for (i = 0; i < pricewatchItems.length; i++) {
 
         //Specify some properties from each product
         let id = pricewatchItems[i].querySelector('input').getAttribute('value');
@@ -55,7 +55,19 @@ function getData(){
         let imageUrl = pricewatchItems[i].querySelector('.pwimage').querySelector('a').querySelector('img').getAttribute('src');
 
         //Push the properties to a JSON file
-        allProducts.push({id: id, title: title, specline: specline, price: price, imageUrl: imageUrl, priceAlert: false, alertPrice: 0, selected: false, compared: false, bought: false, boughtPrice: 0}); 
+        allProducts.push({
+            id: id,
+            title: title,
+            specline: specline,
+            price: price,
+            imageUrl: imageUrl,
+            priceAlert: false,
+            alertPrice: 0,
+            selected: false,
+            compared: false,
+            bought: false,
+            boughtPrice: 0
+        });
     }
 }
 
@@ -71,25 +83,27 @@ function addCheckbox() {
         itemName.removeChild(compareLabel);
 
         //Add checkboxes Mijn Producten
-        if(mijnProductenCheckboxes){
-        //Create a new label and set the innerHTML of the checkbox(es)
-        let mijnProductenLabel = document.createElement('label');
-        mijnProductenLabel.innerHTML = `<input type="checkbox" name="products[] value="${product.id}""><span>Mijn Producten</span>`;
-        let checkbox1 = mijnProductenLabel.querySelector('input')
-        itemName.appendChild(mijnProductenLabel);
-        //Add an eventlistener to the label button
-        mijnProductenLabel.addEventListener('click', () => {
-            if (!checkbox1.getAttribute('checked')) {
-                addToMPO(product);
-                topNotification(product);
-            } else {
-                deleteFromMPO(product);
-            }
-        })
+        if (mijnProductenCheckboxes) {
+            //Create a new label and set the innerHTML of the checkbox(es)
+            let mijnProductenLabel = document.createElement('label');
+            mijnProductenLabel.innerHTML = `<input type="checkbox" name="products[] value="${product.id}""><span>Mijn Producten</span>`;
+            let checkbox1 = mijnProductenLabel.querySelector('input')
+            itemName.appendChild(mijnProductenLabel);
+            //Add an eventlistener to the label button
+            mijnProductenLabel.addEventListener('click', () => {
+                if (!checkbox1.getAttribute('checked')) {
+                    addToMPO(product);
+                    topNotification(product);
+                } else {
+                    deleteFromMPO(product);
+                }
+            })
+        } else {
+            //nothing
         }
-       
+
         //Add checkbox vergelijk
-        if(vergelijkCheckboxes){
+        if (vergelijkCheckboxes) {
             let vergelijkLabel = document.createElement('label');
             vergelijkLabel.style.marginLeft = '5px';
             vergelijkLabel.innerHTML = `<input type="checkbox" name="products[] value="${product.id}""><span>Vergelijk</span>`;
@@ -102,11 +116,11 @@ function addCheckbox() {
                     addToCompare(product);
                 } else {
                     deleteFromCompare(product);
-            }
-        });
-               }else{
-                    //nothing
-            }
+                }
+            });
+        } else {
+            //nothing
+        }
     }
 }
 
@@ -189,17 +203,20 @@ addToListPopupBtn.addEventListener('click', addToList);
 buttonTop.addEventListener("click", createNewList);
 //Add event listener to the tabs in the popover
 tabs.forEach(tab => {
-    tab.addEventListener('click', () => {changeState(tab); switchContent(tab);});
+    tab.addEventListener('click', () => {
+        changeState(tab);
+        switchContent(tab);
+    });
 });
 
-closeButton.addEventListener('click', () =>{
+closeButton.addEventListener('click', () => {
     iconMPO.classList.remove('active');
     popover.style.display = 'none';
 });
 
 //Function to switch the contentview in the popover
 function switchContent(tab) {
-    if(tab.classList.contains('mijnProducten')){
+    if (tab.classList.contains('mijnProducten')) {
         compareTab.classList.remove('active');
         topTitle.innerText = 'Mijn Producten';
         calcPriceAlerts();
@@ -207,7 +224,7 @@ function switchContent(tab) {
         singleProductsContent.style.display = 'block';
         allLists.style.display = 'block';
         compareProducts.style.display = 'none';
-    }else if(tab.classList.contains('compare')){
+    } else if (tab.classList.contains('compare')) {
         mpoTab.classList.remove('active');
         topTitle.innerText = 'Vergelijking';
         buttonTop.innerText = 'Vergelijk';
@@ -215,7 +232,7 @@ function switchContent(tab) {
         singleProductsContent.style.display = 'none';
         allLists.style.display = 'none';
         priceAlertList.style.display = 'none';
-    }else{
+    } else {
         //nothing
     }
 }
@@ -234,54 +251,58 @@ addCheckbox();
 function changeState(elem) {
     if (elem.classList.contains('active')) {
         elem.classList.remove('active');
-    } else if(!elem.classList.contains('active')){
+    } else if (!elem.classList.contains('active')) {
         elem.classList.add('active');
     }
 }
 
-function topNotification(product){
+//Function to display a notification when a product is added to 'Mijn Producten'
+function topNotification(product) {
     let notification = document.createElement('div');
     notification.className = 'top-notification';
     notification.innerHTML = `<span>Je hebt <a style="font-weight: bolder">${product.title}</a> toegevoegd aan Mijn Producten</span>`;
     body.appendChild(notification);
-    setTimeout(function() {
-        body.removeChild(notification);     
-    }, 2500)  
+    setTimeout(function () {
+        body.removeChild(notification);
+    }, 2500)
 }
 
 //Function that generates the HTML for the product items
-function generateItemHTML(product, category){
-      //define buttons and parts of the product item
-      let addToListBtn = `<div title="Product aan lijst toevoegen" class='${product.selected ? 'option addList active' : 'option addList'}' style="margin-right: 5px;"></div>`;
-      let setAlertBtn = `<div title="Prijsalert instellen" class='${product.priceAlert ? 'option setAlert active' : 'option setAlert'}' id="${product.id}"></div>`;
-      let addCompareBtn = `<div title="Aan vergelijking toevoegen" class='${product.compared ? 'option addCompare active' : 'option addCompare'}' style="margin-right: 5px;" id="${product.id}">Vergelijk</div>`;
-      let setBoughtBtn = ``;
-      let inputField = ``;
-      let deleteBtn = `<img title="Product verwijderen" src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">`;
-      let boughtPrice = ``;
-      //Switch case for manipulating the HTML for the product item
-      switch(category){
-          case 'singleProduct':
+function generateItemHTML(product, category) {
+
+    //define buttons and parts of the product item
+    let addToListBtn = `<div title="Product aan lijst toevoegen" class='${product.selected ? 'option addList active' : 'option addList'}' style="margin-right: 5px;"></div>`;
+    let setAlertBtn = `<div title="Prijsalert instellen" class='${product.priceAlert ? 'option setAlert active' : 'option setAlert'}' id="${product.id}"></div>`;
+    let addCompareBtn = `<div title="Aan vergelijking toevoegen" class='${product.compared ? 'option addCompare active' : 'option addCompare'}' style="margin-right: 5px;" id="${product.id}">Vergelijk</div>`;
+    let setBoughtBtn = ``;
+    let inputField = ``;
+    let deleteBtn = `<img title="Product verwijderen" src="https://tweakers.net/g/if/icons/delete_product.png" class="delProduct">`;
+    let boughtPrice = ``;
+
+    //Switch case for manipulating the HTML for the product item
+    switch (category) {
+        case 'singleProduct':
             checkBtn1 = `<label class="compare ctaButton unselected checkbox"><input type="checkbox" name="products[]" value="${product.id}"><span>Vergelijk</span></label>`;
             checkBtn2 = '';
             break;
-          case 'priceAlert':
+        case 'priceAlert':
             inputField = `<span class="inputEuro"><input class="text" type="text" size="8" name="" id="" value="${product.alertPrice}"></span>`;
             setAlertBtn = '';
             addToListBtn = '';
             addCompareBtn = '';
             break;
-          case 'compareProduct':
+        case 'compareProduct':
             addCompareBtn = '';
             addToListBtn = '';
             break;
-          case 'productInList':
+        case 'productInList':
             setBoughtBtn = `<div class='${product.bought ? 'option setBought active' : 'option setBought'}' style="margin-right: 5px;"></div>`;
             addToListBtn = '';
             boughtPrice = `<span class="boughtPrice" style="display: ${product.bought ? 'block' : 'none'}; float: left; margin-right: 40px; margin-top: 5px;">€ ${product.boughtPrice}</span>`
-      }
-      //Html for the product in the list 
-      let html = `
+    }
+
+    //Html for the product in the list 
+    let html = `
       <div class='itemWrapper' id='${product.id}'>
       <div class="itemContentWrapper">
       ${deleteBtn}
@@ -304,8 +325,9 @@ function generateItemHTML(product, category){
       </div>
       </div>
       `;
-      //Return all the buttons and clickable parts
-      return html;
+
+    //Return all the buttons and clickable parts
+    return html;
 }
 
 //Function to add some suggestions to the view
@@ -316,8 +338,9 @@ function appendSuggestions() {
         let suggestionItem = document.createElement('div');
         suggestionItem.className = 'suggestion-item';
         let product = allProducts.filter(product => product.id === allProducts[i].id)[0];
-        //HTML for the suggestion item
-        let html = `
+
+        //Set the HTML
+        suggestionItem.innerHTML = `
         <div class="suggestion-item-content">
         <button class="addItem"></button>
         <div class="suggestion-item-info">
@@ -326,19 +349,22 @@ function appendSuggestions() {
         </div>
         </div>
         `;
-        //Set the HTML as innerHTML
-        suggestionItem.innerHTML = html;
+
         //Set a background image for the item
         suggestionItem.style.backgroundImage = `url("${allProducts[i].imageUrl}")`;
         suggestionItemWrapper.appendChild(suggestionItem);
+
         //Eventlistener for the add button in the item
         let addButton = suggestionItem.querySelector('.addItem');
-        addButton.addEventListener('click', () => {addToMPO(product)})
+        addButton.addEventListener('click', () => {
+            addToMPO(product)
+        });
     }
 }
 
 //Function that adds products to the MPO array
 function addToMPO(product) {
+    //Change state of the icon in the header
     iconMPO.classList.add('new');
     singleProducts.push(product);
     computeMPOProducts();
@@ -349,6 +375,7 @@ function addToMPO(product) {
 function deleteFromMPO(product) {
     //Search for the index of the product in the array
     let index = singleProducts.indexOf(product)
+
     //Remove product
     singleProducts.splice(index, 1)
     computeMPOProducts();
@@ -359,14 +386,14 @@ function deleteFromMPO(product) {
 function computeMPOProducts() {
     //Remove all the HTML from the single products view
     singleProductsContent.innerHTML = '';
+
     //Append all the items in the array to the view
     singleProducts.forEach(singleProduct => {
-        //Grab the product object
-        let product = singleProducts.filter(product => product.id === singleProduct.id)[0];
+
         //Create new item element
         let productItem = document.createElement('div');
         //Set the attribute id to the productID and style the element
-        productItem.setAttribute('id', product.id);
+        productItem.setAttribute('id', singleProduct.id);
         productItem.className = 'productItem';
         //Set the innerHTML for the item to the itemHTML and append it to the contentview
         productItem.innerHTML = generateItemHTML(singleProduct, 'singleProduct');
@@ -377,24 +404,29 @@ function computeMPOProducts() {
         let addToListBtn = productItem.querySelector('.addList');
         let addCompare = productItem.querySelector('.addCompare');
         //Eventlistener for deleting a product from the list
-        deleteBtn.addEventListener('click', () => {deleteFromMPO(product)})
+        deleteBtn.addEventListener('click', () => {
+            deleteFromMPO(singleProduct)
+        })
         //Eventlistener for setting a price alert for the product
         priceAlertBtn.addEventListener('click', () => {
             if (priceAlertBtn.className == 'option setAlert') {
-                setPriceAlert(product, priceAlertBtn);
+                setPriceAlert(singleProduct, priceAlertBtn);
             } else {
-                deletePriceAlert(product)
+                deletePriceAlert(singleProduct)
             }
         })
         //Eventlistener for adding the product to a list
-        addToListBtn.addEventListener('click', () => {selectProducts(product, addToListBtn)});
+        addToListBtn.addEventListener('click', () => {
+            selectProducts(singleProduct, addToListBtn)
+        });
+
         //Event listener for adding the product to the compare tab
         addCompare.addEventListener('click', () => {
             if (addCompare.className === 'option addCompare') {
-                addToCompare(product);
+                addToCompare(singleProduct);
                 changeState(addCompare);
             } else {
-                deleteFromCompare(product);
+                deleteFromCompare(singleProduct);
             }
         })
     })
@@ -403,95 +435,107 @@ function computeMPOProducts() {
 //Function to select products
 function selectProducts(product, addToListBtn) {
     changeState(addToListBtn)
-    switch(addToListBtn.className){
-        case 'option addList active': 
+    switch (addToListBtn.className) {
+        case 'option addList active':
             product.selected = true;
             break;
         default:
             product.selected = false;
     }
+
     //Filter all the products that are selected and display a popup to the view
     let selectedProducts = Array.from(singleProducts.filter(product => product.selected === true));
-    if(selectedProducts.length > 0){
+    if (selectedProducts.length > 0) {
         addToListPopup.style.display = 'block';
-    }else{
+    } else {
         addToListPopup.style.display = 'none';
     }
     updateCounter();
-} 
+}
 
 //Function for adding products to the compare list
 function addToCompare(product) {
+
+    //Change icon in the header
     iconMPO.classList.add('new');
+
     productsCompare.push(product);
     product.compared = true;
-    calcCompareProducts();
+    computeCompareProducts();
     updateCounter();
 }
 
 //Function to remove items from the compare array
-function deleteFromCompare(product){
-    try{
-    let addCompareBtn = Array.from(popover.querySelectorAll('.addCompare')).filter(compareBtn => compareBtn.getAttribute('id') === product.id)[0];
-    console.log(addCompareBtn)
-    changeState(addCompareBtn);
-    }catch{
+function deleteFromCompare(product) {
+    try {
+        let addCompareBtn = Array.from(popover.querySelectorAll('.addCompare')).filter(compareBtn => compareBtn.getAttribute('id') === product.id)[0];
+        changeState(addCompareBtn);
+    } catch {
         //error
     }
     product.compared = false;
     //Search for the index of the product in the array
     let index = productsCompare.indexOf(product)
+
     //Remove product
     productsCompare.splice(index, 1)
-    calcCompareProducts();
+    computeCompareProducts();
     updateCounter();
 }
 
-//Function the add all the products in the compare array to the view
-function calcCompareProducts() {
+//Function the append compared products to the view
+function computeCompareProducts() {
     //Set innerhtml for the compareview to empty
     compareProducts.innerHTML = '';
     productsCompare.forEach(compareProduct => {
-    let product = allProducts.filter(product => product.id === compareProduct.id)[0];
-    //Create new div for the product item
-    let productItem = document.createElement('div');
-    //Set the attribute id to the id and give it a classname
-    productItem.setAttribute('id', product.id);
-    productItem.className = 'productItem';
-    //Set the innerHTML for the item to the itemHTML and append it to the contentview
-    productItem.innerHTML = generateItemHTML(compareProduct, 'compareProduct');
-    compareProducts.appendChild(productItem);
-    //Grab all the buttons in the product item
-    let deletebtn = productItem.querySelector('.delProduct');
-    let priceAlertBtn = productItem.querySelector('.setAlert');
-    //Add eventlistener to the delete button
-    deletebtn.addEventListener('click', () => {deleteFromCompare(product);})
-     //Eventlistener for setting a price alert for the product
-    priceAlertBtn.addEventListener('click', () => {
-        if (priceAlertBtn.className == 'option setAlert') {
-            setPriceAlert(product, priceAlertBtn);
-        } else {
-            deletePriceAlert(product)
-        }
-    })
+        //Create new div for the product item
+        let productItem = document.createElement('div');
+
+        //Set the attribute id to the id and give it a classname
+        productItem.setAttribute('id', compareProduct.id);
+        productItem.className = 'productItem';
+
+        //Set the innerHTML for the item to the itemHTML and append it to the contentview
+        productItem.innerHTML = generateItemHTML(compareProduct, 'compareProduct');
+        compareProducts.appendChild(productItem);
+
+        //Grab all the buttons in the product item
+        let deletebtn = productItem.querySelector('.delProduct');
+        let priceAlertBtn = productItem.querySelector('.setAlert');
+
+        //Add eventlistener to the delete button
+        deletebtn.addEventListener('click', () => {
+            deleteFromCompare(compareProduct);
+        })
+
+        //Eventlistener for setting a price alert for the product
+        priceAlertBtn.addEventListener('click', () => {
+            if (priceAlertBtn.className == 'option setAlert') {
+                setPriceAlert(compareProduct, priceAlertBtn);
+            } else {
+                deletePriceAlert(compareProduct)
+            }
+        })
     })
 }
 
 //Function for setting a price alert
 function setPriceAlert(product, alertBtn) {
     let notification = createNotification('prijsalert', product);
+
     //If the users submits, the price alert will be set
     let submitButton = notification.querySelector('.ctaButton');
     submitButton.addEventListener('click', () => {
         product.priceAlert = true;
         let value = notification.querySelector('input').value;
         product.alertPrice = value;
+
         //Push the product to the price alerts array
         allPriceAlerts.push(product);
         changeState(alertBtn)
         calcPriceAlerts();
         closePopup(notification);
-    })
+    });
 }
 
 //Function to delete a price alert
@@ -499,44 +543,49 @@ function deletePriceAlert(product) {
     //Search for the alert button 
     let alertBtn = Array.from(popover.querySelectorAll('.setAlert')).filter(alert => alert.getAttribute('id') === product.id)[0];
     changeState(alertBtn);
+
     //Set price alert to false
     product.priceAlert = false;
-    let index = allPriceAlerts.indexOf(product)
-    allPriceAlerts.splice(index, 1)
+    let index = allPriceAlerts.indexOf(product);
+    allPriceAlerts.splice(index, 1);
     calcPriceAlerts();
 }
 
 //Function to delete a product from a list
-function deleteFromList(list, product){
-        //Search for the index of the product in the array
-        let index = list.products.indexOf(product)
-        //Remove product
-        list.products.splice(index, 1)
-        calcLists();
-        updateCounter();
+function deleteFromList(list, product) {
+    //Search for the index of the product in the array
+    let index = list.products.indexOf(product);
+
+    //Remove product
+    list.products.splice(index, 1)
+    calcLists();
+    updateCounter();
 }
 
 //Function the calculates all the price alerts in the price alert array
 function calcPriceAlerts() {
     priceAlertContent.innerHTML = '';
-        allPriceAlerts.forEach(priceAlertProduct => {
-            let product = allPriceAlerts.filter(product => product.id === priceAlertProduct.id)[0]
-            //Create new element for the price alert item and append classname
-            let priceAlertItem = document.createElement('div');
-            priceAlertItem.className = 'price-alert-item';
-            //Set the innerhtml and append it to the view
-            priceAlertItem.innerHTML = generateItemHTML(priceAlertProduct, 'priceAlert');
-            priceAlertContent.appendChild(priceAlertItem);
-            //Eventlistener for the delete button
-            let deleteBtn = priceAlertItem.querySelector('.delProduct');
-            deleteBtn.addEventListener('click', () => {deletePriceAlert(product);});
-            }); 
-    if(mpoTab.classList.contains('active') && allPriceAlerts.length > 0){
+    allPriceAlerts.forEach(priceAlertProduct => {
+        //Create new element for the price alert item and append classname
+        let priceAlertItem = document.createElement('div');
+        priceAlertItem.className = 'price-alert-item';
+
+        //Set the innerhtml and append it to the view
+        priceAlertItem.innerHTML = generateItemHTML(priceAlertProduct, 'priceAlert');
+        priceAlertContent.appendChild(priceAlertItem);
+
+        //Eventlistener for the delete button
+        let deleteBtn = priceAlertItem.querySelector('.delProduct');
+        deleteBtn.addEventListener('click', () => {
+            deletePriceAlert(priceAlertProduct);
+        });
+    });
+    if (mpoTab.classList.contains('active') && allPriceAlerts.length > 0) {
         priceAlertList.style.display = 'block';
-    }else{
+    } else {
         priceAlertList.style.display = 'none';
     }
-    }
+}
 
 //Function to generate the pop up notification to the view
 function createNotification(category, product = null) {
@@ -548,36 +597,38 @@ function createNotification(category, product = null) {
     let inputField;
     let ul;
     let newListInput;
+
     //Create new element and set classname
     let popupNotification = document.createElement('form');
     popupNotification.className = 'popup-notification';
     if (category === 'prijsalert') {
-    popUpTitle = 'Prijsalert instellen';
-    inputFieldSize = '10';
-    popUpBtnTitle = 'Prijsalert instellen';
-    popUpMessage = `Je gaat een prijsalert instellen voor <span style="font-weight: bolder">${product.title}</span>`;
-    inputField = `<span style="width: 80%;" class="inputEuro"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
-    ul = '';
-    newListInput = '';
-    }else if (category === 'newlist') {
-    popUpTitle = 'Nieuwe lijst maken';
-    inputFieldSize = '30';
-    popUpBtnTitle = 'Nieuwe lijst aanmaken';
-    popUpMessage = 'Typ de naam van de nieuwe lijst';
-    inputField = `<span style="width: 80%;"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
-    ul = '';
-    newListInput = '';
-    }else if (category === 'addToList') {
-    popUpTitle = 'Selecteer een lijst';
-    inputFieldSize = '0';
-    popUpBtnTitle = 'Toevoegen';
-    popUpMessage = 'Selecteer de lijsten waaraan je deze producten wilt toevoegen of maak een nieuwe lijst aan';
-    inputField = ``;
-    ul = `<ul class="lists-popup" style="list-style-type: none">${appendLists()}</ul>`;
-    newListInput = `<input type="checkbox" class="checkList newList"><span style="width: 90%;"><input class="text newListName" type="text" size="${inputFieldSize}" name="product" id="" value=""></span></input><br>`;
-     //Function to append the lists to the popup notification
-     function appendLists(){
-        return `${lists.map(function (list) {
+        popUpTitle = 'Prijsalert instellen';
+        inputFieldSize = '10';
+        popUpBtnTitle = 'Prijsalert instellen';
+        popUpMessage = `Je gaat een prijsalert instellen voor <span style="font-weight: bolder">${product.title}</span>`;
+        inputField = `<span style="width: 80%;" class="inputEuro"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
+        ul = '';
+        newListInput = '';
+    } else if (category === 'newlist') {
+        popUpTitle = 'Nieuwe lijst maken';
+        inputFieldSize = '30';
+        popUpBtnTitle = 'Nieuwe lijst aanmaken';
+        popUpMessage = 'Typ de naam van de nieuwe lijst';
+        inputField = `<span style="width: 80%;"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
+        ul = '';
+        newListInput = '';
+    } else if (category === 'addToList') {
+        popUpTitle = 'Selecteer een lijst';
+        inputFieldSize = '0';
+        popUpBtnTitle = 'Toevoegen';
+        popUpMessage = 'Selecteer de lijsten waaraan je deze producten wilt toevoegen of maak een nieuwe lijst aan';
+        inputField = ``;
+        ul = `<ul class="lists-popup" style="list-style-type: none">${appendLists()}</ul>`;
+        newListInput = `<input type="checkbox" class="checkList newList"><span style="width: 90%;"><input class="text newListName" type="text" size="${inputFieldSize}" name="product" id="" value=""></span></input><br>`;
+
+        //Function to append the lists to the popup notification
+        function appendLists() {
+            return `${lists.map(function (list) {
             return `<li>
             <input type="checkbox" list-id="${list.id}" class="checkList"></input>
             <span style="font-weight: bolder; font-size: 14px">${list.name}</span>
@@ -585,17 +636,17 @@ function createNotification(category, product = null) {
             <span style="font-weight: lighter; font-size: 11px; margin-left: 20px;">${list.products.length} producten in lijst</span>
             </li>`;
         }).join('')}
-        ` 
-    }
+        `
+        }
 
-    }else if (category === 'setBought') {
-    popUpTitle = 'Stel een aanschafprijs in';
-    inputFieldSize = '10';
-    ul = '';
-    popUpBtnTitle = 'Aanschafprijs instellen';
-    popUpMessage = `Voor welk bedrag heb je de <span style="font-weight: bolder">${product.title}</span> aangeschaft?`;
-    inputField = `<span style="width: 80%;" class="inputEuro"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
-    newListInput = '';
+    } else if (category === 'setBought') {
+        popUpTitle = 'Stel een aanschafprijs in';
+        inputFieldSize = '10';
+        ul = '';
+        popUpBtnTitle = 'Aanschafprijs instellen';
+        popUpMessage = `Voor welk bedrag heb je de <span style="font-weight: bolder">${product.title}</span> aangeschaft?`;
+        inputField = `<span style="width: 80%;" class="inputEuro"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
+        newListInput = '';
     }
     //Set the html and append it to the item
     let html = `
@@ -612,36 +663,41 @@ function createNotification(category, product = null) {
     </div>
     </div>
     `;
+
+    //Set the HTML for the popup
     popupNotification.innerHTML = html;
     popUpContent.appendChild(popupNotification);
+
     //Eventlistener for closing the button
     topInfo.style.marginTop = `${popupNotification.offsetHeight - 50}px`;
     let closeBtn = popupNotification.querySelector('.popup-closeBtn');
-    closeBtn.addEventListener('click', () =>{closePopup(popupNotification);});
-    try{   
+    closeBtn.addEventListener('click', () => {
+        closePopup(popupNotification);
+    });
+    try {
         let checkboxNewList = popupNotification.querySelector('.checkList.newList');
-        checkboxNewList.addEventListener('click', () =>{
+        checkboxNewList.addEventListener('click', () => {
             checkboxNewList.classList.add('selected');
         });
-    }catch{
+    } catch {
         //error
     }
-    try{
+    try {
         let listsInPopUp = popUpContent.querySelector('.lists-popup');
         let checkboxes = listsInPopUp.querySelectorAll('input');
-        checkboxes.forEach(checkbox =>{
-            checkbox.addEventListener('click', () =>{selectList(checkbox.getAttribute('list-id'));})
-        }); 
-    }catch{
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('click', () => {
+                selectList(checkbox.getAttribute('list-id'));
+            })
+        });
+    } catch {
         //error
     }
-
-
     return popupNotification;
 }
 
 //Function for closing the popup
-function closePopup(popup){
+function closePopup(popup) {
     popUpContent.removeChild(popup);
     topInfo.style.marginTop = '25px';
 }
@@ -651,9 +707,11 @@ function calcLists() {
     //Empty the innerhtml of the listview
     allLists.innerHTML = '';
     productsInListCounter = 0;
+
     //Append each list in the list array
     lists.forEach(list => {
         let listObj = lists.filter(list => list.id === list.id)[0]
+
         //Html for the list
         let html = `
         <div class="list-options-top" style="width: auto;">
@@ -668,36 +726,45 @@ function calcLists() {
         <div class="list-options-bottom">
         <a>Totaal berekenen <span class="counter price" style="color: black; float: right;">€ ${list.totalPrice}</span></a>
         </div>
-        `
-         //Create new element for the list, set the classname and append it to the view
-         let listElement = document.createElement('div');
-         listElement.className = 'list-wrapper';
-         listElement.setAttribute('list-id', list.id);
-         listElement.innerHTML = html;
-         allLists.appendChild(listElement);
-         //Grab buttons from the list
-         let collapseBtn = listElement.querySelector('.collapse');
-         let listContent = listElement.querySelector('.list-content.active');
-         let delBtn = listElement.querySelector('.option.delete');
-         let noListsText = listElement.querySelector('.noListContent');
-         let shareBtn = listElement.querySelector('.option.share');
-         //Add eventlistener to the collapse button
-         collapseBtn.addEventListener('click', () => {
-             changeState(listContent)
-             if (listContent.className === 'list-content') {
-                 collapseBtn.style.transform = 'rotate(-180deg)';
-             } else {
-                 collapseBtn.style.transform = 'rotate(0deg)';
-             }
-         })
-         delBtn.addEventListener('click', () =>{deleteList(listObj);});
-         shareBtn.addEventListener('click', () =>{shareList(listObj);});
-         //Add all the products in that particular list to the view
-         let products = list.products;
-         if (products.length > 0) {
-             noListsText.style.display = 'none';
-             products.forEach(productInList => {
+        `;
+
+        //Create new element for the list, set the classname and append it to the view
+        let listElement = document.createElement('div');
+        listElement.className = 'list-wrapper';
+        listElement.setAttribute('list-id', list.id);
+        listElement.innerHTML = html;
+        allLists.appendChild(listElement);
+
+        //Grab buttons from the list
+        let collapseBtn = listElement.querySelector('.collapse');
+        let listContent = listElement.querySelector('.list-content.active');
+        let delBtn = listElement.querySelector('.option.delete');
+        let noListsText = listElement.querySelector('.noListContent');
+        let shareBtn = listElement.querySelector('.option.share');
+
+        //Add eventlisteners
+        collapseBtn.addEventListener('click', () => {
+            changeState(listContent)
+            if (listContent.className === 'list-content') {
+                collapseBtn.style.transform = 'rotate(-180deg)';
+            } else {
+                collapseBtn.style.transform = 'rotate(0deg)';
+            }
+        })
+        delBtn.addEventListener('click', () => {
+            deleteList(listObj);
+        });
+        shareBtn.addEventListener('click', () => {
+            shareList(listObj);
+        });
+
+        //Add all the products to the listview
+        let products = list.products;
+        if (products.length > 0) {
+            noListsText.style.display = 'none';
+            products.forEach(productInList => {
                 let product = products.filter(product => product.id === productInList.id)[0];
+
                 //Create a element for the product item and append it to the view
                 let productItem = document.createElement('div');
                 productItem.innerHTML = generateItemHTML(productInList, 'productInList');
@@ -706,28 +773,32 @@ function calcLists() {
                 listContent.firstElementChild.style.marginTop = '0px';
                 let priceAlertBtn = productItem.querySelector('.setAlert');
                 let addCompare = productItem.querySelector('.addCompare');
-                 //Eventlistener for setting a price alert for the product
-                 priceAlertBtn.addEventListener('click', () => {
+
+                //Eventlistener for setting a price alert for the product
+                priceAlertBtn.addEventListener('click', () => {
                     if (priceAlertBtn.className == 'option setAlert') {
                         setPriceAlert(product, priceAlertBtn);
                     } else {
                         deletePriceAlert(product)
                     }
                 });
+
                 //Eventlistener to remove the product from the list
                 let deleteProduct = productItem.querySelector('.delProduct');
-                deleteProduct.addEventListener('click', () =>{
+                deleteProduct.addEventListener('click', () => {
                     deleteFromList(list, productInList);
                 })
+
                 //Eventlistener to set a boughtprice for the product
                 let boughtBtn = productItem.querySelector('.setBought');
-                boughtBtn.addEventListener('click', () =>{
-                    if (boughtBtn.classList.contains('active')){
+                boughtBtn.addEventListener('click', () => {
+                    if (boughtBtn.classList.contains('active')) {
                         deleteBought(productInList, boughtBtn)
-                    }else{
+                    } else {
                         setBought(productInList, boughtBtn);
                     }
                 });
+
                 //Event listener for adding the product to the compare tab
                 addCompare.addEventListener('click', () => {
                     if (addCompare.className === 'option addCompare') {
@@ -738,50 +809,60 @@ function calcLists() {
                     }
                 });
             });
+
             //Display the no list text into the listcontentview
-         }else if(products.length < 1) {
-             noListsText.style.display = 'block';
-         }
-         //Function to calculate the totalprice of all the products in the list
-         totalPrice();
-         function totalPrice(){
+        } else if (products.length < 1) {
+            noListsText.style.display = 'block';
+        }
+
+        //Function to calculate the totalprice of all the products in the list
+        totalPrice();
+
+        function totalPrice() {
             let priceCount = listElement.querySelector('.counter.price');
             priceCount.innerHTML = '';
             list.totalprice = 0;
-             let totalPrice = list.totalPrice;
-                products.forEach(product =>{
-                    let price = parseFloat(product.price.replace(",", ".").replace(/[^0-9\.-]+/g,""));
-                    totalPrice = totalPrice + price;
-                    list.totalPrice = totalPrice;
-                })
-                priceCount.innerHTML = `€ ${totalPrice.toFixed(2)}`;
-         }
+            let totalPrice = list.totalPrice;
+            products.forEach(product => {
+                let price = parseFloat(product.price.replace(",", ".").replace(/[^0-9\.-]+/g, ""));
+                totalPrice = totalPrice + price;
+                list.totalPrice = totalPrice;
+            })
+            priceCount.innerHTML = `€ ${totalPrice.toFixed(2)}`;
+        }
         productsInListCounter = productsInListCounter + list.products.length;
         updateCounter();
     })
 }
 
 //Function to delete a list
-function deleteList(listID){
-      //Select the product that needs to be removed
-      let list = lists.filter(list => list.id === listID)[0];
-      //Search for the index of the product in the array
-      let index = lists.indexOf(list)
-      //Remove product
-      lists.splice(index, 1)
-      calcLists();
-      updateCounter();
+function deleteList(listID) {
+    //Select the product that needs to be removed
+    let list = lists.filter(list => list.id === listID)[0];
+    //Search for the index of the product in the array
+    let index = lists.indexOf(list)
+    //Remove product
+    lists.splice(index, 1)
+    calcLists();
+    updateCounter();
 }
 
 //Function for creating a new list
 function createNewList() {
     //Create notification
     let notification = createNotification('newlist');
+
     //If the user submits the notification the list is being added to the list array
     let id = Math.floor((Math.random() * 11000) + 22000);
     notification.onsubmit = function () {
         let listName = notification.querySelector('input').value;
-        lists.push({id: id, name: listName, products: [], totalPrice: 0, selected: false});
+        lists.push({
+            id: id,
+            name: listName,
+            products: [],
+            totalPrice: 0,
+            selected: false
+        });
         closePopup(notification);
         calcLists();
         updateCounter();
@@ -789,13 +870,15 @@ function createNewList() {
 }
 
 //Function to set a boughtprice
-function setBought(product, boughtBtn){
+function setBought(product, boughtBtn) {
     let itemWrapper = Array.from(allLists.querySelectorAll('.itemWrapper')).filter(elem => elem.getAttribute('id') === product.id)[0];
     let boughtPrice = Array.from(allLists.querySelectorAll('.itemWrapper')).filter(elem => elem.getAttribute('id') === product.id)[0].querySelector('.boughtPrice');
-    
+
+    //Add a notification to set a boughtprice
     let notification = createNotification('setBought', product);
+
     //If the users submits, the price alert will be set
-    notification.onsubmit = function (){
+    notification.onsubmit = function () {
         product.bought = true;
         let value = notification.querySelector('input').value;
         product.boughtPrice = value;
@@ -804,22 +887,23 @@ function setBought(product, boughtBtn){
         boughtPrice.style.display = 'block';
         changeState(boughtBtn);
         closePopup(notification);
+    }
 }
-}
+
 //Function to delete a boughtprice
-function deleteBought(product, boughtBtn){
+function deleteBought(product, boughtBtn) {
     let itemWrapper = Array.from(allLists.querySelectorAll('.itemWrapper')).filter(elem => elem.getAttribute('id') === product.id)[0];
     let boughtPrice = allLists.querySelector('.boughtPrice');
-        product.bought = false;
-        product.boughtPrice = 0;
-        boughtPrice.innerHTML = `€ ${product.boughtPrice}`;
-        itemWrapper.style.border = 'none';
-        boughtPrice.style.display = 'none';
-        changeState(boughtBtn);
+    product.bought = false;
+    product.boughtPrice = 0;
+    boughtPrice.innerHTML = `€ ${product.boughtPrice}`;
+    itemWrapper.style.border = 'none';
+    boughtPrice.style.display = 'none';
+    changeState(boughtBtn);
 }
 
 //Function to select a list
-function selectList(listid){
+function selectList(listid) {
     let list = lists.filter(list => list.id == listid)[0];
     list.selected = true;
 }
@@ -830,30 +914,38 @@ function addToList() {
     let notification = createNotification('addToList');
     let checkboxNewList = notification.querySelector('.checkList.newList');
     notification.onsubmit = function () {
-    if(checkboxNewList.classList.contains('selected')){
-        let id = Math.floor((Math.random() * 11000) + 22000);
-        let listName = notification.querySelector('.newListName').value;
-        lists.push({id: id, name: listName, products: [], totalPrice: 0, selected: true});
-    }else{
-         //nothing
-    }
-    let selectedLists = lists.filter(list => list.selected == true);
-    let selectedProducts = Array.from(singleProducts.filter(item => item.selected === true));
-    selectedLists.forEach(list => {
-        selectedProducts.forEach(product => {
-            list.products.push(product);
-            deleteFromMPO(product.id);
-            product.selected = false;
+        if (checkboxNewList.classList.contains('selected')) {
+            let id = Math.floor((Math.random() * 11000) + 22000);
+            let listName = notification.querySelector('.newListName').value;
+            lists.push({
+                id: id,
+                name: listName,
+                products: [],
+                totalPrice: 0,
+                selected: true
+            });
+        } else {
+            //nothing
+        }
+
+        //Add the selected products to the selected list
+        let selectedLists = lists.filter(list => list.selected == true);
+        let selectedProducts = Array.from(singleProducts.filter(item => item.selected === true));
+        selectedLists.forEach(list => {
+            selectedProducts.forEach(product => {
+                list.products.push(product);
+                deleteFromMPO(product.id);
+                product.selected = false;
+            })
+            list.selected = false;
         })
-        list.selected = false;
-    })
-    closePopup(notification);
-    addToListPopup.style.display = 'none';
-    calcLists();
+        closePopup(notification);
+        addToListPopup.style.display = 'none';
+        calcLists();
     }
 }
 
-//Function for updating the counter
+//Function for updating the counters
 function updateCounter() {
     mpoCounter = singleProducts.length + allPriceAlerts.length + productsInListCounter;
     compareCounter = productsCompare.length;
@@ -876,24 +968,28 @@ function updateCounter() {
             counters[i].innerHTML = '';
             counters[i].innerHTML = compareCounter;
         } else if (className === 'counter mpo compare') {
-        counters[i].innerHTML = '';
-        counters[i].innerHTML = mpoCounter + compareCounter;
-    }
+            counters[i].innerHTML = '';
+            counters[i].innerHTML = mpoCounter + compareCounter;
+        }
     }
     //Toggle the introtext and the suggestion items
     if (mpoCounter > 0 || listCounter > 0 || compareCounter > 0) {
         introText.style.display = 'none';
         suggestionItemWrapper.style.display = 'none';
-    }else{
+    } else {
         introText.style.display = 'block';
         suggestionItemWrapper.style.display = 'block';
     }
 }
 
-    // Make the DIV element draggable
+// Make the DIV element draggable
 dragElement(document.querySelector(".pop-over"));
+
 function dragElement(elmnt) {
-    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    var pos1 = 0,
+        pos2 = 0,
+        pos3 = 0,
+        pos4 = 0;
     if (document.getElementById(elmnt.id + "dragBar")) {
         // if present, the header is where you move the DIV from:
         document.getElementById(elmnt.id + "dragBar").onmousedown = dragMouseDown;
@@ -901,6 +997,7 @@ function dragElement(elmnt) {
         // otherwise, move the DIV from anywhere inside the DIV: 
         elmnt.onmousedown = dragMouseDown;
     }
+
     function dragMouseDown(e) {
         e = e || window.event;
         // get the mouse cursor position at startup:
@@ -910,6 +1007,7 @@ function dragElement(elmnt) {
         // call a function whenever the cursor moves:
         document.onmousemove = elementDrag;
     }
+
     function elementDrag(e) {
         e = e || window.event;
         e.preventDefault();
@@ -922,6 +1020,7 @@ function dragElement(elmnt) {
         elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
         elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
     }
+
     function closeDragElement() {
         // stop moving when mouse button is released:
         document.onmouseup = null;
@@ -1360,6 +1459,7 @@ style.innerHTML = `
 .option.addList{
     background-image: url("data:image/svg+xml,%3Csvg width='18' height='14' viewBox='0 0 14 14' xmlns='http://www.w3.org/2000/svg'%3E%3Crect y='3.63312' width='13.3333' height='1.45326' fill='%231668AC'/%3E%3Crect width='13.3333' height='1.45326' fill='%231668AC'/%3E%3Crect y='7.2663' width='8' height='1.45326' fill='%231668AC'/%3E%3Crect y='10.8994' width='8' height='1.45326' fill='%231668AC'/%3E%3Cpath d='M14.2757 9.65405H17.0511V10.8503H14.2757V13.9949H13.0042V10.8503H10.2288V9.65405H13.0042V6.74878H14.2757V9.65405Z' fill='%231668AC'/%3E%3C/svg%3E");
 }
+
 .option.addList.active{
     background-image: url('data:image/svg+xml, %3Csvg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg"%3E%3Crect y="3.63312" width="13.3333" height="1.45326" fill="white"/%3E%3Crect width="13.3333" height="1.45326" fill="white"/%3E%3Crect y="7.2663" width="8" height="1.45326" fill="white"/%3E%3Crect y="10.8994" width="8" height="1.45326" fill="white"/%3E%3Cpath d="M15.3216 11.281H11.9857V10.2488H15.3216V11.281Z" fill="white"/%3E%3C/svg%3E');
 }
@@ -1367,6 +1467,7 @@ style.innerHTML = `
 .option.setAlert{
     background-image: url("data:image/svg+xml,%3Csvg width='19' height='19' viewBox='0 0 19 19' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0)'%3E%3Cpath d='M16.9896 8.58849C16.6885 8.58849 16.4442 8.34349 16.4442 8.04161C16.4442 5.94744 15.6312 3.97944 14.1549 2.4985C13.9419 2.28487 13.9419 1.93854 14.1549 1.72491C14.368 1.51129 14.7134 1.51129 14.9266 1.72491C16.6086 3.41214 17.535 5.65585 17.535 8.04161C17.535 8.34349 17.2906 8.58849 16.9896 8.58849Z' fill='%231668AC'/%3E%3Cpath d='M2.08155 8.58855C1.78048 8.58855 1.53613 8.34356 1.53613 8.04168C1.53613 5.65591 2.46265 3.4122 4.14537 1.72565C4.35842 1.51202 4.70397 1.51202 4.91702 1.72565C5.13008 1.93927 5.13008 2.28574 4.91702 2.49936C3.44003 3.9795 2.62697 5.94751 2.62697 8.04168C2.62697 8.34356 2.38262 8.58855 2.08155 8.58855Z' fill='%231668AC'/%3E%3Cpath d='M9.53568 18.25C8.03179 18.25 6.80859 17.0235 6.80859 15.5156C6.80859 15.2137 7.05294 14.9688 7.35401 14.9688C7.65508 14.9688 7.89943 15.2137 7.89943 15.5156C7.89943 16.4206 8.63313 17.1562 9.53568 17.1562C10.4381 17.1562 11.1719 16.4206 11.1719 15.5156C11.1719 15.2137 11.4163 14.9688 11.7173 14.9688C12.0184 14.9688 12.2628 15.2137 12.2628 15.5156C12.2628 17.0235 11.0396 18.25 9.53568 18.25Z' fill='%231668AC'/%3E%3Cpath d='M15.5356 16.0625H3.5364C2.83452 16.0625 2.26367 15.4901 2.26367 14.7865C2.26367 14.4131 2.42586 14.0595 2.70882 13.8167C3.81483 12.8797 4.44534 11.5177 4.44534 10.0746V8.04162C4.44534 5.22714 6.72887 2.9375 9.53598 2.9375C12.343 2.9375 14.6265 5.22714 14.6265 8.04162V10.0746C14.6265 11.5177 15.257 12.8797 16.3558 13.8116C16.646 14.0595 16.8082 14.4131 16.8082 14.7865C16.8082 15.4901 16.2373 16.0625 15.5356 16.0625ZM9.53598 4.03125C7.33021 4.03125 5.53617 5.83009 5.53617 8.04162V10.0746C5.53617 11.8398 4.76465 13.5068 3.42002 14.6464C3.39459 14.6683 3.35451 14.7136 3.35451 14.7865C3.35451 14.8856 3.43746 14.9688 3.5364 14.9688H15.5356C15.6344 14.9688 15.7173 14.8856 15.7173 14.7865C15.7173 14.7136 15.6774 14.6683 15.6533 14.6479C14.3072 13.5068 13.5357 11.8398 13.5357 10.0746V8.04162C13.5357 5.83009 11.7416 4.03125 9.53598 4.03125Z' fill='%231668AC'/%3E%3Cpath d='M9.53565 4.03125C9.23458 4.03125 8.99023 3.78625 8.99023 3.48438V1.29688C8.99023 0.994999 9.23458 0.75 9.53565 0.75C9.83672 0.75 10.0811 0.994999 10.0811 1.29688V3.48438C10.0811 3.78625 9.83672 4.03125 9.53565 4.03125Z' fill='%231668AC'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0'%3E%3Crect width='17.4533' height='17.5' fill='white' transform='translate(0.820312 0.75)'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
 }
+
 .option.setAlert.active{
     background-image: url("data:image/svg+xml,%3Csvg width='19' height='19' viewBox='0 0 19 19' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0)'%3E%3Cpath d='M16.9896 8.58846C16.6885 8.58846 16.4442 8.34346 16.4442 8.04158C16.4442 5.94741 15.6312 3.97941 14.1549 2.49847C13.9419 2.28484 13.9419 1.93851 14.1549 1.72488C14.368 1.51126 14.7134 1.51126 14.9266 1.72488C16.6086 3.41211 17.535 5.65582 17.535 8.04158C17.535 8.34346 17.2906 8.58846 16.9896 8.58846Z' fill='white'/%3E%3Cpath d='M2.08155 8.58852C1.78048 8.58852 1.53613 8.34352 1.53613 8.04165C1.53613 5.65588 2.46265 3.41217 4.14537 1.72562C4.35842 1.51199 4.70397 1.51199 4.91702 1.72562C5.13008 1.93924 5.13008 2.28571 4.91702 2.49933C3.44003 3.97947 2.62697 5.94748 2.62697 8.04165C2.62697 8.34352 2.38262 8.58852 2.08155 8.58852Z' fill='white'/%3E%3Cpath d='M9.53568 18.25C8.03179 18.25 6.80859 17.0235 6.80859 15.5156C6.80859 15.2137 7.05294 14.9688 7.35401 14.9688C7.65508 14.9688 7.89943 15.2137 7.89943 15.5156C7.89943 16.4206 8.63313 17.1562 9.53568 17.1562C10.4381 17.1562 11.1719 16.4206 11.1719 15.5156C11.1719 15.2137 11.4163 14.9688 11.7173 14.9688C12.0184 14.9688 12.2628 15.2137 12.2628 15.5156C12.2628 17.0235 11.0396 18.25 9.53568 18.25Z' fill='white'/%3E%3Cpath d='M15.5356 16.0625H3.5364C2.83452 16.0625 2.26367 15.4901 2.26367 14.7865C2.26367 14.4131 2.42586 14.0595 2.70882 13.8167C3.81483 12.8797 4.44534 11.5177 4.44534 10.0746V8.04162C4.44534 5.22714 6.72887 2.9375 9.53598 2.9375C12.343 2.9375 14.6265 5.22714 14.6265 8.04162V10.0746C14.6265 11.5177 15.257 12.8797 16.3558 13.8116C16.646 14.0595 16.8082 14.4131 16.8082 14.7865C16.8082 15.4901 16.2373 16.0625 15.5356 16.0625ZM9.53598 4.03125C7.33021 4.03125 5.53617 5.83009 5.53617 8.04162V10.0746C5.53617 11.8398 4.76465 13.5068 3.42002 14.6464C3.39459 14.6683 3.35451 14.7136 3.35451 14.7865C3.35451 14.8856 3.43746 14.9688 3.5364 14.9688H15.5356C15.6344 14.9688 15.7173 14.8856 15.7173 14.7865C15.7173 14.7136 15.6774 14.6683 15.6533 14.6479C14.3072 13.5068 13.5357 11.8398 13.5357 10.0746V8.04162C13.5357 5.83009 11.7416 4.03125 9.53598 4.03125Z' fill='white'/%3E%3Cpath d='M9.53565 4.03125C9.23458 4.03125 8.99023 3.78625 8.99023 3.48438V1.29688C8.99023 0.994999 9.23458 0.75 9.53565 0.75C9.83672 0.75 10.0811 0.994999 10.0811 1.29688V3.48438C10.0811 3.78625 9.83672 4.03125 9.53565 4.03125Z' fill='white'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0'%3E%3Crect width='17.4533' height='17.5' fill='white' transform='translate(0.820312 0.75)'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E%0A");
 }
@@ -1374,6 +1475,7 @@ style.innerHTML = `
 .option.setBought{
   background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg width='9px' height='10px' viewBox='0 0 9 10' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Ctitle%3ECombined Shape%3C/title%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Custom-Preset-Copy' transform='translate(-247.000000, -245.000000)' fill='%231668AC' fill-rule='nonzero'%3E%3Cg id='bag' transform='translate(247.500000, 245.000000)'%3E%3Cpath d='M3.99974611,0 C4.54877695,0 5.06434696,0.194375 5.45017087,0.5475 C5.83599478,0.900625 6.04836865,1.3725 6.04836865,1.875 L6.04836865,1.875 L6.04836865,2.5 L7.07267992,2.5 C7.24954434,2.5 7.39704516,2.623125 7.41343414,2.784375 L7.41343414,2.784375 L7.99456007,8.636875 C8.02870378,8.985625 7.9010063,9.334375 7.64287986,9.593125 C7.38475342,9.851875 7.01736711,10 6.6342747,10 L6.6342747,10 L1.3659004,10 C0.982807985,10 0.615421676,9.851875 0.357295236,9.593125 C0.0991687958,9.334375 -0.02921155,8.985625 0.00561503314,8.636875 L0.00561503314,8.636875 L0.58674096,2.784375 C0.602447067,2.623125 0.749947889,2.5 0.926812302,2.5 L0.926812302,2.5 L1.95112357,2.5 L1.95112357,1.875 C1.95112357,0.84125 2.87027222,0 3.99974611,0 Z M1.95112357,3.125 L1.2388858,3.125 L0.686440591,8.693125 C0.668685862,8.870625 0.730827412,9.04 0.861939255,9.17125 C0.992368223,9.3025 1.17196413,9.375 1.3659004,9.375 L1.3659004,9.375 L6.63359183,9.375 C6.82821097,9.375 7.007124,9.3025 7.13823584,9.171875 C7.26934769,9.040625 7.33148924,8.870625 7.31373451,8.69375 L7.31373451,8.69375 L6.76060642,3.125 L6.04836865,3.125 L6.04836865,4.0625 C6.04836865,4.235 5.89540484,4.375 5.70693156,4.375 C5.51845829,4.375 5.36549447,4.235 5.36549447,4.0625 L5.36549447,4.0625 L5.36549447,3.125 L2.63399775,3.125 L2.63399775,4.0625 C2.63399775,4.235 2.48103394,4.375 2.29256066,4.375 C2.10408739,4.375 1.95112357,4.235 1.95112357,4.0625 L1.95112357,4.0625 L1.95112357,3.125 Z M4.33410294,4.8439759 C4.64402987,4.8439759 4.96108154,4.94501279 5.28525798,5.14708656 L5.28525798,5.14708656 L5.03945387,5.59197478 L4.92367657,5.49636998 C4.72774576,5.35151423 4.5169717,5.27908636 4.2913544,5.27908636 C4.05267505,5.27908636 3.85318186,5.3654566 3.69287483,5.53819708 C3.55750445,5.69138203 3.4666638,5.88204841 3.42035288,6.11019622 L3.42035288,6.11019622 L4.83105473,6.11019622 L4.69212197,6.42308464 L3.38294791,6.42308464 L3.37894023,6.45241792 L3.37894023,6.45241792 L3.37760434,6.49152898 L3.37793831,6.66111205 C3.37860626,6.7118342 3.38027612,6.74330638 3.38294791,6.75552858 L3.38294791,6.75552858 L4.61731203,6.75552858 L4.48372284,7.06352812 L3.40966574,7.06352812 L3.44108592,7.21508344 C3.49067423,7.4080313 3.57104149,7.56447551 3.68218769,7.68441607 C3.84249472,7.87019357 4.0597998,7.96308232 4.33410294,7.96308232 C4.51222186,7.96308232 4.66006057,7.93700828 4.77761906,7.88486021 C4.88449041,7.8359714 5.00561127,7.75449004 5.14098165,7.64041613 L5.14098165,7.64041613 L5.14098165,8.18308198 L4.99243047,8.26052187 C4.79008738,8.35230247 4.57064487,8.39819277 4.33410294,8.39819277 C3.85674424,8.39819277 3.48447569,8.26456334 3.21729731,7.99730449 C2.98574271,7.76589743 2.84146639,7.45463864 2.78446833,7.06352812 L2.78446833,7.06352812 L2.37301362,7.06352812 L2.51728995,6.75552858 L2.75775049,6.75552858 L2.75307487,6.72008419 L2.75307487,6.72008419 L2.74973514,6.68219536 C2.74795395,6.65612132 2.74706336,6.62841766 2.74706336,6.59908437 L2.7477313,6.56241776 L2.7477313,6.56241776 L2.74973514,6.52086227 C2.75151633,6.49152898 2.75418812,6.45893643 2.75775049,6.42308464 L2.75775049,6.42308464 L2.37301362,6.42308464 L2.51194638,6.11019622 L2.79515547,6.11019622 L2.84577093,5.9293076 C2.94027291,5.63869076 3.08548931,5.40239482 3.28142012,5.22041978 C3.55572326,4.9694572 3.90661753,4.8439759 4.33410294,4.8439759 Z M3.99974611,0.625 C3.24653589,0.625 2.63399775,1.185625 2.63399775,1.875 L2.63399775,1.875 L2.63399775,2.5 L5.36549447,2.5 L5.36549447,1.875 C5.36549447,1.539375 5.22482239,1.224375 4.96737883,0.989375 C4.70993526,0.754375 4.36644955,0.625 3.99974611,0.625 Z' id='Combined-Shape'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
+
 .option.setBought.active{
     background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg width='9px' height='10px' viewBox='0 0 9 10' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Ctitle%3ECombined Shape%3C/title%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Custom-Preset-Copy' transform='translate(-247.000000, -245.000000)' fill='%23FFFFFF' fill-rule='nonzero'%3E%3Cg id='bag' transform='translate(247.500000, 245.000000)'%3E%3Cpath d='M3.99974611,0 C4.54877695,0 5.06434696,0.194375 5.45017087,0.5475 C5.83599478,0.900625 6.04836865,1.3725 6.04836865,1.875 L6.04836865,1.875 L6.04836865,2.5 L7.07267992,2.5 C7.24954434,2.5 7.39704516,2.623125 7.41343414,2.784375 L7.41343414,2.784375 L7.99456007,8.636875 C8.02870378,8.985625 7.9010063,9.334375 7.64287986,9.593125 C7.38475342,9.851875 7.01736711,10 6.6342747,10 L6.6342747,10 L1.3659004,10 C0.982807985,10 0.615421676,9.851875 0.357295236,9.593125 C0.0991687958,9.334375 -0.02921155,8.985625 0.00561503314,8.636875 L0.00561503314,8.636875 L0.58674096,2.784375 C0.602447067,2.623125 0.749947889,2.5 0.926812302,2.5 L0.926812302,2.5 L1.95112357,2.5 L1.95112357,1.875 C1.95112357,0.84125 2.87027222,0 3.99974611,0 Z M1.95112357,3.125 L1.2388858,3.125 L0.686440591,8.693125 C0.668685862,8.870625 0.730827412,9.04 0.861939255,9.17125 C0.992368223,9.3025 1.17196413,9.375 1.3659004,9.375 L1.3659004,9.375 L6.63359183,9.375 C6.82821097,9.375 7.007124,9.3025 7.13823584,9.171875 C7.26934769,9.040625 7.33148924,8.870625 7.31373451,8.69375 L7.31373451,8.69375 L6.76060642,3.125 L6.04836865,3.125 L6.04836865,4.0625 C6.04836865,4.235 5.89540484,4.375 5.70693156,4.375 C5.51845829,4.375 5.36549447,4.235 5.36549447,4.0625 L5.36549447,4.0625 L5.36549447,3.125 L2.63399775,3.125 L2.63399775,4.0625 C2.63399775,4.235 2.48103394,4.375 2.29256066,4.375 C2.10408739,4.375 1.95112357,4.235 1.95112357,4.0625 L1.95112357,4.0625 L1.95112357,3.125 Z M4.33410294,4.8439759 C4.64402987,4.8439759 4.96108154,4.94501279 5.28525798,5.14708656 L5.28525798,5.14708656 L5.03945387,5.59197478 L4.92367657,5.49636998 C4.72774576,5.35151423 4.5169717,5.27908636 4.2913544,5.27908636 C4.05267505,5.27908636 3.85318186,5.3654566 3.69287483,5.53819708 C3.55750445,5.69138203 3.4666638,5.88204841 3.42035288,6.11019622 L3.42035288,6.11019622 L4.83105473,6.11019622 L4.69212197,6.42308464 L3.38294791,6.42308464 L3.37894023,6.45241792 L3.37894023,6.45241792 L3.37760434,6.49152898 L3.37793831,6.66111205 C3.37860626,6.7118342 3.38027612,6.74330638 3.38294791,6.75552858 L3.38294791,6.75552858 L4.61731203,6.75552858 L4.48372284,7.06352812 L3.40966574,7.06352812 L3.44108592,7.21508344 C3.49067423,7.4080313 3.57104149,7.56447551 3.68218769,7.68441607 C3.84249472,7.87019357 4.0597998,7.96308232 4.33410294,7.96308232 C4.51222186,7.96308232 4.66006057,7.93700828 4.77761906,7.88486021 C4.88449041,7.8359714 5.00561127,7.75449004 5.14098165,7.64041613 L5.14098165,7.64041613 L5.14098165,8.18308198 L4.99243047,8.26052187 C4.79008738,8.35230247 4.57064487,8.39819277 4.33410294,8.39819277 C3.85674424,8.39819277 3.48447569,8.26456334 3.21729731,7.99730449 C2.98574271,7.76589743 2.84146639,7.45463864 2.78446833,7.06352812 L2.78446833,7.06352812 L2.37301362,7.06352812 L2.51728995,6.75552858 L2.75775049,6.75552858 L2.75307487,6.72008419 L2.75307487,6.72008419 L2.74973514,6.68219536 C2.74795395,6.65612132 2.74706336,6.62841766 2.74706336,6.59908437 L2.7477313,6.56241776 L2.7477313,6.56241776 L2.74973514,6.52086227 C2.75151633,6.49152898 2.75418812,6.45893643 2.75775049,6.42308464 L2.75775049,6.42308464 L2.37301362,6.42308464 L2.51194638,6.11019622 L2.79515547,6.11019622 L2.84577093,5.9293076 C2.94027291,5.63869076 3.08548931,5.40239482 3.28142012,5.22041978 C3.55572326,4.9694572 3.90661753,4.8439759 4.33410294,4.8439759 Z M3.99974611,0.625 C3.24653589,0.625 2.63399775,1.185625 2.63399775,1.875 L2.63399775,1.875 L2.63399775,2.5 L5.36549447,2.5 L5.36549447,1.875 C5.36549447,1.539375 5.22482239,1.224375 4.96737883,0.989375 C4.70993526,0.754375 4.36644955,0.625 3.99974611,0.625 Z' id='Combined-Shape'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
@@ -1519,12 +1621,12 @@ style.innerHTML = `
 head.appendChild(style);
 
 //Share the list function
-function shareList(list){
-    let win = window.open("", "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top="+(screen.height-400)+",left="+(screen.width-840));
+function shareList(list) {
+    //Create new tab window
+    let win = window.open("", "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top=" + (screen.height - 400) + ",left=" + (screen.width - 840));
     win.document.body.innerHTML = `
     <style>
     .share-wrapper{
-
     }
     .share-top-logo{
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 282.34 76.97'%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill:%23dae64a;%7D.cls-2%7Bfill:%23fff;%7D%3C/style%3E%3C/defs%3E%3Cg id='Laag_2' data-name='Laag 2'%3E%3Cg id='Layer_1' data-name='Layer 1'%3E%3Cpath class='cls-1' d='M74.71,25.48a.78.78,0,0,1,0,.09l-21,28.33a5.3,5.3,0,0,1-4.54,2.43H28.63c-2.74,0-3.89-.76-5.05-3.64L17.35,32.58a5.58,5.58,0,0,1,.44-5.35L38.66,0h-.17A38.47,38.47,0,1,0,74.71,25.48Z'/%3E%3Cpath d='M17.35,32.58l6.23,20.11c1.16,2.88,2.31,3.64,5.05,3.64h20.6a5.3,5.3,0,0,0,4.54-2.43l21-28.33a.78.78,0,0,0,0-.09A38.5,38.5,0,0,0,38.66,0L17.79,27.23A5.58,5.58,0,0,0,17.35,32.58Zm8.52-6.88H51.39V34H42.82V48.09H34.54V34H25.87Z'/%3E%3Cpolygon class='cls-2' points='34.53 48.09 42.82 48.09 42.82 33.98 51.39 33.98 51.39 25.7 25.87 25.7 25.87 33.98 34.53 33.98 34.53 48.09'/%3E%3Cpath d='M144,48.07h-7.11L132.71,34l-4.09,14.11h-7.13l-7.12-22.33H121l4.42,13.74,3.62-13.71h7.49l3.63,13.71,4.28-13.74h6.61Z'/%3E%3Cpath d='M169.55,47.64a19.63,19.63,0,0,1-5.88.63c-7.22,0-11-5.23-11-11.22,0-5,2.31-11.65,10.71-11.65,8.21,0,11.08,5,10.09,14.19H159.37c0,2.09,2.43,3.45,4.65,3.45a12.41,12.41,0,0,0,3.8-.47Zm-5.9-17c-1.33,0-4.27.09-4.23,4.23h8.3C167.67,31,165.66,30.63,163.65,30.6Z'/%3E%3Cpath d='M239.79,47.68a19.63,19.63,0,0,1-5.88.63c-7.22,0-11-5.23-11-11.23,0-5,2.31-11.65,10.71-11.65,8.2,0,11.08,5.05,10.09,14.2H229.61c0,2.09,2.43,3.45,4.65,3.45a12.14,12.14,0,0,0,3.8-.48Zm-5.9-17c-1.33,0-4.27.09-4.23,4.23H238C237.91,31,235.9,30.66,233.89,30.64Z'/%3E%3Cpath d='M180.1,26.45a28.93,28.93,0,0,1,7.15-1.05c5,0,8.36,2.2,8.36,7V48h-5.53c-.05,0-.23-1-.32-1a12.72,12.72,0,0,1-5.6,1.27c-6.13,0-7.81-4-7.81-6.65,0-4.45,3.1-7.75,11.28-7.69h1.68v-.72c0-1,.1-2.63-2.39-2.63a19.77,19.77,0,0,0-5.07.73Zm9.25,12.21h-1c-4.31,0-6.19.68-6.19,2.84,0,1.58,1.23,2.21,2.66,2.21s3.77-.46,4.58-1.37Z'/%3E%3Cpath d='M214.61,48l-7-10.55V48h-6.83V21.52h6.83V33.64l5.75-7.93h7.75l-7.16,9.74L222.27,48Z'/%3E%3Cpath d='M263,26.19c-.27.8-1.84,5.19-1.84,5.19-2.3-1.24-6.57-.13-6.64,4.85V48h-6.61V25.71H253l.75,1.18a8.46,8.46,0,0,1,5.2-1.46,10.64,10.64,0,0,1,4,.71'/%3E%3Cpath d='M111,42.16a5.94,5.94,0,0,1-4-1c-1.32-1-1.23-2.86-1.25-4.6v0c0-1.54,0-3.24,0-4.67H111V25.79h-5.28V21.52H99.5v4.27H93.83v6.08h5.64c0,1.45,0,3.18,0,4.74v0c0,2.59.07,6.51,2.84,9.2,1.77,1.73,5.12,2.46,8.36,2.46h.3Z'/%3E%3Cpath d='M280.65,46.18c-1.2,1.3-2.38,2.14-6,2.14a23.2,23.2,0,0,1-4.78-.62,37,37,0,0,1-4.17-1.25l1.94-5.55,2.69.79c2.83.84,4.77,1.42,5.23.06a1.42,1.42,0,0,0-.25-1.53,5.93,5.93,0,0,0-1.47-.94c-.71-.35-5.4-2.31-6.52-3.25a4.78,4.78,0,0,1-1.71-3.86,7,7,0,0,1,3.34-6c3-1.74,8.77-.22,9.86.05a15.34,15.34,0,0,1,3.12,1.15l-1.75,4.88c.31.18-6.33-2.71-7.21-1a1.24,1.24,0,0,0,.31,1.79c.35.31,4.47,2.14,5.59,2.69C284.56,38.62,281.82,44.91,280.65,46.18Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
@@ -1627,8 +1729,9 @@ function shareList(list){
     </div>
     <span style="font-size: 13px; color: grey; text-align: center; width: 100%; float: left; font-family: arial; margin-top: 10px; margin-bottom: 30px">Deze lijst is gedeeld door IvoZee</span>
     </div>    
-    `
-    function appendProducts(){
+    `;
+    //Add products to the shared list
+    function appendProducts() {
         return `
         ${list.products.map(product => {
             return `
@@ -1645,6 +1748,6 @@ function shareList(list){
             </div>
             `           
         }).join("")}
-        `
-    } 
+        `;
+    }
 }
