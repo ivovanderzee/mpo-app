@@ -18,7 +18,7 @@ CMD + Option + J (Mac) or CMD + Shift + J (Windows)
 ```
 
 
-##### 4) Paste the code of mpo-app.js in the console
+##### 4) Paste the code from mpo-app.js in the console
 
 
 ##### 5) Hit enter
