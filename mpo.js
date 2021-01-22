@@ -1094,8 +1094,10 @@ style.innerHTML = `
     border-style: solid;
     border-radius: 2px;
     border-top: none;
-    width: 375px;
-    max-height: 700px;
+    width: auto;
+    height: auto;
+    min-height: 700px;
+    min-height: 375px;
 }
 
 .topInfo{
@@ -1122,6 +1124,8 @@ style.innerHTML = `
     overflow-y: scroll;
     width: 375px;
     height: 655px;
+    resize: both;
+    overflow: auto;
 }
 
 .introText{
