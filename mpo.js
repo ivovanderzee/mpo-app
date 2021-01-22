@@ -173,8 +173,7 @@ popover.innerHTML = popoverHTML;
 popover.style.display = 'none';
 
 //Append the new popover to the body
-let body = document.querySelector('body');
-body.appendChild(popover);
+document.body.appendChild(popover);
 
 //Grab elements in the popover
 let tabs = popover.querySelectorAll('.tab_select');
@@ -1096,9 +1095,9 @@ style.innerHTML = `
 .pop-over{
     z-index: 200;
     position: fixed;
-    top: 50px;
-    left: 550px;
     display: block;
+    top: 45px;
+    left: 54vw;
     box-shadow:  8px 5px 5px -3px rgba(0,0,0,0.1), 5px 8px 5px -3px rgba(0,0,0,0.1);
     border-color: #cccccc;
     border-width: 1px;
