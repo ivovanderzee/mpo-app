@@ -150,7 +150,7 @@ let popoverHTML = `
 <div class="all-lists">
 </div>
 <div class="bottom-info">
-<p style="margin-bottom: 5px; font-size: 12px;"><span class="counter lists">${listCounter}</span> lijsten, met in totaal <span class="counter mpo">${mpoCounter}</span> producten</p>
+<p class="bottomCta" style="margin-bottom: 5px; font-size: 12px;"><span class="counter lists">${listCounter}</span> lijsten, met in totaal <span class="counter mpo">${mpoCounter}</span> producten</p>
 <p style="margin-bottom: 15px; font-size: 18px; font-weight: bolder;">Meer producten toevoegen?</p>
 <a class="ctaButton">Bekijk Pricewatch</a>
 </div>
@@ -195,6 +195,7 @@ let closeButton = popover.querySelector('.close-popover');
 let topInfo = popover.querySelector('.topInfo');
 let addToListPopup = popover.querySelector('.popUpContent').querySelector('.addListPopup');
 let addToListPopupBtn = popover.querySelector('.addListPopup').querySelector('.ctaButton');
+let bottomCta = popover.querySelector('.bottomCta');
 
 //Event listener for the add to list button
 addToListPopupBtn.addEventListener('click', addToList);
@@ -224,6 +225,7 @@ function switchContent(tab) {
         singleProductsContent.style.display = 'block';
         allLists.style.display = 'block';
         compareProducts.style.display = 'none';
+        bottomCta.innerHTML = `<span class="counter lists">${listCounter}</span> lijsten, met in totaal <span class="counter mpo">${mpoCounter}</span> producten`;
     } else if (tab.classList.contains('compare')) {
         mpoTab.classList.remove('active');
         topTitle.innerText = 'Vergelijking';
@@ -232,6 +234,12 @@ function switchContent(tab) {
         singleProductsContent.style.display = 'none';
         allLists.style.display = 'none';
         priceAlertList.style.display = 'none';
+        bottomCta.innerHTML = `<a style="color: #1668ac">Vergelijking leegmaken</a>`;
+        bottomCta.addEventListener('click', () => {
+            productsCompare.forEach(product => {
+                deleteFromCompare(product);
+            })
+        })
     } else {
         //nothing
     }
