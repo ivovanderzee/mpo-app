@@ -302,7 +302,7 @@ function generateItemHTML(product, category) {
         case 'productInList':
             setBoughtBtn = `<div class='${product.bought ? 'option setBought active' : 'option setBought'}' style="margin-right: 5px;"></div>`;
             addToListBtn = '';
-            boughtPrice = `<span class="boughtPrice" style="display: ${product.bought ? 'block' : 'none'}; float: left; margin-right: 40px; margin-top: 5px;">€ ${product.boughtPrice}</span>`
+            boughtPrice = `<span class="boughtPrice" style="display: ${product.bought ? 'block' : 'none'}; float: left; margin-right: 40px; margin-top: 7.5px;">€ ${product.boughtPrice}</span>`
     }
 
     //Html for the product in the list 
