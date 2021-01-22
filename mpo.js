@@ -226,6 +226,7 @@ function switchContent(tab) {
         allLists.style.display = 'block';
         compareProducts.style.display = 'none';
         bottomCta.innerHTML = `<span class="counter lists">${listCounter}</span> lijsten, met in totaal <span class="counter mpo">${mpoCounter}</span> producten`;
+        bottomCta.removeEventListener('click', emptyCompare)
     } else if (tab.classList.contains('compare')) {
         mpoTab.classList.remove('active');
         topTitle.innerText = 'Vergelijking';
@@ -235,11 +236,7 @@ function switchContent(tab) {
         allLists.style.display = 'none';
         priceAlertList.style.display = 'none';
         bottomCta.innerHTML = `<a style="color: #1668ac">Vergelijking leegmaken</a>`;
-        bottomCta.addEventListener('click', () => {
-            productsCompare.forEach(product => {
-                deleteFromCompare(product);
-            })
-        })
+        bottomCta.addEventListener('click', emptyCompare);
     } else {
         //nothing
     }
@@ -487,6 +484,12 @@ function deleteFromCompare(product) {
 
     //Remove product
     productsCompare.splice(index, 1)
+    computeCompareProducts();
+    updateCounter();
+}
+
+function emptyCompare(){
+    productsCompare = [];
     computeCompareProducts();
     updateCounter();
 }
