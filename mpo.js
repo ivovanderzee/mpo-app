@@ -1626,6 +1626,7 @@ head.appendChild(style);
 
 //Share the list function
 function shareList(list) {
+    let username = document.querySelector('.username').innerText;
     //Create new tab window
     let win = window.open("", "Title", "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=780,height=200,top=" + (screen.height - 400) + ",left=" + (screen.width - 840));
     win.document.body.innerHTML = `
@@ -1718,7 +1719,7 @@ function shareList(list) {
     <div class="share-content">
     <span class="share-list-title">${list.name}</span>
     <br>
-    <span class="share-list-subtitle">Een lijst van <a>IvoZee</a></span>
+    <span class="share-list-subtitle">Een lijst van <a>${username}</a></span>
     <br><br><br>
     <span class="share-list-text">Onderstaande producten staan in de lijst <a>${list.name}</a>. Onderaan de lijst kunnen de totale kosten worden berekend.</span> 
     <br><br><br><br>
@@ -1731,7 +1732,7 @@ function shareList(list) {
     <span style="float: left; width: 100%; margin-top: 30px" class="share-list-text">Zelf ook een lijst aanmaken? <a>Bekijk de pricewatch</a> en sla jouw favoriete producten op in Mijn Producten.</span>
     <div style="width: 100%; margin-top: 10px; float: left; margin-top: 30px;" class="line"></div> 
     </div>
-    <span style="font-size: 13px; color: grey; text-align: center; width: 100%; float: left; font-family: arial; margin-top: 10px; margin-bottom: 30px">Deze lijst is gedeeld door IvoZee</span>
+    <span style="font-size: 13px; color: grey; text-align: center; width: 100%; float: left; font-family: arial; margin-top: 10px; margin-bottom: 30px">Deze lijst is gedeeld door ${username}</span>
     </div>    
     `;
     //Add products to the shared list
