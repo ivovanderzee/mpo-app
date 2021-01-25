@@ -650,7 +650,7 @@ function createNotification(category, product = null) {
         }
 
     } else if (category === 'setBought') {
-        popUpTitle = 'Stel een aanschafprijs in';
+        popUpTitle = 'Stel de aanschafprijs in';
         inputFieldSize = '10';
         ul = '';
         popUpBtnTitle = 'Aanschafprijs instellen';
