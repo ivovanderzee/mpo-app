@@ -174,6 +174,7 @@ popover.innerHTML = popoverHTML;
 popover.style.display = 'none';
 
 //Append the new popover to the body
+let body = document.body;
 document.body.appendChild(popover);
 
 //Grab elements in the popover
