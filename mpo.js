@@ -671,6 +671,14 @@ function createNotification(category, product = null) {
         popUpMessage = `Voor welk bedrag heb je de <span style="font-weight: bolder">${product.title}</span> aangeschaft?`;
         inputField = `<span style="width: 80%;" class="inputEuro"><input  class="text" type="text" size="${inputFieldSize}" name="product" id="" value=""></span>`;
         newListInput = '';
+    }else if (category === 'deleteList') {
+        popUpTitle = 'Weet je het zeker?';
+        inputFieldSize = '';
+        ul = '';
+        popUpBtnTitle = 'Verwijderen';
+        popUpMessage = `Weet je zeker dat je deze lijst wil verwijderen?`;
+        inputField = ``;
+        newListInput = '';
     }
     //Set the html and append it to the item
     let html = `
@@ -861,7 +869,12 @@ function calcLists() {
 
 //Function to delete a list
 function deleteList(listID) {
-    //Select the product that needs to be removed
+    let notification = createNotification('deleteList');
+
+    //If the users submits, the price alert will be set
+    let submitButton = notification.querySelector('.ctaButton');
+    submitButton.addEventListener('click', () => {
+         //Select the product that needs to be removed
     let list = lists.filter(list => list.id === listID)[0];
     //Search for the index of the product in the array
     let index = lists.indexOf(list)
@@ -869,6 +882,10 @@ function deleteList(listID) {
     lists.splice(index, 1)
     calcLists();
     updateCounter();
+        closePopup(notification);
+    });
+
+   
 }
 
 //Function for creating a new list
