@@ -1414,8 +1414,8 @@ style.innerHTML = `
 }
 
 .priceAlertsList{
-    padding-top: 15px;
-    padding-bottom: 15px;
+   margin-top: 15px;
+   margin-bottom: 30px;
 }
 
 .priceAlertContent{
@@ -1423,10 +1423,11 @@ style.innerHTML = `
     border-bottom: 1px #E5E5E5 solid;
     max-width: 97%; 
     margin: 0 auto; 
+    padding-bottom: 10px;
 }
 
 .price-alert-item{
-    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .price-alert-item .inputEuro{
