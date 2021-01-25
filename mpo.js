@@ -138,14 +138,14 @@ let popoverHTML = `
 <a class="ctaButton top"></a>
 </div>
 <span class="introText">Je hebt momenteel geen producten toegevoegd. Voeg producten toe om deze in een lijst te zetten, een Prijsalert voor aan te maken of te vergelijken.</span>
-<div class="singleProducts">
-</div>
-<div class="compareProducts">
-</div>
 <div class="priceAlertsList">
 <span class="list-title">Mijn Prijsalerts</span>
 <div class="priceAlertContent">
 </div>
+</div>
+<div class="singleProducts">
+</div>
+<div class="compareProducts">
 </div>
 <div class="all-lists">
 </div>
@@ -1414,11 +1414,15 @@ style.innerHTML = `
 }
 
 .priceAlertsList{
-    margin-top: 40px;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 
 .priceAlertContent{
-    margin-top: 15px;
+    border-top: 1px #E5E5E5 solid;
+    border-bottom: 1px #E5E5E5 solid;
+    max-width: 97%; 
+    margin: 0 auto; 
 }
 
 .price-alert-item{
