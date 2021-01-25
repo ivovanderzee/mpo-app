@@ -1291,14 +1291,13 @@ style.innerHTML = `
 .suggestion-item{
     width: 125px;
     height: 125px;
+    display: inline-block;
     background-color: white;
-    margin: 10px; 
-    float: left;
     border-radius: 2px;
-
     background-repeat: no-repeat;
     background-size: fit;
     background-position: center center;
+    margin: 10px;
 }
 
 .suggestion-item-info{
@@ -1317,15 +1316,20 @@ style.innerHTML = `
 }
 
 .suggestion-item-wrapper{
-    width: 80%;
+    width: 100%;
     margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    text-align: center;
+    margin-top: 40px;
 }
 
 .suggestion-item-content{
     width: 100%;
     height: 100%;
     float: right;
-  
 }
 
 .addItem{
@@ -1417,6 +1421,7 @@ style.innerHTML = `
     text-align: center;
     margin-top: 50px; 
     margin-bottom: 50px;
+    margin: 0 auto;
 }
 
 .list-title{
