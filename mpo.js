@@ -140,6 +140,7 @@ let popoverHTML = `
 <span class="introText">Je hebt momenteel geen producten toegevoegd. Voeg producten toe om deze in een lijst te zetten, een Prijsalert voor aan te maken of te vergelijken.</span>
 <div class="priceAlertsList">
 <span class="list-title">Mijn Prijsalerts</span>
+<button class="option collapse" style="margin-right: 5px;"></button>
 <div class="priceAlertContent">
 </div>
 </div>
@@ -185,6 +186,7 @@ let contentWrapper = popover.querySelector('.contentWrapper');
 let singleProductsContent = popover.querySelector('.singleProducts');
 let priceAlertContent = popover.querySelector('.priceAlertContent');
 let priceAlertList = popover.querySelector('.priceAlertsList');
+let collapsePriceAlerts = priceAlertList.querySelector('.collapse');
 let allLists = popover.querySelector('.all-lists');
 let introText = popover.querySelector('.introText');
 let suggestionItemWrapper = popover.querySelector('.suggestion-item-wrapper');
@@ -273,7 +275,6 @@ function topNotification(product) {
 
 //Function that generates the HTML for the product items
 function generateItemHTML(product, category) {
-
     //define buttons and parts of the product item
     let addToListBtn = `<div title="Product aan lijst toevoegen" class='${product.selected ? 'option addList active' : 'option addList'}' style="margin-right: 5px;"></div>`;
     let setAlertBtn = `<div title="Prijsalert instellen" class='${product.priceAlert ? 'option setAlert active' : 'option setAlert'}' id="${product.id}"></div>`;
@@ -459,7 +460,6 @@ function selectProducts(product, addToListBtn) {
 
 //Function for adding products to the compare list
 function addToCompare(product) {
-
     //Change icon in the header
     iconMPO.classList.add('new');
 
@@ -578,6 +578,7 @@ function deleteFromList(list, product) {
 
 //Function the calculates all the price alerts in the price alert array
 function calcPriceAlerts() {
+    priceAlertContent.classList.add('active');
     priceAlertContent.innerHTML = '';
     allPriceAlerts.forEach(priceAlertProduct => {
         //Create new element for the price alert item and append classname
@@ -596,6 +597,15 @@ function calcPriceAlerts() {
     });
     if (mpoTab.classList.contains('active') && allPriceAlerts.length > 0) {
         priceAlertList.style.display = 'block';
+        //Add eventlisteners
+        collapsePriceAlerts.addEventListener('click', () => {
+            changeState(priceAlertContent)
+            if (priceAlertContent.className === 'priceAlertContent') {
+                collapsePriceAlerts.style.transform = 'rotate(-180deg)';
+            } else {
+                collapsePriceAlerts.style.transform = 'rotate(0deg)';
+            }
+        })
     } else {
         priceAlertList.style.display = 'none';
     }
@@ -1353,7 +1363,6 @@ style.innerHTML = `
     background-color: #E5E5E5;
     border-radius: 2px;
     position: relative;
-    
 }
 
 .itemContentWrapper ul{
@@ -1418,20 +1427,44 @@ style.innerHTML = `
 }
 
 .priceAlertsList{
+   margin: 0 auto;
    margin-top: 15px;
    margin-bottom: 30px;
+   max-width: 97%;
+}
+
+.priceAlertsList .itemContentWrapper{
+    width: 100%;
+}
+
+.priceAlertsList .option {
+    height: 20px; 
+    width: 20px;
+    float: right;
+    background-color: #1668AC;
+    border-radius: 2px;
+    border: none;
+    background-size: 11px;
+    background-position: center center;
+    background-repeat: no-repeat;
 }
 
 .priceAlertContent{
-    border-top: 1px #E5E5E5 solid;
-    border-bottom: 1px #E5E5E5 solid;
-    max-width: 97%; 
-    margin: 0 auto; 
-    padding-bottom: 10px;
+    display: none;
 }
 
+.priceAlertContent.active{ 
+    border-top: 1px #E5E5E5 solid;
+    border-bottom: 1px #E5E5E5 solid; 
+    margin: 0 auto; 
+    margin-top: 15px;
+    padding-bottom: 10px;
+    display: block;
+    width: 100%;
+}
 .price-alert-item{
     margin-top: 10px;
+    width: 100%;
 }
 
 .price-alert-item .inputEuro{
@@ -1443,7 +1476,7 @@ style.innerHTML = `
 .list-wrapper .option{
     height: 20px; 
     width: 20px;
-    float:right;
+    float: right;
 }
 
 .itemOptions{
