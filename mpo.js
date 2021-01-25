@@ -551,8 +551,12 @@ function setPriceAlert(product, alertBtn) {
 //Function to delete a price alert
 function deletePriceAlert(product) {
     //Search for the alert button 
+    try{
     let alertBtn = Array.from(popover.querySelectorAll('.setAlert')).filter(alert => alert.getAttribute('id') === product.id)[0];
     changeState(alertBtn);
+    }catch{
+        //nothing
+    }
 
     //Set price alert to false
     product.priceAlert = false;
