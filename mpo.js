@@ -1474,6 +1474,9 @@ style.innerHTML = `
    margin-top: 15px;
    margin-bottom: 30px;
    max-width: 97%;
+   border-collapse: separate;
+   border-spacing: 15px 50px;
+   border-bottom: 1px #E5E5E5 solid !important;
 }
 
 .priceAlertsList .itemContentWrapper{
@@ -1498,7 +1501,6 @@ style.innerHTML = `
 
 .priceAlertContent.active{ 
     border-top: 1px #E5E5E5 solid;
-    border-bottom: 1px #E5E5E5 solid; 
     margin: 0 auto; 
     margin-top: 15px;
     padding-bottom: 10px;
