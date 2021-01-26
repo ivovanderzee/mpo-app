@@ -95,10 +95,8 @@ function addCheckbox() {
                 if (!checkbox1.classList.contains('added')) {
                     addToMPO(product);
                     topNotification(product);
-                    checkbox1.classList.add('added');
                 } else {
                     deleteFromMPO(product);
-                    checkbox1.classList.remove('added');
                 }
             })
         } else {
@@ -118,10 +116,8 @@ function addCheckbox() {
             vergelijkLabel.addEventListener('click', () => {
                 if (!checkbox2.classList.contains('added')) {
                     addToCompare(product);
-                    checkbox2.classList.add('added');
                 } else {
                     deleteFromCompare(product);
-                    checkbox2.classList.remove('added');
                 }
             });
         } else {
@@ -382,6 +378,7 @@ function addToMPO(product) {
 
     let input = document.querySelector(`.mijn-producten-label${product.id}`).querySelector('input');
     input.checked = true;
+    input.classList.add('added');
     computeMPOProducts();
     updateCounter();
 }
@@ -393,7 +390,7 @@ function deleteFromMPO(product) {
 
     let input = document.querySelector(`.mijn-producten-label${product.id}`).querySelector('input');
     input.checked = false;
-
+    input.classList.remove('added');
     //Remove product
     singleProducts.splice(index, 1)
     computeMPOProducts();
@@ -480,6 +477,8 @@ function addToCompare(product) {
 
     let input = document.querySelector(`.vergelijk-label${product.id}`).querySelector('input');
     input.checked = true;
+    input.classList.add('added');
+
     product.compared = true;
     computeCompareProducts();
     updateCounter();
@@ -502,6 +501,7 @@ function deleteFromCompare(product) {
 
     let input = document.querySelector(`.vergelijk-label${product.id}`).querySelector('input');
     input.checked = false;
+    input.classList.remove('added');
     computeCompareProducts();
     updateCounter();
 }
@@ -992,6 +992,9 @@ function addToList() {
                 list.products.push(product);
                 deleteFromMPO(product);
                 product.selected = false;
+                let input = document.querySelector(`.mijn-producten-label${product.id}`).querySelector('input');
+                input.checked = true;
+                input.classList.add('added'); 
             })
             list.selected = false;
         })
