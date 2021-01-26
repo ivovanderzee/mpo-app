@@ -86,8 +86,7 @@ function addCheckbox() {
         if (mijnProductenCheckboxes) {
             //Create a new label and set the innerHTML of the checkbox(es)
             let mijnProductenLabel = document.createElement('label');
-            mijnProductenLabel.classList.add('mijn-producten-label');
-            vergelijkLabel.setAttribute('id', `${product.id}`);
+            mijnProductenLabel.classList.add(`mijn-producten-label${product.id}`);
             mijnProductenLabel.innerHTML = `<input type="checkbox" name="products[] value="${product.id}""><span>Mijn Producten</span>`;
             let checkbox1 = mijnProductenLabel.querySelector('input')
             itemName.appendChild(mijnProductenLabel);
@@ -109,8 +108,7 @@ function addCheckbox() {
         //Add checkbox vergelijk
         if (vergelijkCheckboxes) {
             let vergelijkLabel = document.createElement('label');
-            vergelijkLabel.classList.add('vergelijk-label');
-            vergelijkLabel.setAttribute('id', `${product.id}`);
+            vergelijkLabel.classList.add(`vergelijk-label${product.id}`);
             vergelijkLabel.style.marginLeft = '5px';
             vergelijkLabel.innerHTML = `<input type="checkbox" name="products[] value="${product.id}""><span>Vergelijk</span>`;
             let checkbox2 = vergelijkLabel.querySelector('input');
@@ -381,6 +379,9 @@ function addToMPO(product) {
     //Change state of the icon in the header
     iconMPO.classList.add('new');
     singleProducts.push(product);
+
+    let input = document.querySelector(`.mijn-producten-label${product.id}`).querySelector('input');
+    input.checked = true;
     computeMPOProducts();
     updateCounter();
 }
@@ -388,7 +389,10 @@ function addToMPO(product) {
 //Function that removes the product from the MPO array
 function deleteFromMPO(product) {
     //Search for the index of the product in the array
-    let index = singleProducts.indexOf(product)
+    let index = singleProducts.indexOf(product);
+
+    let input = document.querySelector(`.mijn-producten-label${product.id}`).querySelector('input');
+    input.checked = false;
 
     //Remove product
     singleProducts.splice(index, 1)
@@ -473,6 +477,9 @@ function addToCompare(product) {
     iconMPO.classList.add('new');
 
     productsCompare.push(product);
+
+    let input = document.querySelector(`.vergelijk-label${product.id}`).querySelector('input');
+    input.checked = true;
     product.compared = true;
     computeCompareProducts();
     updateCounter();
@@ -492,6 +499,9 @@ function deleteFromCompare(product) {
 
     //Remove product
     productsCompare.splice(index, 1)
+
+    let input = document.querySelector(`.vergelijk-label${product.id}`).querySelector('input');
+    input.checked = false;
     computeCompareProducts();
     updateCounter();
 }
@@ -980,7 +990,7 @@ function addToList() {
         selectedLists.forEach(list => {
             selectedProducts.forEach(product => {
                 list.products.push(product);
-                deleteFromMPO(product.id);
+                deleteFromMPO(product);
                 product.selected = false;
             })
             list.selected = false;
