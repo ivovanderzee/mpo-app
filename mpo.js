@@ -591,6 +591,9 @@ function deleteFromList(list, product) {
 
     //Remove product
     list.products.splice(index, 1)
+    let input = document.querySelector(`.mijn-producten-label${product.id}`).querySelector('input');
+    input.checked = false;
+    input.classList.remove('added'); 
     calcLists();
     updateCounter();
 }
