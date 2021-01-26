@@ -743,7 +743,6 @@ function calcLists() {
 
     //Append each list in the list array
     lists.forEach(list => {
-        let listObj = lists.filter(list => list.id === list.id)[0]
 
         //Html for the list
         let html = `
@@ -785,10 +784,10 @@ function calcLists() {
             }
         })
         delBtn.addEventListener('click', () => {
-            deleteList(listObj);
+            deleteList(list);
         });
         shareBtn.addEventListener('click', () => {
-            shareList(listObj);
+            shareList(list);
         });
 
         //Add all the products to the listview
@@ -869,24 +868,21 @@ function calcLists() {
 }
 
 //Function to delete a list
-function deleteList(listID) {
+function deleteList(list) {
     let notification = createNotification('deleteList');
-
     //If the users submits, the price alert will be set
     let submitButton = notification.querySelector('.ctaButton');
     submitButton.addEventListener('click', () => {
-         //Select the product that needs to be removed
-    let list = lists.filter(list => list.id === listID)[0];
+
     //Search for the index of the product in the array
     let index = lists.indexOf(list)
+    console.log(index);
     //Remove product
-    lists.splice(index, 1)
+    lists.splice(index, 1);
     calcLists();
     updateCounter();
         closePopup(notification);
     });
-
-   
 }
 
 //Function for creating a new list
