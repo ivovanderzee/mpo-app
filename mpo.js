@@ -86,16 +86,20 @@ function addCheckbox() {
         if (mijnProductenCheckboxes) {
             //Create a new label and set the innerHTML of the checkbox(es)
             let mijnProductenLabel = document.createElement('label');
+            mijnProductenLabel.classList.add('mijn-producten-label');
+            vergelijkLabel.setAttribute('id', `${product.id}`);
             mijnProductenLabel.innerHTML = `<input type="checkbox" name="products[] value="${product.id}""><span>Mijn Producten</span>`;
             let checkbox1 = mijnProductenLabel.querySelector('input')
             itemName.appendChild(mijnProductenLabel);
             //Add an eventlistener to the label button
             mijnProductenLabel.addEventListener('click', () => {
-                if (!checkbox1.getAttribute('checked')) {
+                if (!checkbox1.classList.contains('added')) {
                     addToMPO(product);
                     topNotification(product);
+                    checkbox1.classList.add('added');
                 } else {
                     deleteFromMPO(product);
+                    checkbox1.classList.remove('added');
                 }
             })
         } else {
@@ -105,6 +109,8 @@ function addCheckbox() {
         //Add checkbox vergelijk
         if (vergelijkCheckboxes) {
             let vergelijkLabel = document.createElement('label');
+            vergelijkLabel.classList.add('vergelijk-label');
+            vergelijkLabel.setAttribute('id', `${product.id}`);
             vergelijkLabel.style.marginLeft = '5px';
             vergelijkLabel.innerHTML = `<input type="checkbox" name="products[] value="${product.id}""><span>Vergelijk</span>`;
             let checkbox2 = vergelijkLabel.querySelector('input');
@@ -112,10 +118,12 @@ function addCheckbox() {
 
             //Add an eventlistener to the label button
             vergelijkLabel.addEventListener('click', () => {
-                if (!checkbox2.getAttribute('checked')) {
+                if (!checkbox2.classList.contains('added')) {
                     addToCompare(product);
+                    checkbox2.classList.add('added');
                 } else {
                     deleteFromCompare(product);
+                    checkbox2.classList.remove('added');
                 }
             });
         } else {
