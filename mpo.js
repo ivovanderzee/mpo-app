@@ -506,6 +506,7 @@ function deleteFromCompare(product) {
     updateCounter();
 }
 
+//Function to empty all the products in the compare list
 function emptyCompare(){
     productsCompare = [];
     computeCompareProducts();
@@ -646,6 +647,8 @@ function createNotification(category, product = null) {
 
     //Create new element and set classname
     let popupNotification = document.createElement('form');
+
+    //Create the notification
     popupNotification.className = 'popup-notification';
     if (category === 'prijsalert') {
         popUpTitle = 'Prijsalert instellen';
@@ -684,7 +687,6 @@ function createNotification(category, product = null) {
         }).join('')}
         `
         }
-
     } else if (category === 'setBought') {
         popUpTitle = 'Stel de aanschafprijs in';
         inputFieldSize = '10';
@@ -702,6 +704,7 @@ function createNotification(category, product = null) {
         inputField = ``;
         newListInput = '';
     }
+
     //Set the html and append it to the item
     let html = `
     <div class="popup-notificationWrapper">
@@ -1700,6 +1703,7 @@ style.innerHTML = `
     .contentWrapper{
         height: 90vh;
         width: 100vw;
+        resize: none;
     }
     .pop-over{
         position: abosulute;
@@ -1718,7 +1722,8 @@ style.innerHTML = `
     }
   }
 
-`
+`;
+//Add style sheet
 head.appendChild(style);
 
 //Share the list function
