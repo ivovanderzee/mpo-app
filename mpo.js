@@ -46,7 +46,6 @@ iconMPO.addEventListener('click', () => {
 //Function to grab all the data and push it to the array
 function getData() {
     for (i = 0; i < pricewatchItems.length; i++) {
-
         //Specify some properties from each product
         let id = pricewatchItems[i].querySelector('input').getAttribute('value');
         let title = pricewatchItems[i].querySelector('.itemname').querySelector('.ellipsis').querySelector('a').innerText;
@@ -265,7 +264,7 @@ function changeState(elem) {
     }
 }
 
-//Function to display a notification when a product is added to 'Mijn Producten'
+//Function to display a notification in the body when a product is added to 'Mijn Producten'
 function topNotification(product) {
     let notification = document.createElement('div');
     notification.className = 'top-notification';
@@ -333,8 +332,6 @@ function generateItemHTML(product, category) {
       </div>
       </div>
       `;
-
-    //Return all the buttons and clickable parts
     return html;
 }
 
@@ -899,8 +896,8 @@ function deleteList(list) {
     submitButton.addEventListener('click', () => {
 
     //Search for the index of the product in the array
-    let index = lists.indexOf(list)
-    console.log(index);
+    let index = lists.indexOf(list);
+
     //Remove product
     lists.splice(index, 1);
     calcLists();
@@ -1049,7 +1046,6 @@ function updateCounter() {
 
 // Make the DIV element draggable
 dragElement(document.querySelector(".pop-over"));
-
 function dragElement(elmnt) {
     var pos1 = 0,
         pos2 = 0,
